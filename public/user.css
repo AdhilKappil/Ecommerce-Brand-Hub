@@ -14,7 +14,10 @@
 }
 .center-div {
   width: 100%;
-  max-width: 700px; 
+  max-width: 600px; 
   background-color: rgba(255, 255, 255, 0.8);
   border-radius:10px;
+}
+.col-6{
+  max-width: 75%;
 }
