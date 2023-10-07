@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const path = require("path")
-// mongoose.connect("mongodb://127.0.0.1:27017/Brand-Hub")
+mongoose.connect("mongodb://127.0.0.1:27017/Brand-Hub")
 const express = require("express");
 
 const app = express();

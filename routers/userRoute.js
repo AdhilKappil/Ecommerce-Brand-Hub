@@ -27,6 +27,10 @@ user_route.use(express.urlencoded({ extended: true }));
 user_route.get('/',userController. loginLoad);
 user_route.get('/login',userController. loginLoad);
 
+user_route.get('/register',userController.loadRegister);
+
+user_route.post('/register',userController.insertUser)
+
 
 
 module.exports = user_route; 

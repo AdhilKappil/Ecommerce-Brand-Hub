@@ -1,0 +1,53 @@
+
+<%-include('../layouts/header.ejs') %>
+<div class="full-page">
+<div class="container">
+<div class="text-center  center-div">
+    <div class="container col-6 py-5 p-4">
+        <div class="title pb-3">
+            <h2>Create a new accoun</h2>
+                        <% 
+                        if(typeof message !== 'undefined'){
+                            %>
+                            <div id="invalid-msg" class="alert alert-danger text-center">
+                                <h4><%- message %></h4>
+                            </div>
+                            <%
+                        }
+                        %>
+         </div>
+
+        <form action="" method="post">
+            <div class="form-group mt-3">
+                <input type="text" class="form-control" name="Fname" placeholder="Fist Name" required>
+                <br>
+                <input type="text" class="form-control" name="Lname" placeholder="Last Name" required>
+                <br>
+                <input type="email" class="form-control" name="email" placeholder="Enter email" id="email">
+                <!-- <p id="email-error" class="error-message"></p> -->
+                <br>
+            
+                <input type="text" class="form-control" name="mobile" placeholder="Mobile No" required>
+                <br>
+                <input type="password" class="form-control" name="password" placeholder="Enter password" id="password">
+                <!-- <p id="password-error" class="error-message"></p> -->
+                <br>
+                
+                <input type="password" class="form-control" name="confimePassword" placeholder="Enter password" id="password">
+                <!-- <p id="password-error" class="error-message"></p> -->
+                <br>
+
+            </div>
+            <br>
+                <input type="submit" class="btn btn-success rounded-pill" value="Sign Up">
+
+        </form>
+        <br>
+        <p>Alredy have an account? <a href="/login">Login</a></p>
+
+    </div>
+</div>
+</div>
+</div>
+
+<%-include('../layouts/footer.ejs')%>
