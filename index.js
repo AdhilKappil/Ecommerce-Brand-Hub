@@ -14,7 +14,7 @@ app.use('/',userRoute);
 
 
 
-//Admin Route
+// Admin Route
 // const adminRoute = require('./routers/adminRoute');
 // app.use('/admin',adminRoute);
 

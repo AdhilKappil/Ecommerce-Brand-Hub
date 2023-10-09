@@ -1,12 +1,11 @@
-
 <%-include('../layouts/header.ejs') %>
 <div class="full-page">
 <div class="container">
 <div class="text-center  center-div">
     <div class="container col-6 py-5 p-4">
         <div class="title pb-3">
-            <h1>Login</h1>
-                        <!-- <% 
+            <h1>OTP Verification</h1>
+                        <% 
                         if(typeof message !== 'undefined'){
                             %>
                             <div id="invalid-msg" class="alert alert-danger text-danger text-center">
@@ -14,23 +13,20 @@
                             </div>
                             <%
                         }
-                        %> -->
+                        %>
          </div>
 
-        <form action="/login" method="post" onsubmit="return validateForm()">
+        <form action="/userOtp" method="post">
             <div class="form-group mt-3">
-                <input type="email" class="form-control" name="email" placeholder="Enter email" id="email">
-                <p id="email-error" class="error-message"></p>
-                <br><br>
-                <input type="password" class="form-control" name="password" placeholder="Enter password" id="password">
-                <p id="password-error" class="error-message"></p>
+                <input type="text" class="form-control" name="otp" placeholder="Enter OTP" id="email">
+                <br>
             </div>
             <br>
-                <input type="submit" class="btn btn-primary rounded-pill" value="Login">
+                <input type="submit" class="btn btn-primary rounded-pill" value="Verify & Proceed">
 
         </form>
         <br>
-        <p>New User? <a href="/register">Create new account</a></p>
+       
 
     </div>
 </div>

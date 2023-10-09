@@ -6,18 +6,18 @@
     <div class="container col-6 py-5 p-4">
         <div class="title pb-3">
             <h2>Create a new account</h2>
-                        <% 
+                        <!-- <% 
                         if(typeof message !== 'undefined'){
                             %>
-                            <div id="invalid-msg" class="alert alert-danger text-center">
+                            <div id="invalid-msg" class="alert alert-danger  text-center">
                                 <h4><%- message %></h4>
                             </div>
                             <%
                         }
-                        %>
+                        %> -->
          </div>
 
-        <form action="" method="post">
+        <form action="/register" method="post">
             <div class="form-group mt-3">
                 <input type="text" class="form-control" name="Fname" placeholder="Fist Name" required>
                 <br>
@@ -33,8 +33,11 @@
                 <!-- <p id="password-error" class="error-message"></p> -->
                 <br>
                 
-                <input type="password" class="form-control" name="Cpassword" placeholder="Enter password" id="password">
+                <input type="password" class="form-control" name="Cpassword" placeholder="Enter password" id="Cpassword">
                 <!-- <p id="password-error" class="error-message"></p> -->
+                <p id="password-mismatch" class="alert  text-danger mt-2" style="display: none;">
+                    Passwords do not match. Please try again.
+                </p>
                 <br>
 
             </div>
