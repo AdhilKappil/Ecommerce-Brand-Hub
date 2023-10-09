@@ -23,8 +23,11 @@ user_route.set('views','./views/users');
 user_route.use(express.json());
 user_route.use(express.urlencoded({ extended: true }));
 
+user_route.get('/',userController. loadHome);
+user_route.get('/home',userController. loadHome);
 
-user_route.get('/',userController. loginLoad);
+user_route.post('/login',userController. verifLoadHome);
+
 user_route.get('/login',userController. loginLoad);
 
 user_route.get('/register',userController.loadRegister);

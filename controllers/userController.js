@@ -19,6 +19,7 @@ const securePassword = async(password)=>{
 }
 
 
+
 //user login   
 const loginLoad = async(req,res)=>{
 
@@ -29,6 +30,17 @@ const loginLoad = async(req,res)=>{
         console.log(error.message); 
     }
 }
+
+const loadHome = async(req,res)=>{
+
+    try {
+        res.render('home'); 
+
+    } catch (error) {
+        console.log(error.message); 
+    }
+}
+
 
 //user registraion
 const loadRegister = async(req,res)=>{
@@ -92,8 +104,9 @@ const verifyOtp = async(req,res)=>{
 
            // setting otp date and time
            const otpCode = generateOTP();
-           const otpExpiry = new Date();
-           otpExpiry.setMinutes(otpExpiry.getMinutes() + 10); // OTP expires in 10 minutes
+           const creationTime = Date.now()/1000;
+           const expirationTime = creationTime + 30; // OTP expires in 5 minutes
+   
 
            const userCheck = await User.findOne({email:req.body.email})
            if(userCheck)
@@ -112,7 +125,7 @@ const verifyOtp = async(req,res)=>{
                     req.session.password = spassword;
                     req.session.otp = {
                         code: otpCode,
-                        expiry: otpExpiry,
+                        expiry: expirationTime,
                     };        
                         // Send OTP to the user's email
                         sendVerificationEmail(req.session.email, req.session.otp.code);
@@ -135,6 +148,7 @@ const verifyOtp = async(req,res)=>{
 
 }
 
+//======= user data inserting to database =======
 const insertUser = async(req,res)=>{
 
     try {
@@ -146,7 +160,8 @@ const insertUser = async(req,res)=>{
                 email: req.session.email,
                 mobile: req.session.mobile,
                 password: req.session.password,
-                isVerified:1
+                isVerified:1,
+                isBlock:0
 
             })    
 
@@ -159,8 +174,57 @@ const insertUser = async(req,res)=>{
     } catch (error) {
         console.log(error.message);
     }
+    
+}
 
+//====== loding home page ======
+const verifLoadHome = async (req, res,next) => {
 
+    console.log('bfxfbx');
+        try {
+            const Email = req.body.email
+            const Password = req.body.password
+    
+            const userData = await User.findOne({ email:Email})
+            if (userData) {
+    
+                if (userData.isBlock == false) {
+    
+    
+                    const passwordMatch = await bcrypt.compare(Password, userData.password)
+    
+                    if (passwordMatch) {
+                        if (userData.isVerified == false) {
+    
+                            res.render('login', { message: "please verify your mail" })
+                        }
+                        else {
+    
+    
+                            req.session.userid = userData._id
+    
+                            res.redirect('/')
+                        }
+                    }
+                    else {
+                        res.render('login', { message: "Email and  password is incorrect" })
+                    }
+    
+                } else {
+    
+                    res.render('login', { message: "This User is blocked" })
+                }
+            }
+            else {
+                res.render('login', { message: "Email and  password is incorrect" })
+    
+            }
+        }
+        catch (err) {
+    
+            next(err)
+    }
+    
 }
 
 
@@ -169,6 +233,8 @@ module.exports = {
     loadRegister,
     loadOtpPage,
     insertUser,
-    verifyOtp
+    verifyOtp,
+    verifLoadHome,
+    loadHome
     
 };

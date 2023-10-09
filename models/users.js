@@ -22,6 +22,16 @@ const userSchema =  new mongoose.Schema({
     password:{
         type:String,
         required:true
+    },
+
+    isVerified:{
+        type:Boolean,
+        required:true
+    },
+
+    isBlock:{
+        type:Boolean,
+        required:true
     }
   
 })
