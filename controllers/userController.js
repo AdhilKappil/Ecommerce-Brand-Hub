@@ -178,9 +178,8 @@ const insertUser = async(req,res)=>{
 }
 
 //====== loding home page ======
-const verifLoadHome = async (req, res,next) => {
+const verifLoadHome = async (req, res) => {
 
-    console.log('bfxfbx');
         try {
             const Email = req.body.email
             const Password = req.body.password
@@ -222,7 +221,7 @@ const verifLoadHome = async (req, res,next) => {
         }
         catch (err) {
     
-            next(err)
+            console.log(err);
     }
     
 }

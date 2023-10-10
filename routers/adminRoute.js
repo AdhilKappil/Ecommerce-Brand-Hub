@@ -23,9 +23,9 @@ admin_route.use(express.urlencoded({ extended: true }));
 
 admin_route.get('/',adminController.loadLogin);
 
-admin_route.get('/login',adminController.loadLogin);
+// admin_route.get('/adminLogin',adminController.loadLogin);
 
-// admin_route.post('/login',adminController.verifyLogin);
+admin_route.post('/',adminController.verifyLogin);
 
 
 module.exports = admin_route;
