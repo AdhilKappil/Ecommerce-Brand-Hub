@@ -4,7 +4,7 @@ const category = require('../models/category');
 const bcrypt = require("bcrypt");
 
 
-//pasword security
+// ======== pasword security =========
 const securePassword = async(password)=>{
 
     try {
@@ -18,7 +18,7 @@ const securePassword = async(password)=>{
 }
 
 
-//admin login page   
+//======= admin login page =======   
 const loadLogin = async(req,res)=>{
 
     try {
@@ -69,7 +69,7 @@ const loadAddCategories = async(req,res)=>{
   }
 }
 
-//====== insert category =========
+//======== insert category ===========
 const insertCategory = async (req,res)=>{
   try {
 
