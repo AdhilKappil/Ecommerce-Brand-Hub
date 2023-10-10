@@ -27,5 +27,9 @@ admin_route.get('/',adminController.loadLogin);
 
 admin_route.post('/',adminController.verifyLogin);
 
+admin_route.get('/addCategories',adminController.loadAddCategories);
+
+admin_route.post('/addCategories',adminController.insertCategory);
+
 
 module.exports = admin_route;

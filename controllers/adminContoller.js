@@ -1,5 +1,6 @@
 
 const admin = require('../models/admin');
+const category = require('../models/category');
 const bcrypt = require("bcrypt");
 
 
@@ -57,8 +58,38 @@ const verifyLogin = async(req,res) => {
     }
   }
   
+//====== loading add catogory page =======
+const loadAddCategories = async(req,res)=>{
+
+  try {
+      res.render('addCategories'); 
+
+  } catch (error) {
+      console.log(error.message); 
+  }
+}
+
+//====== insert category =========
+const insertCategory = async (req,res)=>{
+  try {
+
+    const Category = await new category({
+      name:req.body.category_name,
+      description:req.body.category_description,
+      isListed:true
+    })
+
+    const result = await Category.save()
+    res.redirect('/admin/addCategories')
+  } catch (error) {
+    console.log(error);
+  }
+}
+  
 
 module.exports = {
     loadLogin,
-    verifyLogin
+    verifyLogin,
+    loadAddCategories,
+    insertCategory
 }
