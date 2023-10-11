@@ -23,13 +23,22 @@ admin_route.use(express.urlencoded({ extended: true }));
 
 admin_route.get('/',adminController.loadLogin);
 
-// admin_route.get('/adminLogin',adminController.loadLogin);
-
 admin_route.post('/',adminController.verifyLogin);
 
 admin_route.get('/addCategories',adminController.loadAddCategories);
 
 admin_route.post('/addCategories',adminController.insertCategory);
+
+admin_route.get('/viewCategories',adminController.loadViewCategory);
+
+admin_route.get('/unlistCategory',adminController.unlistCategory);
+
+admin_route.get('/editCategory',adminController.loadEditCatogories);
+
+admin_route.put('/updateCategory',adminController.editCategory);
+
+
+
 
 
 module.exports = admin_route;

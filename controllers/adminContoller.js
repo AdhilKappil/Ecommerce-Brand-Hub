@@ -85,11 +85,85 @@ const insertCategory = async (req,res)=>{
     console.log(error);
   }
 }
-  
+
+// ======== Rendering view categories ======== 
+const loadViewCategory = async (req, res) => {
+  try {
+    const categories = await category.find(); // Assuming you want to retrieve all categories from the database
+    res.render('viewCategories', { category: categories });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+// ========== list and unlist ===========
+const unlistCategory = async (req, res) => {
+  try {
+    
+    const id = req.query.id;
+    const Category = await category.findById(id);
+    
+    if (Category) {
+      Category.isListed = !Category.isListed;
+      await Category.save();
+      
+    }
+
+    const categories = await category.find();
+    
+    res.render('viewCategories', { category: categories });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// ======== loading edit cotegory =========
+const loadEditCatogories = async (req, res) => {
+  try {
+    const id = req.query.id;
+    console.log("ID:", id);
+
+    const Category = await category.findById(id);
+    console.log(Category);
+
+    if (Category) {
+      res.render('editCategories', { data: Category }); // Pass the category object to the template
+    } else {
+      res.redirect('/admin/viewCategories');
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+
+/// ==========Editing Category==========
+const editCategory = async(req,res) => {
+
+  try{
+
+    const editData = await category.findByIdAndUpdate({ _id:req.body.id },{$set:{ name:req.body.name, description:req.body.description}});
+
+    res.redirect('/admin/viewCategories');
+
+  }catch(error){
+    console.log(error.message);
+  }
+}
+
+
+
+
 
 module.exports = {
     loadLogin,
     verifyLogin,
     loadAddCategories,
-    insertCategory
+    insertCategory,
+    loadViewCategory,
+    unlistCategory,
+    editCategory,
+    loadEditCatogories
 }

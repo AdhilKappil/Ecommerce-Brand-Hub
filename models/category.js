@@ -14,7 +14,8 @@ const adminSchema =  new mongoose.Schema({
 
     isListed:{
         type:Boolean,
-        required:true
+        required:true,
+        
     }
 
   
