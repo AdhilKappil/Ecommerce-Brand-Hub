@@ -129,7 +129,7 @@ const loadEditCatogories = async (req, res) => {
     const dataCategory = await category.findById(id);
 
     if (dataCategory) {
-      res.render('editCategory', { data: dataCategory }); 
+      res.render('editCategory', { data: dataCategory }); // Pass the category object to the template
     } else {
       res.redirect('/admin/viewCategories');
     }
@@ -254,6 +254,26 @@ const loadViewProducts = async(req,res) =>{
 }
 
 
+// ======= load edit product ========
+const loadeditProduct = async (req, res) => {
+  try {
+    const id = req.query.id;
+
+    const dataproduct = await product.findById(id);
+
+    if (dataproduct) {
+      res.render('editProduct', { data: dataproduct }); 
+    } else {
+      res.redirect('/admin/viewProduct');
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+
+
 module.exports = {
     loadLogin,
     verifyLogin,
@@ -267,5 +287,6 @@ module.exports = {
     blockUser,
     loadaddProducts,
     addProduct,
-    loadViewProducts
+    loadViewProducts,
+    loadeditProduct
 }

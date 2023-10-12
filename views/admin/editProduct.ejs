@@ -1,0 +1,88 @@
+
+<%-include('../admin/layouts/header.ejs') %>
+<%-include('../admin/layouts/sideBar.ejs') %>
+<%-include('../admin/layouts/navBar.ejs') %>
+
+<div class="main-panel">
+  <div class="content-wrapper">
+
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">EDIT PRODUCTS</h2>
+            <form class="forms-sample" action="edit_product" method="post" enctype="multipart/form-data">
+              <div class="form-row">
+                <label for="exampleInputName1">Product Name</label>
+                <input type="text" class="form-control" id="exampleInputName1" name="productname" placeholder="Product Name" value="<%= data.productName %>">
+              </div>
+              <br>
+              <div class="form-row align-items-center">
+              
+                <div class="col-sm-4 my-1">
+                  <label for="exampleInputName1">Price</label>
+                  <input type="text" class="form-control" id="inlineFormInputName1" name="price" placeholder="Price" value="<%= data.price %>">
+                </div>
+                <div class="col-sm-4 my-1">
+                  <label for="exampleInputName1">Quantity</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="inlineFormInputGroupUsername2" name="quantity" placeholder="Quantity" value="<%= data.quantity %>">
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="form-row">
+                <label for="exampleInputName1">Description</label>
+                <textarea class="form-control" id="exampleTextarea1" rows="4" name="description"><%= data.description %></textarea>
+              </div>
+
+             <br>
+
+                <div class="form-row">
+                  <label for="">File upload</label>
+                </div>
+                <div class="container">
+                  <div class="row" style="height: 140px;">
+                      <div class="col-md-6 mb-0" style="height: 140px;">
+                          <div style="width: 400px; height: 100px; border: 2px solid rgb(86, 89, 88); align-items: center;" class="d-flex justify-content-center">
+                              <input type="file" name="image" required>
+                          </div>
+                      </div>
+                      <div class="col-md-6 mb-4">
+                          <div class="col-md-12 grid-margin">
+                              <div class="card">
+                                  <div class="card-body">
+                                      <div class="form-row">
+                                          <label for="file">Size</label>
+                                      </div>
+                                      <div class="form-group">
+                                          <select class="form-control" name="size" value="<%= data.size %>" id="exampleFormControlSelect2">
+                                              <option>36</option>
+                                              <option>38</option>
+                                              <option>40</option>
+                                              <option>42</option>
+                                              <option>44</option>
+                                              <option>46</option>
+                                          </select>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="input-container">
+                  <input type="hidden" name="id" value="<%= data._id %>">
+                </div>
+            
+              <button type="submit" class="btn btn-primary mr-2">Submit</button>
+              <button class="btn btn-dark">Cancel</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+  </div>
+</div>
+
+<%-include('../admin/layouts/footer.ejs') %>
