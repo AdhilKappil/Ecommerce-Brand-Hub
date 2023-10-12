@@ -227,12 +227,11 @@ const userLoad =  async (req, res) => {
         quantity:quantity,
       })
       const productData = await newProduct.save();
-    console.log(productData);
-    if(productData){
-      res.redirect('/admin/viewProducts');
-    }else{
+      if(productData){
+      res.redirect('/admin/addProduct');
+      }else{
       res.render('addProduct',{message:"Something went wrong"});
-    }
+      }
 
   }catch(error){
     console.error(error);
@@ -242,17 +241,17 @@ const userLoad =  async (req, res) => {
 
 
 // ====== load view products =======
-// const viewProducts = async(req,res) =>{
+const loadViewProducts = async(req,res) =>{
 
-//   try {
-//     const products = await product.find().populate("category"); // Populate the category field
-//     const categories = await Category.find(); // Assuming you want to retrieve all categories from the database
-//     res.render('viewProducts', { product: products, category: categories });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Internal Server Error');
-//   }
-// }
+  try {
+    const products = await product.find().populate("category"); // Populate the category field
+    const categories = await category.find(); // Assuming you want to retrieve all categories from the database
+    res.render('viewProducts', { product: products, category: categories });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+}
 
 
 module.exports = {
@@ -268,5 +267,5 @@ module.exports = {
     blockUser,
     loadaddProducts,
     addProduct,
-    // viewProducts
+    loadViewProducts
 }

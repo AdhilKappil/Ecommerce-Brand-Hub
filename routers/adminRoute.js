@@ -33,7 +33,7 @@ admin_route.use(express.static('public'))
 
 const storage = multer.diskStorage({
   destination:function(req,file,cb){
-    cb(null,path.join(__dirname,'../public/adminAssets/images'));
+    cb(null,path.join(__dirname,'../public/adminAssets/images/products'));
   },
   filename:function(req,file,cb) {
     const name = Date.now()+'-'+file.originalname;
@@ -71,7 +71,7 @@ admin_route.get('/addProduct',adminController.loadaddProducts);
 
 admin_route.post('/addProduct',upload.single('image'),adminController.addProduct)
 
-
+admin_route.get('/viewProduct',adminController.loadViewProducts);
 
 
 module.exports = admin_route;
