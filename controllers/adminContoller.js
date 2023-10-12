@@ -240,18 +240,18 @@ const userLoad =  async (req, res) => {
 }
 
 
-// ====== load view products =======
-const loadViewProducts = async(req,res) =>{
-
+// ======= load view products =======
+const loadViewProducts = async (req, res) => {
   try {
     const products = await product.find().populate("category"); // Populate the category field
     const categories = await category.find(); // Assuming you want to retrieve all categories from the database
-    res.render('viewProducts', { product: products, category: categories });
+    res.render('viewProducts', { products: products, categories: categories }); // Pass 'products' and 'categories' to the template
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
 }
+
 
 
 // ======= load edit product ========
@@ -273,6 +273,44 @@ const loadeditProduct = async (req, res) => {
 }
 
 
+// ======= updating edit product =======
+const editProduct = async(req,res)=>{
+  try{
+  
+    const editData = await product.findByIdAndUpdate({ _id:req.body.id },{$set:{ productName:req.
+      body.productname, price:req.body.price , quantity:req.body.quantity, 
+      description:req.body.description,image:req.file.filename,size:req.body.size}});
+
+    res.redirect('/admin/viewProduct');
+
+  }catch(error){
+    console.log(error.message);
+  }
+}
+
+
+// ======= list and unlist product =======
+const unlistProduct = async (req, res) => {
+  try {
+    const id = req.query.id;
+    const product1 = await product.findById(id);
+
+    if (product1) {
+      product1.status = !product1.status;
+      await product1.save();
+    }
+
+    const products = await product.find().populate("category"); // Populate the category field
+    const categories = await category.find(); // Assuming you want to retrieve all categories from the database
+
+    res.render('viewProducts', { products: products, categories: categories });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
 
 module.exports = {
     loadLogin,
@@ -288,5 +326,7 @@ module.exports = {
     loadaddProducts,
     addProduct,
     loadViewProducts,
-    loadeditProduct
+    loadeditProduct,
+    editProduct,
+    unlistProduct
 }

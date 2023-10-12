@@ -27,7 +27,7 @@
               </tr>
             </thead>
             <tbody>
-              <% product.forEach(product => { %>
+              <% products.forEach(product => { %>
                 <tr>
                   <td><%= product.productName %></td>
                   <td><%= product.category.name %></td>
@@ -42,13 +42,13 @@
                     </button>
                   </a></td>
                   <td><% if (product.status === false) { %>
-                    <a href="/admin/unlist_product?id=<%= product._id %>">
+                    <a href="/admin/unlistProduct?id=<%= product._id %>">
                       <button type="button" class="btn btn-inverse-success btn-fw">
                         List
                       </button>
                     </a>
                   <% } else { %>
-                    <a href="/admin/unlist_product?id=<%= product._id %>">
+                    <a href="/admin/unlistProduct?id=<%= product._id %>">
                       <button type="button" class="btn btn-inverse-danger btn-fw">
                         Unlist
                       </button>
