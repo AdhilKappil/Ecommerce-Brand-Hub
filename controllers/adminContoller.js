@@ -2,7 +2,9 @@
 const admin = require('../models/admin');
 const User = require('../models/users');
 const category = require('../models/category');
+const product = require('../models/product');
 const bcrypt = require("bcrypt");
+const path = require('path')
 
 
 // ======== pasword security =========
@@ -188,6 +190,71 @@ const userLoad =  async (req, res) => {
   };
 
 
+  // ======== loading add product page ==========
+  const loadaddProducts = async (req, res) => {
+    try {
+      // Fetch categories from the database
+      const categories = await category.find();
+  
+      // Render the addProducts.ejs template with the Category variable
+      res.render('addProducts', { category: categories });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    }
+  };
+
+
+  // ========= add product ===========
+  const addProduct = async(req,res)=>{
+    try{
+
+      const productname = req.body.productname;
+      const category = req.body.category;
+      const size = req.body.size
+      const description = req.body.description;
+      const price = req.body.price;
+      const quantity = req.body.quantity;
+      const image = req.file.filename;
+  
+      const newProduct = new product({
+        productName:productname,
+        category:category,
+        size:size,
+        description:description,
+        price:price,
+        image:image,
+        quantity:quantity,
+      })
+      const productData = await newProduct.save();
+    console.log(productData);
+    if(productData){
+      res.redirect('/admin/viewProducts');
+    }else{
+      res.render('addProduct',{message:"Something went wrong"});
+    }
+
+  }catch(error){
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+
+// ====== load view products =======
+// const viewProducts = async(req,res) =>{
+
+//   try {
+//     const products = await product.find().populate("category"); // Populate the category field
+//     const categories = await Category.find(); // Assuming you want to retrieve all categories from the database
+//     res.render('viewProducts', { product: products, category: categories });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// }
+
+
 module.exports = {
     loadLogin,
     verifyLogin,
@@ -199,5 +266,7 @@ module.exports = {
     loadEditCatogories,
     userLoad,
     blockUser,
-    addProduct
+    loadaddProducts,
+    addProduct,
+    // viewProducts
 }

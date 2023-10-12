@@ -1,5 +1,8 @@
 const express = require('express'); 
 const adminController = require("../controllers/adminContoller"); 
+const multer = require('multer');
+const path = require('path');
+
 // const session = require('express-session');
 // const config = require('../config/config');
 // const auth = require('../middleware/adminAuth'); 
@@ -25,9 +28,6 @@ admin_route.set('views','./views/admin');
 admin_route.use(express.json());
 admin_route.use(express.urlencoded({ extended: true }));
 
-// ====== to add images ======
-const multer = require('multer');
-const path = require('path');
 
 admin_route.use(express.static('public'))
 
@@ -67,13 +67,9 @@ admin_route.get('/blockUsers',adminController.blockUser);
 
 admin_route.get('/blockUsers',adminController.blockUser);
 
-admin_route.post('/addProduct',adminController.addProduct);
+admin_route.get('/addProduct',adminController.loadaddProducts);
 
-
-
-
-
-
+admin_route.post('/addProduct',upload.single('image'),adminController.addProduct)
 
 
 
