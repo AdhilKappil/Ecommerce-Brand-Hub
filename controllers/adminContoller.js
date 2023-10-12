@@ -1,5 +1,6 @@
 
 const admin = require('../models/admin');
+const User = require('../models/users');
 const category = require('../models/category');
 const bcrypt = require("bcrypt");
 
@@ -73,13 +74,13 @@ const loadAddCategories = async(req,res)=>{
 const insertCategory = async (req,res)=>{
   try {
 
-    const Category = await new category({
+    const data = await new category({
       name:req.body.category_name,
       description:req.body.category_description,
       isListed:true
     })
 
-    const result = await Category.save()
+    const result = await data.save()
     res.redirect('/admin/addCategories')
   } catch (error) {
     console.log(error);
@@ -122,13 +123,11 @@ const unlistCategory = async (req, res) => {
 const loadEditCatogories = async (req, res) => {
   try {
     const id = req.query.id;
-    console.log("ID:", id);
 
-    const Category = await category.findById(id);
-    console.log(Category);
+    const dataCategory = await category.findById(id);
 
-    if (Category) {
-      res.render('editCategories', { data: Category }); // Pass the category object to the template
+    if (dataCategory) {
+      res.render('editCategory', { data: dataCategory }); 
     } else {
       res.redirect('/admin/viewCategories');
     }
@@ -144,7 +143,7 @@ const editCategory = async(req,res) => {
 
   try{
 
-    const editData = await category.findByIdAndUpdate({ _id:req.body.id },{$set:{ name:req.body.name, description:req.body.description}});
+    const editData = await category.findByIdAndUpdate({ _id:req.body.id },{$set:{ name:req.body.categoryname, description:req.body.categorydes}});
 
     res.redirect('/admin/viewCategories');
 
@@ -154,7 +153,39 @@ const editCategory = async(req,res) => {
 }
 
 
+// ======= loading user deatailes =======
+const userLoad =  async (req, res) => {
+  try {
+    const user = await User.find(); 
+    res.render('users', { users: user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+   }
+  };
 
+
+  // ====== block or un block user ======
+  const blockUser = async (req, res) => {
+    try {
+      
+      const id = req.query.id;
+      const user = await User.findById(id);
+
+      if (user) {
+        user.isBlock = !user.isBlock 
+        await user.save(); 
+        
+      }
+  
+      const Users = await User.find();
+ 
+      res.render('users', { users: Users });
+
+    } catch (error) {   
+      console.log(error);
+   }
+  };
 
 
 module.exports = {
@@ -165,5 +196,8 @@ module.exports = {
     loadViewCategory,
     unlistCategory,
     editCategory,
-    loadEditCatogories
+    loadEditCatogories,
+    userLoad,
+    blockUser,
+    addProduct
 }

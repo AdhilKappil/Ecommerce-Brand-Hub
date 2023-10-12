@@ -32,8 +32,12 @@ const userSchema =  new mongoose.Schema({
     isBlock:{
         type:Boolean,
         required:true
-    }
-  
-})
+    },
+      
+},
+{
+timestamps:true
+}
+)
 
 module.exports = mongoose.model('user',userSchema);

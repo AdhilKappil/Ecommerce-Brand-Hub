@@ -1,0 +1,53 @@
+
+<%-include('../admin/layouts/header.ejs') %>
+<%-include('../admin/layouts/sideBar.ejs') %>
+<%-include('../admin/layouts/navBar.ejs') %>
+
+<div class="main-panel">
+  <div class="content-wrapper">
+
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Edit Category</h4>
+            <form class="forms-sample" action="updateCategory" method="post">
+    
+              <% if (typeof message !== 'undefined') { %>
+                <div id="invalid-msg" class="alert alert-danger text-center mt-3">
+                  <h4><%- message %></h4>
+                </div>
+              <% } %>
+    
+              <div class="form-group">
+                <label for="exampleInputName1">Category Name</label>
+                <input type="text" class="form-control" id="exampleInputName1" name="categoryname" placeholder=" Category Name" value="<%= data.name %>">
+              </div>      
+              <div class="form-group">
+                <label for="exampleTextarea1">Category Description</label>
+                <textarea class="form-control" id="exampleTextarea1" rows="4" name="categorydes" placeholder="Category Description"><%= data.description %></textarea>
+              </div>
+              <div class="input-container">
+                <input type="hidden" name="id" value="<%= data._id %>">
+              </div>
+              <button type="submit" class="btn btn-primary mr-2">Update</button>
+              <button class="btn btn-dark" value="Update categories">Cancel</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+  </div>
+</div>
+
+<%-include('../admin/layouts/footer.ejs') %>
+
+
+
+
+
+
+
+
+
+
+

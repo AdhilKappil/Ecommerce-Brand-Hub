@@ -17,7 +17,7 @@ app.use('/',userRoute);
 // Admin Route
 const adminRoute = require('./routers/adminRoute');
 app.use('/admin',adminRoute);
-  
+   
 
 app.listen(3000,()=>{
     console.log("Server is running...");

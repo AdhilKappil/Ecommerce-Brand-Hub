@@ -28,7 +28,8 @@
                         <td>*</td>
                         <td><%= category[i].name %></td>
                         <td><%= category[i].description %></td>
-                        <td> <a href="/admin/editCategories">
+                        <td> <a href="/admin/editCategory?id=<%= category[i]._id%>">
+                          
                           <button type="button" class="btn btn-outline-secondary btn-icon-text">
                             Edit <i class="mdi mdi-file-check btn-icon-append"></i>
                           </button>
