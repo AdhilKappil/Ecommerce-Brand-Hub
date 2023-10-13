@@ -1,5 +1,15 @@
 
-<%-include('../layouts/header.ejs') %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Brand Hub</title>
+    <link rel="stylesheet" href="/static/user.css">
+</head>
+<body>
 <div class="full-page">
 <div class="container">
 <div class="text-center  center-div">
@@ -13,11 +23,11 @@
                                 <h4><%- message %></h4>
                             </div>
                             <%
-                        }
+                        } 
                         %>
          </div>
 
-        <form action="/login" method="post">
+        <form action="/login" method="post" onsubmit="return validateForm()">
             <div class="form-group mt-3">
                 <input type="email" class="form-control" name="email" placeholder="Enter email" id="email">
                 <p id="email-error" class="error-message"></p>
@@ -37,4 +47,7 @@
 </div>
 </div>
 
-<%-include('../layouts/footer.ejs')%>
+<script src="/static/script.js"></script>
+
+</body>
+</html>

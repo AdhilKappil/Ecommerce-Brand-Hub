@@ -46,8 +46,10 @@ const verifyLogin = async(req,res) => {
   
         const passwordMatch = await bcrypt.compare(password,adminData.password);
   
-        if(passwordMatch){              
+        if(passwordMatch){
+            req.session.admin_id=adminData._id              
             res.render('dashboard');
+        
           }else{
             res.render('adminLogin',{message:"Login details are incorrect" });
           }
@@ -60,6 +62,19 @@ const verifyLogin = async(req,res) => {
       console.log(error);
     }
   }
+
+
+//======= admin dashboard rendering =======   
+const loadadHome = async(req,res)=>{
+
+  try {
+      res.render('dashboard'); 
+
+  } catch (error) {
+      console.log(error.message); 
+  }
+}
+  
   
 //====== loading add catogory page =======
 const loadAddCategories = async(req,res)=>{
@@ -311,10 +326,37 @@ const unlistProduct = async (req, res) => {
 
 
 
+const adminLogout = async(req,res)=>{
+
+  try{
+      req.session.destroy()
+      res.redirect('/admin')
+  }
+  catch (error)
+      {
+          console.log(error.message)
+     }
+}
+
+
+// const loadBaner = async(req,res)=>{
+
+//   try {
+//       res.render('AddBaner'); 
+
+//   } catch (error) {
+//       console.log(error.message); 
+//   }
+// }
+ 
+
+
+
 
 module.exports = {
     loadLogin,
     verifyLogin,
+    loadadHome,
     loadAddCategories,
     insertCategory,
     loadViewCategory,
@@ -328,5 +370,7 @@ module.exports = {
     loadViewProducts,
     loadeditProduct,
     editProduct,
-    unlistProduct
+    unlistProduct,
+    adminLogout,
+    // loadBaner
 }
