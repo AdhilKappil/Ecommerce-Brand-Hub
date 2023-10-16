@@ -1,4 +1,16 @@
-<%-include('../layouts/header.ejs') %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Brand Hub</title>
+    <link rel="stylesheet" href="/static/user.css">
+</head>
+<body>
+
 <div class="full-page">
 <div class="container">
 <div class="text-center  center-div">
@@ -18,10 +30,13 @@
 
         <form action="/userOtp" method="post">
             <div class="form-group mt-3">
-                <input type="text" class="form-control" name="otp" placeholder="Enter OTP" id="email">
-                <br>
+                <input type="text" class="form-control" name="otp" placeholder="Enter OTP" id="">
             </div>
-            <br>
+            <% if (typeof otp !== 'undefined' && typeof timeRemaining !== 'undefined') { %>
+                <p>Time remaining: <span id="otp-timer"><%- timeRemaining %></span> seconds</p>
+              <% } %>
+              <a href="/resendOtp">Resend OTP</a>
+            <br><br>
                 <input type="submit" class="btn btn-primary rounded-pill" value="Verify & Proceed">
 
         </form>
@@ -33,4 +48,7 @@
 </div>
 </div>
 
-<%-include('../layouts/footer.ejs')%>
+<script src="/static/script.js"></script>
+
+</body>
+</html>

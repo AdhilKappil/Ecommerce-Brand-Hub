@@ -38,6 +38,12 @@ user_route.get('/userOtp',userController.loadOtpPage);
 
 user_route.post('/userOtp',userController.insertUser);
 
+user_route.get('/resendOtp', userController.resendOtp) 
+
+user_route.get('/forgotPassword', userController.loadForgotPassword) 
+
+
+
 
 
 module.exports = user_route; 
