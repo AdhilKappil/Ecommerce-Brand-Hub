@@ -38,9 +38,17 @@ user_route.get('/userOtp',userController.loadOtpPage);
 
 user_route.post('/userOtp',userController.insertUser);
 
-user_route.get('/resendOtp', userController.resendOtp) 
+user_route.get('/resendOtp', userController.resendOtp); 
 
-user_route.get('/forgotPassword', userController.loadForgotPassword) 
+user_route.get('/forgotPassword', userController.loadForgotPassword); 
+
+user_route.post('/forgotPassword', userController.forgotVerify); 
+
+user_route.get('/changePassword', userController.loadChangePassword);
+
+user_route.post('/changePassword', userController.updatePassword); 
+
+
 
 
 
