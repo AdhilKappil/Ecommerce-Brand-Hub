@@ -34,7 +34,11 @@
                   <td><%= product.price %></td>
                   <td><%= product.quantity %></td>
                   <td><%= product.description %></td>
-                  <td><img src="/static/adminAssets/images/products/<%= product.image %>" alt="<%= product.productName %>"></td>
+                  <td>
+                    <% product.images.forEach(image => { %>
+                      <img src="/static/adminAssets/images/products/<%= image %>" alt="<%= product.productName %>">
+                    <% }); %>
+                  </td>
                   <td><%= product.size %></td>
                   <td> <a href="/admin/editProduct?id=<%= product._id%>">
                     <button type="button" class="btn btn-outline-secondary btn-icon-text">

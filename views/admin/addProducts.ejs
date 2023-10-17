@@ -50,7 +50,7 @@
 
                   <br>
 
-                  <div class="form-row">
+                  <!-- <div class="form-row">
                     <label for="">File upload</label>
                   </div>
                   <div class="container">
@@ -61,7 +61,24 @@
                           class="d-flex justify-content-center">
                           <input type="file" name="image" required>
                         </div>
-                      </div>
+                      </div> -->
+
+                      <div class="form-row">
+                      <label for="">File upload (Multiple Images)</label>
+                    </div>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-md-6 mb-0">
+                          <div class="dynamic-image-inputs">
+                            <div class="input-group">
+                              <input type="file" name="images" class="form-control" required>
+                              <div class="input-group-append">
+                                <button class="btn btn-primary add-image-input" type="button">Add Image</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
                       <div class="col-md-6 mb-4">
                         <div class="col-md-12 grid-margin">
                           <div class="card">
@@ -95,5 +112,35 @@
 
         </div>
       </div>
+
+      <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const addImageButton = document.querySelector(".add-image-input");
+            const dynamicImageInputs = document.querySelector(".dynamic-image-inputs");
+        
+            addImageButton.addEventListener("click", function () {
+              const inputGroup = document.createElement("div");
+              inputGroup.className = "input-group";
+              const inputFile = document.createElement("input");
+              inputFile.type = "file";
+              inputFile.name = "images";
+              inputFile.className = "form-control";
+              inputFile.required = true;
+              const inputGroupAppend = document.createElement("div");
+              inputGroupAppend.className = "input-group-append";
+              const removeButton = document.createElement("button");
+              removeButton.className = "btn btn-danger remove-image-input";
+              removeButton.type = "button";
+              removeButton.textContent = "Remove";
+              removeButton.addEventListener("click", function () {
+                inputGroup.remove();
+              });
+              inputGroupAppend.appendChild(removeButton);
+              inputGroup.appendChild(inputFile);
+              inputGroup.appendChild(inputGroupAppend);
+              dynamicImageInputs.appendChild(inputGroup);
+            });
+          });
+        </script>
 
 <%-include('../admin/layouts/footer.ejs') %>

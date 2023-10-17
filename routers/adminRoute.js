@@ -69,7 +69,7 @@ admin_route.get('/blockUsers',auth.isLogin,adminController.blockUser);
 
 admin_route.get('/addProduct',auth.isLogin,adminController.loadaddProducts);
 
-admin_route.post('/addProduct',upload.single('image'),adminController.addProduct)
+admin_route.post('/addProduct', upload.array('images'), adminController.addProduct);
 
 admin_route.get('/viewProduct',auth.isLogin,adminController.loadViewProducts);
 

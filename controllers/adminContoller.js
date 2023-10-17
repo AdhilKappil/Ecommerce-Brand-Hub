@@ -230,7 +230,11 @@ const userLoad =  async (req, res) => {
       const description = req.body.description;
       const price = req.body.price;
       const quantity = req.body.quantity;
-      const image = req.file.filename;
+      const images = []
+      for(let i=0;i<req.files.length;i++)
+      {
+        images[i]=req.files[i].filename
+      }
   
       const newProduct = new product({
         productName:productname,
@@ -238,7 +242,7 @@ const userLoad =  async (req, res) => {
         size:size,
         description:description,
         price:price,
-        image:image,
+        images:images,
         quantity:quantity,
       })
       const productData = await newProduct.save();
