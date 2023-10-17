@@ -73,9 +73,9 @@ admin_route.post('/addProduct', upload.array('images'), adminController.addProdu
 
 admin_route.get('/viewProduct',auth.isLogin,adminController.loadViewProducts);
 
-admin_route.get('/editProduct',auth.isLogin,adminController.loadeditProduct);
+admin_route.get('/editProduct',auth.isLogin,adminController.loadEditProduct);
 
-admin_route.post('/editProduct',upload.single('image'),adminController.editProduct)
+admin_route.post('/editProduct',upload.array('images'),adminController.editProduct)
 
 admin_route.get('/unlistProduct',auth.isLogin,adminController.unlistProduct)
 

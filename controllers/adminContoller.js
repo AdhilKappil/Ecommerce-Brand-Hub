@@ -5,6 +5,7 @@ const category = require('../models/category');
 const product = require('../models/product');
 const bcrypt = require("bcrypt");
 const path = require('path')
+const fs = require("fs")
 
 
 // ======== pasword security =========
@@ -274,14 +275,17 @@ const loadViewProducts = async (req, res) => {
 
 
 // ======= load edit product ========
-const loadeditProduct = async (req, res) => {
+const loadEditProduct = async (req, res) => {
   try {
     const id = req.query.id;
 
     const dataproduct = await product.findById(id);
+    
+    // Fetch categories from the database
+    const categories = await category.find();
 
     if (dataproduct) {
-      res.render('editProduct', { data: dataproduct }); 
+      res.render('editProduct', { data: dataproduct, category: categories }); 
     } else {
       res.redirect('/admin/viewProduct');
     }
@@ -292,20 +296,81 @@ const loadeditProduct = async (req, res) => {
 }
 
 
+
 // ======= updating edit product =======
-const editProduct = async(req,res)=>{
-  try{
-  
-    const editData = await product.findByIdAndUpdate({ _id:req.body.id },{$set:{ productName:req.
-      body.productname, price:req.body.price , quantity:req.body.quantity, 
-      description:req.body.description,image:req.file.filename,size:req.body.size}});
+const editProduct = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const productname = req.body.productname;
+    const category = req.body.category;
+    const price = req.body.price;
+    const quantity = req.body.quantity;
+    const description = req.body.description;
+    const size = req.body.size;
 
-    res.redirect('/admin/viewProduct');
+    // Check if there are new images
+    const newImages = [];
+    if (req.files && req.files.length > 0) {
+      for (let i = 0; i < req.files.length; i++) {
+        newImages.push(req.files[i].filename);
+      }
+    }
 
-  }catch(error){
-    console.log(error.message);
+    // Find the existing product
+    const existingProduct = await product.findById(id);
+
+    if (existingProduct) {
+      // Update the product details
+      existingProduct.productName = productname; // Corrected variable name
+      existingProduct.category = category; // Corrected variable name
+      existingProduct.price = price;
+      existingProduct.quantity = quantity;
+      existingProduct.description = description;
+      existingProduct.size = size;
+
+      // Add new images, if any
+      if (newImages.length > 0) {
+        existingProduct.images = existingProduct.images.concat(newImages);
+      }
+
+      // Handle image deletion
+      if (req.body.deleteImages) {
+        console.log('Images to delete:', req.body.deleteImages); // Debugging
+        // req.body.deleteImages should be an array of image filenames to delete
+        for (const imageToDelete of req.body.deleteImages) {
+          console.log('Deleting image:', imageToDelete); // Debugging
+          // Remove the deleted image from the existing images
+          existingProduct.images = existingProduct.images.filter(
+            (image) => image !== imageToDelete
+          );
+
+          // Optionally, you can delete the image file from your storage here
+          const imagePath = path.join(__dirname, '../static/adminAssets/images/products', imageToDelete);
+          console.log('Deleting image file:', imagePath); // Debugging
+          fs.unlink(imagePath, (err) => {
+            if (err) {
+              console.error('Error deleting file:', err);
+            }
+          });
+        }
+      }
+
+      const updatedProduct = await existingProduct.save();
+
+      if (updatedProduct) {
+        res.redirect('/admin/viewProduct');
+      } else {
+        res.render('editProduct', { data: existingProduct, message: 'Failed to update the product' });
+      }
+    } else {
+      res.redirect('/admin/viewProduct');
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
   }
-}
+};
+
 
 
 // ======= list and unlist product =======
@@ -330,6 +395,7 @@ const unlistProduct = async (req, res) => {
 
 
 
+// ======== admin logout ==========
 const adminLogout = async(req,res)=>{
 
   try{
@@ -372,7 +438,7 @@ module.exports = {
     loadaddProducts,
     addProduct,
     loadViewProducts,
-    loadeditProduct,
+    loadEditProduct,
     editProduct,
     unlistProduct,
     adminLogout,
