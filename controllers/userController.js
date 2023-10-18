@@ -461,6 +461,20 @@ const loadChangePassword = async(req,res)=>{
 
 
 
+  // =========load prodyct page ==========
+const  loadProducts = async(req,res)=>{
+
+    try {
+        res.render('product'); 
+
+    } catch (error) {
+        console.log(error.message); 
+    }
+}
+
+
+
+
 
 module.exports = {
     loginLoad ,
@@ -474,6 +488,7 @@ module.exports = {
     loadForgotPassword,
     forgotVerify,
     loadChangePassword,
-    updatePassword
+    updatePassword,
+    loadProducts
     
 };

@@ -48,6 +48,8 @@ user_route.get('/changePassword', userController.loadChangePassword);
 
 user_route.post('/changePassword', userController.updatePassword); 
 
+user_route.get('/products', userController.loadProducts);
+
 
 
 
