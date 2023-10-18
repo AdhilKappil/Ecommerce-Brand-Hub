@@ -6,6 +6,16 @@
 <div class="main-panel">
   <div class="content-wrapper">
 
+    <div class="category-filter">
+      <label for="categoryFilter">Filter by Category:</label>
+      <select id="categoryFilter" name="category">
+        <option value="">All Categories</option>
+        <% categories.forEach(category => { %>
+          <option value="<%= category.categoryName %>"><%= category.name %></option>
+        <% }); %>
+      </select> 
+    </div>
+
     <div class="col-12 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
@@ -68,5 +78,26 @@
 
   </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#categoryFilter').change(function () {
+      var selectedCategory = $(this).val();
+      var products = $('.table tbody tr');
+      if (selectedCategory === '') {
+        products.show();
+      } else {
+        products.hide();
+        products.each(function () {
+          var category = $(this).find('td:eq(1)').text();
+          if (category === selectedCategory) {
+            $(this).show();
+          }
+        });
+      }
+    });
+  });
+</script>
 
 <%-include('../admin/layouts/footer.ejs') %>

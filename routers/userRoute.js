@@ -50,6 +50,7 @@ user_route.post('/changePassword', userController.updatePassword);
 
 user_route.get('/products', userController.loadProducts);
 
+user_route.get('/productDetails', userController.loadProductDetails);
 
 
 

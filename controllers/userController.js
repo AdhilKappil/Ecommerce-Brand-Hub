@@ -5,6 +5,8 @@ const nodemailer = require("nodemailer")
 const randomstring = require('randomstring')
 const path = require("path")
 const otpGenerator = require("otp-generator")
+const Product = require('../models/product');
+const Category = require('../models/category');
 
 
 
@@ -464,15 +466,35 @@ const loadChangePassword = async(req,res)=>{
   // =========load prodyct page ==========
 const  loadProducts = async(req,res)=>{
 
-    try {
-        res.render('product'); 
+    try{
 
-    } catch (error) {
-        console.log(error.message); 
-    }
+        const categoryDetails = await Category .find({})
+        const products = await Product.find({status:true})
+    
+        res.render('product',{catData:categoryDetails,product:products})
+    
+      }catch(error){
+        console.log(error);
+      }
 }
 
 
+
+// ========== loading produt details page =============
+// const loadProductDetails = async(req,res)=>{
+//     try{
+    
+//       const id = req.query.id
+//       console.log(id);
+//       const products = await Product.findById({_id:id})
+//       console.log(products);
+  
+//       res.render('productDetails',{product:products})
+  
+//     }catch(error){
+//       console.log(error);
+//     }
+//   }
 
 
 
@@ -489,6 +511,7 @@ module.exports = {
     forgotVerify,
     loadChangePassword,
     updatePassword,
-    loadProducts
+    loadProducts,
+    loadProductDetails
     
 };

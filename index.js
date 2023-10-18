@@ -11,7 +11,7 @@ app.use("/static", express.static(path.join(__dirname, "public")));
 //user Route
 const userRoute = require('./routers/userRoute');
 app.use('/',userRoute);
-
+ 
  
  
 // Admin Route
