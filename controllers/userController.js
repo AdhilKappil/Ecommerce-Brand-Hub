@@ -12,6 +12,7 @@ const Category = require('../models/category');
 
 
 
+
 //pasword security
 const securePassword = async(password)=>{
 
@@ -481,20 +482,20 @@ const  loadProducts = async(req,res)=>{
 
 
 // ========== loading produt details page =============
-// const loadProductDetails = async(req,res)=>{
-//     try{
+const loadProductDetails = async(req,res)=>{
+    try{
     
-//       const id = req.query.id
-//       console.log(id);
-//       const products = await Product.findById({_id:id})
-//       console.log(products);
+      const id = req.query.id
+      console.log(id);
+      const products = await Product.findById({_id:id})
+      console.log(products);
   
-//       res.render('productDetails',{product:products})
+      res.render('productDetails',{product:products})
   
-//     }catch(error){
-//       console.log(error);
-//     }
-//   }
+    }catch(error){
+      console.log(error);
+    }
+  }
 
 
 
