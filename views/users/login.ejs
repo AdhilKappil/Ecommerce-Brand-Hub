@@ -16,17 +16,17 @@
 <div class="text-center  center-div">
     <div class="container col-6 py-5 p-4">
         <div class="title pb-3">
-            <h1>Login</h1>
-                        <% 
+            <h1>Login</h1>         
+         </div>
+                      <% 
                         if(typeof message !== 'undefined'){
                             %>
-                            <div id="invalid-msg" class="alert alert-danger text-danger text-center">
-                                <h4><%- message %></h4>
-                            </div>
+                            
+                                <h5 id="invalid-msg" class=" text-danger text-center"><%- message %></h5>
+                           
                             <%
                         } 
                         %>
-         </div>
 
         <form action="/login" method="post" onsubmit="return validateForm()">
             <div class="form-group mt-3">

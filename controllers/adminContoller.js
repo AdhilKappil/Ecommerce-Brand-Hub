@@ -52,11 +52,11 @@ const verifyLogin = async(req,res) => {
             res.render('dashboard');
         
           }else{
-            res.render('adminLogin',{message:"Login details are incorrect" });
+            res.render('adminLogin',{message:"Email or password is incorrect" });
           }
   
         }else{
-          res.render('adminLogin',{message:"Login details are incorrect" });
+          res.render('adminLogin',{message:"Email or password is incorrect" });
         }
   
     }catch(error){

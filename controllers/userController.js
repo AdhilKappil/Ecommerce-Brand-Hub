@@ -290,7 +290,7 @@ const verifLoadHome = async (req, res) => {
                         }
                     }
                     else {
-                        res.render('login', { message: "Email and  password is incorrect" })
+                        res.render('login', { message: "Email or password is incorrect" })
                     }
     
                 } else {
@@ -299,7 +299,7 @@ const verifLoadHome = async (req, res) => {
                 }
             }
             else {
-                res.render('login', { message: "Email and  password is incorrect" })
+                res.render('login', { message: "Email or password is incorrect" })
     
             }
         }

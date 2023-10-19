@@ -28,14 +28,16 @@
               <div class="card-body px-5 py-5">
                 <h3 class="card-title text-left mb-3 text-center" >Login</h3>
 
-                <form action=""  method="post">
+                <form action=""  method="post" onsubmit="return validateForm()">
                   <div class="form-group">
                     <label>Email *</label>
-                    <input type="text" name="email" class="form-control p_input">
+                    <input type="text" name="email" class="form-control p_input" id="email">
+                    <p id="email-error" class="error-message"></p>
                   </div>
                   <div class="form-group">
                     <label>Password *</label>
-                    <input type="password" name="password" class="form-control p_input">
+                    <input type="password" name="password" class="form-control p_input" id="password">
+                    <p id="password-error" class="error-message"></p>
                   </div>
                   <br>
                   <div class="text-center">
@@ -45,19 +47,10 @@
                   <% 
                   if(typeof message !== 'undefined'){
                       %>
-                      <div id="invalid-msg" class="alert alert-danger text-danger text-center">
-                          <h4><%- message %></h4>
-                      </div>
+                      <h5 id="invalid-msg" class=" text-danger text-center"><%- message %></h5>
                       <%
                   }
                   %>
-
-                  <!-- <div class="d-flex">
-                    <button class="btn btn-facebook mr-2 col">
-                      <i class="mdi mdi-facebook"></i> Facebook </button>
-                    <button class="btn btn-google col">
-                      <i class="mdi mdi-google-plus"></i> Google plus </button>
-                  </div> -->
 
                 </form>
                 
@@ -82,6 +75,57 @@
     <script src="static/adminAssets/js/misc.js"></script>
     <script src="static/adminAssets/js/settings.js"></script>
     <script src="static/adminAssets/js/todolist.js"></script>
+
+    <script>
+
+      document.addEventListener("DOMContentLoaded", function() {
+          const form = document.querySelector("form");
+          const passwordField = document.getElementById("password");
+          const confirmPasswordField = document.getElementById("Cpassword");
+          const passwordMismatchDiv = document.getElementById("password-mismatch");
+        
+          form.addEventListener("submit", function(event) {
+            if (passwordField.value !== confirmPasswordField.value) {
+              passwordMismatchDiv.style.display = "block";
+              event.preventDefault(); // Prevent form submission
+            } else {
+              passwordMismatchDiv.style.display = "none";
+            }
+         });
+      });
+      
+      
+      function validateForm()
+           {
+              document.getElementById('email-error').textContent = '';
+              document.getElementById('password-error').textContent = '';
+      
+              const email = document.getElementById('email').value;
+              const password = document.getElementById('password').value;
+      
+              if (!email) 
+              {
+                  document.getElementById('email-error').textContent = 'Email field should not be empty';
+                  return false;
+              }
+      
+              if (!password || password.length < 6) 
+              {
+                  document.getElementById('password-error').textContent = 'Password must be at least 6 characters';
+                  return false;
+              }
+      
+              return true;
+          }
+      
+      </script>
+
+      <style>
+        .error-message{
+         color: red;
+          }
+      </style>
+
     <!-- endinject -->
   </body>
 </html>
