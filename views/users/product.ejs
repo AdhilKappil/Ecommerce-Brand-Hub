@@ -2,6 +2,7 @@
 <%-include('../users/layouts/navBar.ejs') %>
 
 <!-- Cart -->
+<br><br>
 <div class="wrap-header-cart js-panel-cart">
     <div class="s-full js-hide-cart"></div>
 
@@ -343,7 +344,7 @@
                     <div class="block2-pic hov-img0">
                         <img style="width: 300px; height: 300px;" src="/static/adminAssets/images/products/<%= product.images[0] %>" alt="IMG-PRODUCT">
 
-                        <a href="/productDetails?id=<%= product._id %>" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
+                        <a href="/productDetails?id=<%= product._id %>" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
                             Quick View
                         </a>
                     </div>
@@ -371,12 +372,31 @@
             <% }) %>
         </div>
 
-        <!-- Load more -->
-        <div class="flex-c-m flex-w w-full p-t-45">
-            <a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
-                Load More
-            </a>
-        </div>
+         <!-- Pagination -->
+         <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+              <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                <a class="page-link" href="/products?page=<%= currentPage - 1 %>" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <% for (let i = 1; i <= pages; i++) { %>
+                <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                  <a class="page-link" href="/products?page=<%= i %>"><%= i %></a>
+                </li>
+              <% } %>
+              <li class="page-item <%= currentPage === pages ? 'disabled' : '' %>">
+                <a class="page-link" href="/products?page=<%= currentPage + 1 %>" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+          <!-- Pagination End -->
+        
 
 
     </div>

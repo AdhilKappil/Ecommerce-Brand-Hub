@@ -394,11 +394,33 @@ const loadChangePassword = async(req,res)=>{
 const  loadProducts = async(req,res)=>{
 
     try{
+        const perPage = 12; // Number of products per page
+        let page = parseInt(req.query.page) || 1; // Get the page from the request query and parse it as an integer
+        const categoryDetails = await Category.find({});
+        const totalProducts = await Product.countDocuments({status:true});
+        const totalPages = Math.ceil(totalProducts / perPage);
 
-        const categoryDetails = await Category .find({})
-        const products = await Product.find({status:true})
+        if (page < 1) {
+            page = 1;
+          } else if (page > totalPages) {
+            page = totalPages;
+          }
+
+    const products = await Product
+      .find({})
+      .skip((page - 1) * perPage)
+      .limit(perPage);
+
+        
+        
     
-        res.render('product',{catData:categoryDetails,product:products})
+        res.render('product',{
+            catData:categoryDetails,
+            product:products,
+            currentPage: page,
+            pages: totalPages,
+
+        })
     
       }catch(error){
         console.log(error);
