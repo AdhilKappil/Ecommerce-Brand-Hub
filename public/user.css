@@ -22,11 +22,6 @@
   max-width: 75%;
 }
 
-#email-error{
+.error-message{
   color: red;
 }
-
-#password-error{
-  color: rgb(191,9,9);
-}
-

@@ -11,9 +11,7 @@ const Category = require('../models/category');
 
 
 
-
-
-//pasword security
+// ========== pasword security ==========
 const securePassword = async(password)=>{
 
     try {
@@ -28,7 +26,7 @@ const securePassword = async(password)=>{
 
 
 
-//user login   
+// ========= user login ===========  
 const loginLoad = async(req,res)=>{
 
     try {
@@ -39,6 +37,9 @@ const loginLoad = async(req,res)=>{
     }
 }
 
+
+
+// ======== rendering home page ========
 const loadHome = async(req,res)=>{
 
     try {
@@ -50,7 +51,8 @@ const loadHome = async(req,res)=>{
 }
 
 
-//user registraion
+
+// =======user registraion =======
 const loadRegister = async(req,res)=>{
     try {
         res.render('registration');
@@ -60,12 +62,9 @@ const loadRegister = async(req,res)=>{
     }
 }
 
-//otp genarating
-// const generateOTP = () => {
-//     return Math.floor(100000 + Math.random() * 900000).toString();
-// };
 
 
+// ========= sending otp to email =======
 const sendVerificationEmail = async (email, otp) => {
     try {
         const transporter = nodemailer.createTransport({
@@ -90,6 +89,7 @@ const sendVerificationEmail = async (email, otp) => {
         console.log(error);
     }
 }
+
 
 
 // ========== sending reset password link to the email ==========
@@ -132,7 +132,6 @@ const resetPasswordMail = async(firstName,lastName,email, token)=>{
 
 
 
-
 //user otp
 const loadOtpPage = async(req,res)=>{
     try {
@@ -142,6 +141,8 @@ const loadOtpPage = async(req,res)=>{
        console.log(error.message); 
     }
 }
+
+
 
 //ottp verification and otp storing in session
 const verifyOtp = async (req, res) => {
@@ -195,55 +196,7 @@ const verifyOtp = async (req, res) => {
     }
 }
 
-// const verifyOtp = async(req,res)=>{
 
-//     try {
-
-//            // setting otp date and time
-//            const otpCode = generateOTP();
-//            const creationTime = Date.now()/1000;
-//            const expirationTime = creationTime + 30; // OTP expires in 5 minutes
-   
-
-//            const userCheck = await User.findOne({email:req.body.email})
-//            if(userCheck)
-//            {
-//                res.send("user already exist");
-//            }else{
-
-//            const spassword = await securePassword(req.body.password);
-            // req.session.Fname = req.body.Fname;
-            // req.session.Lname = req.body.Lname;
-            // req.session.mobile = req.body.mobile;
-            // req.session.email = req.body.email;
-            
-            // if(req.body.Fname && req.body.email && req.body.Lname&& req.body.mobile){
-            //     if(req.body.password === req.body.Cpassword) {
-//                     req.session.password = spassword;
-//                     req.session.otp = {
-//                         code: otpCode,
-//                         expiry: expirationTime,
-//                     };        
-//                         // Send OTP to the user's email
-//                         sendVerificationEmail(req.session.email, req.session.otp.code);
-                       
-//                         res.render("userOtp")
-//                     } else {
-//                         res.render("registration",{message: "Password doesn't match"})
-//                     }
-//                 }
-//                 else{
-//                     res.render("registration",{message: "Please enter all details"})
-//                 }
-
-            
-//            }
-           
-//     } catch (error) {
-//         console.log(error); 
-//     }
-
-// }
 
 //======= user data inserting to database =======
 const insertUser = async (req, res)=>{
@@ -271,33 +224,6 @@ const insertUser = async (req, res)=>{
     }
 }
 
-// const insertUser = async(req,res)=>{
-
-//     try {
-//         if(req.body.otp === req.session.otp.code){
-
-//             const user = new User({
-                // firstName: req.session.Fname,
-                // lastName: req.session.Lname,
-                // email: req.session.email,
-                // mobile: req.session.mobile,
-                // password: req.session.password,
-                // isVerified:1,
-                // isBlock:0
-
-//             })    
-
-//             const result = await user.save()
-//             res.redirect("/login")
-//         }
-//         else{
-//             res.render('userOtp',{message:"invalid OTP"});
-//         }
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-    
-// }
 
 
 // ========== resend otp ==========
@@ -464,7 +390,7 @@ const loadChangePassword = async(req,res)=>{
 
 
 
-  // =========load prodyct page ==========
+  // =========load product page ==========
 const  loadProducts = async(req,res)=>{
 
     try{
@@ -486,10 +412,8 @@ const loadProductDetails = async(req,res)=>{
     try{
     
       const id = req.query.id
-      console.log(id);
+
       const products = await Product.findById({_id:id})
-      console.log(products);
-  
       res.render('productDetails',{product:products})
   
     }catch(error){
