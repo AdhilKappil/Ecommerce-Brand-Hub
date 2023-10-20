@@ -3,7 +3,7 @@ const path = require("path");
 const userController = require("../controllers/userController"); 
 const session = require('express-session'); 
 const config = require('../config/confiq');
-// const auth = require('../middleware/auth'); 
+const auth = require('../middleware/userAuth'); 
 
 
 const user_route = express();
@@ -28,7 +28,7 @@ user_route.get('/home',userController. loadHome);
 
 user_route.post('/login',userController. verifLoadHome);
 
-user_route.get('/login',userController. loginLoad);
+user_route.get('/login',auth.isLogout,userController. loginLoad);
 
 user_route.get('/register',userController.loadRegister);
 
@@ -52,7 +52,7 @@ user_route.get('/products', userController.loadProducts);
 
 user_route.get('/productDetails', userController.loadProductDetails);
 
-
+user_route.get('/logout',auth.isLogin,userController.userLogout)
 
 
 

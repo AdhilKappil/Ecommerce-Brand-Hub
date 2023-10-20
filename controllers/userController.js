@@ -284,7 +284,7 @@ const verifLoadHome = async (req, res) => {
                         else {
     
     
-                            req.session.userid = userData._id
+                            req.session.user_id= userData._id
     
                             res.redirect('/')
                         }
@@ -394,7 +394,7 @@ const loadChangePassword = async(req,res)=>{
 const  loadProducts = async(req,res)=>{
 
     try{
-        const perPage = 12; // Number of products per page
+        const perPage = 4; // Number of products per page
         let page = parseInt(req.query.page) || 1; // Get the page from the request query and parse it as an integer
         const categoryDetails = await Category.find({});
         const totalProducts = await Product.countDocuments({status:true});
@@ -406,7 +406,7 @@ const  loadProducts = async(req,res)=>{
             page = totalPages;
           }
 
-    const products = await Product
+    const products = await Product.find({status:true})
       .find({})
       .skip((page - 1) * perPage)
       .limit(perPage);
@@ -445,6 +445,20 @@ const loadProductDetails = async(req,res)=>{
 
 
 
+  // ======== user logout ==========
+const userLogout = async(req,res)=>{
+
+    try{
+        req.session.destroy()
+        res.redirect('/login')
+    }
+    catch (error)
+        {
+            console.log(error.message)
+       }
+  }
+
+
 module.exports = {
     loginLoad ,
     loadRegister,
@@ -459,6 +473,7 @@ module.exports = {
     loadChangePassword,
     updatePassword,
     loadProducts,
-    loadProductDetails
+    loadProductDetails,
+    userLogout
     
 };
