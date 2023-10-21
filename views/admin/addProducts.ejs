@@ -2,132 +2,110 @@
 <%- include('../admin/layouts/sideBar.ejs') %>
 <%- include('../admin/layouts/navBar.ejs') %>
 
+<div class="main-panel">
+  <div class="content-wrapper">
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">PRODUCTS</h2>
+          <form class="forms-sample" action="" method="post" enctype="multipart/form-data">
+            <div class="row">
 
-      <div class="main-panel">
-        <div class="content-wrapper"> 
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputName1">Product Name</label>
+                  <input type="text" class="form-control text-white" id="exampleInputName1" name="productname" placeholder="Product Name">
+                </div><br>
+                <div class="form-group">
+                  <label for="category">Category</label>
+                  <select class="form-control text-white" id="category" name="category" required>
+                    <% category.forEach(category => { %>
+                      <option value="<%= category._id %>"><%= category.name %></option>
+                    <% }); %>
+                  </select>
+                </div><br>
 
-          <div class="col-12 grid-margin stretch-card">
-            <div class="card">
-              <div class="card-body">
-                <h2 class="card-title">PRODUCTS</h2>
-                <form class="forms-sample" action="" method="post" enctype="multipart/form-data">
-                  <div class="form-row">
-                    <label for="exampleInputName1">Product Name</label>
-                    <input type="text" class="form-control" id="exampleInputName1" name="productname"
-                      placeholder="ProductName">
+                <div class="form-group">
+                  <label for="size">Size</label>
+                  <input type="text" class="form-control text-white" id="size" name="size" placeholder="Size">
+                </div><br>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="price">Price</label>
+                  <input type="text" class="form-control text-white" id="inlineFormInputName1" name="price" placeholder="Price">
+                </div><br>
+                <div class="form-group">
+                  <label for="quantity">Quantity</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control text-white" id="quantity" name="quantity" placeholder="Quantity">
                   </div>
-                  <br>
-                  
-                  <div class="form-row align-items-center">
-                    <div class="col-sm-4 my-1">
-                      <label for="exampleInputName1">Category</label>
-                      <select class="form-control" id="category" name="category" required>
-                        <% category.forEach(category=> { %>
-                          <option value="<%= category._id %>">
-                            <%= category.name %>
-                          </option>
-                          <% }); %>
-                      </select>
-                    </div>
-
-                    <div class="col-sm-4 my-1">
-                      <label for="exampleInputName1">Price</label>
-                      <input type="text" class="form-control" id="inlineFormInputName1" name="price"
-                        placeholder="Price">
-                    </div>
-                    <div class="col-sm-4 my-1">
-                      <label for="exampleInputName1">Quantity</label>
-                      <div class="input-group">
-                        <input type="text" class="form-control" id="inlineFormInputGroupUsername2" name="quantity"
-                          placeholder="Quantity">
-                      </div>
-                    </div>
-                  </div>
-                  <br>
-                  <div class="form-row">
-                    <label for="exampleInputName1">Description</label>
-                    <textarea class="form-control" id="exampleTextarea1" rows="4" name="description"></textarea>
-                  </div>
-                  <br>
-
-                      <div class="form-row">
-                      <label for="">File upload (Multiple Images)</label>
-                    </div>
-                    <div class="container">
-                      <div class="row">
-                        <div class="col-md-6 mb-0">
-                          <div class="dynamic-image-inputs">
-                            <div class="input-group">
-                              <input type="file" name="images" class="form-control" required>
-                              <div class="input-group-append">
-                                <button class="btn btn-primary add-image-input" type="button">Add Image</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                      <div class="col-md-6 mb-4">
-                        <div class="col-md-12 grid-margin">
-                          <div class="card">
-                            <div class="card-body">
-                              <div class="form-row">
-                                <label for="file">Size</label>
-                              </div>
-                              <div class="form-group">
-                                <select class="form-control" name="size" id="exampleFormControlSelect2">
-                                  <option>36</option>
-                                  <option>38</option>
-                                  <option>40</option>
-                                  <option>42</option>
-                                  <option>44</option>
-                                  <option>46</option>
-                                </select>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                  <button class="btn btn-dark">Cancel</button>
-                </form>
+                </div><br>
               </div>
             </div>
-          </div>
-
+            
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea class="form-control text-white" id="exampleTextarea1" rows="4" name="description"></textarea>
+            </div><br>
+            
+            <div class="container-fluid">
+              <label for="">File upload (Multiple Images)</label>
+              <div class="row">
+                <div class="col-md-6 mb-0">
+                  <div class="dynamic-image-inputs">
+                    <div class="input-group">
+                      <input type="file" name="images" class="form-control" required>
+                      <div class="input-group-append">
+                        <button class="btn btn-primary add-image-input" type="button">Add Image</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-md-12 text-center">
+                <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                <button class="btn btn-dark">Cancel</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
+    </div>
+  </div>
+</div>
 
-      <script>
-          document.addEventListener("DOMContentLoaded", function () {
-            const addImageButton = document.querySelector(".add-image-input");
-            const dynamicImageInputs = document.querySelector(".dynamic-image-inputs");
-        
-            addImageButton.addEventListener("click", function () {
-              const inputGroup = document.createElement("div");
-              inputGroup.className = "input-group";
-              const inputFile = document.createElement("input");
-              inputFile.type = "file";
-              inputFile.name = "images";
-              inputFile.className = "form-control";
-              inputFile.required = true;
-              const inputGroupAppend = document.createElement("div");
-              inputGroupAppend.className = "input-group-append";
-              const removeButton = document.createElement("button");
-              removeButton.className = "btn btn-danger remove-image-input";
-              removeButton.type = "button";
-              removeButton.textContent = "Remove";
-              removeButton.addEventListener("click", function () {
-                inputGroup.remove();
-              });
-              inputGroupAppend.appendChild(removeButton);
-              inputGroup.appendChild(inputFile);
-              inputGroup.appendChild(inputGroupAppend);
-              dynamicImageInputs.appendChild(inputGroup);
-            });
-          });
-        </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const addImageButton = document.querySelector(".add-image-input");
+    const dynamicImageInputs = document.querySelector(".dynamic-image-inputs");
+    addImageButton.addEventListener("click", function () {
+      const inputGroup = document.createElement("div");
+      inputGroup.className = "input-group";
+      const inputFile = document.createElement("input");
+      inputFile.type = "file";
+      inputFile.name = "images";
+      inputFile.className = "form-control";
+      inputFile.required = true;
+      const inputGroupAppend = document.createElement("div");
+      inputGroupAppend.className = "input-group-append";
+      const removeButton = document.createElement("button");
+      removeButton.className = "btn btn-danger remove-image-input";
+      removeButton.type = "button";
+      removeButton.textContent = "Remove";
+      removeButton.addEventListener("click", function () {
+        inputGroup.remove();
+      });
+      inputGroupAppend.appendChild(removeButton);
+      inputGroup.appendChild(inputFile);
+      inputGroup.appendChild(inputGroupAppend);
+      dynamicImageInputs.appendChild(inputGroup);
+    });
+  });
+</script>
+
 
 <%-include('../admin/layouts/footer.ejs') %>

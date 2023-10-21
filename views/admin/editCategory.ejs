@@ -20,17 +20,25 @@
     
               <div class="form-group">
                 <label for="exampleInputName1">Category Name</label>
-                <input type="text" class="form-control" id="exampleInputName1" name="categoryname" placeholder=" Category Name" value="<%= data.name %>">
-              </div>      
+                <input type="text" class="form-control  text-white" id="exampleInputName1" name="categoryname" placeholder=" Category Name" value="<%= data.name %>">
+              </div> 
+              <br>     
               <div class="form-group">
                 <label for="exampleTextarea1">Category Description</label>
-                <textarea class="form-control" id="exampleTextarea1" rows="4" name="categorydes" placeholder="Category Description"><%= data.description %></textarea>
+                <textarea class="form-control  text-white" id="exampleTextarea1" rows="4" name="categorydes" placeholder="Category Description"><%= data.description %></textarea>
               </div>
+              <br>
               <div class="input-container">
                 <input type="hidden" name="id" value="<%= data._id %>">
               </div>
-              <button type="submit" class="btn btn-primary mr-2">Update</button>
-              <button class="btn btn-dark" value="Update categories">Cancel</button>
+
+              <div class="row mt-5">
+                <div class="col-md-12 text-center">
+                  <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                  <button class="btn btn-dark">Cancel</button>
+                </div>
+              </div>
+
             </form>
           </div>
         </div>

@@ -217,7 +217,7 @@ const insertUser = async (req, res)=>{
             res.redirect("/login")
         }
         else{
-            res.render('userOtp',{message:"invalid OTP"});
+            res.render('userOtp',{message:"invalid OTP or OTP expired"});
         }
     } catch (error) {
         console.log(error.message);
@@ -245,7 +245,7 @@ const resendOtp = async (req,res)=>{
                 const newExpiry = currentTime + 45;
                 req.session.otp.expiry = newExpiry;
                 sendVerificationEmail(req.session.email, req.session.otp.code);
-                res.render("userOtp",{message:"OTP has been send"});
+                res.render("userOtp",{message:"OTP has been send to your emaiil"});
             }else{
                 res.render("userOtp",{message: "You can request a new otp after old otp expires"});
             }
@@ -284,7 +284,7 @@ const verifLoadHome = async (req, res) => {
                         else {
     
     
-                            req.session.user_id= userData._id
+                            req.session.user_id = userData._id
     
                             res.redirect('/')
                         }
