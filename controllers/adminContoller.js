@@ -131,7 +131,7 @@ const unlistCategory = async (req, res) => {
 
     const categories = await category.find();
     
-    res.render('viewCategories', { category: categories });
+    res.redirect('/admin/viewCategories');
   } catch (error) {
     console.log(error);
   }
@@ -304,6 +304,7 @@ const editProduct = async (req, res) => {
   try {
     const id = req.body.id;
     const productname = req.body.productname;
+    const brand = req.body.brand;
     const category = req.body.category;
     const price = req.body.price;
     const quantity = req.body.quantity;
@@ -324,6 +325,7 @@ const editProduct = async (req, res) => {
     if (existingProduct) {
       // Update the product details
       existingProduct.productName = productname; // Corrected variable name
+      existingProduct.brand = brand;
       existingProduct.category = category; // Corrected variable name
       existingProduct.price = price;
       existingProduct.quantity = quantity;
@@ -389,7 +391,7 @@ const unlistProduct = async (req, res) => {
     const products = await product.find().populate("category"); // Populate the category field
     const categories = await category.find(); // Assuming you want to retrieve all categories from the database
 
-    res.render('viewProducts', { products: products, categories: categories });
+    res.redirect('/admin/viewProduct');
   } catch (error) {
     console.log(error);
   }

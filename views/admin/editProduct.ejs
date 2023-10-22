@@ -1,6 +1,6 @@
-<%-include('../admin/layouts/header.ejs') %>
-<%-include('../admin/layouts/sideBar.ejs') %>
-<%-include('../admin/layouts/navBar.ejs') %>
+<%- include('../admin/layouts/header.ejs') %>
+<%- include('../admin/layouts/sideBar.ejs') %>
+<%- include('../admin/layouts/navBar.ejs') %>
 
 <div class="main-panel">
   <div class="content-wrapper">
@@ -13,8 +13,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="exampleInputName1">Product Name</label>
-                  <input type="text" class="form-control" id="exampleInputName1" name="productname"
-                    placeholder="Product Name" value="<%= data.productName %>" />
+                  <input type="text" class="form-control text-white" id="exampleInputName1" name="productname" placeholder="Product Name" value="<%= data.productName %>" />
                 </div>
                 <br>
                 <div class="form-group">
@@ -28,35 +27,35 @@
                 <br>
                 <div class="form-group">
                   <label for="price">Price</label>
-                  <input type="text" class="form-control" id="inlineFormInputName1" name="price" placeholder="Price"
-                    value="<%= data.price %>" />
+                  <input type="text" class="form-control text-white" id="inlineFormInputName1" name="price" placeholder="Price" value="<%= data.price %>" />
                 </div>
                 <br>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
+                  <label for="brand">Brand</label>
+                  <input type="text" class="form-control text-white" id="brand" name="brand" placeholder="Brand" value="<%= data.brand %>" />
+                </div>
+                <br>
+                <div class="form-group">
                   <label for="size">Size</label>
-                  <input type="text" class="form-control" id="size" name="size" placeholder="Size"
-                    value="<%= data.size %>" />
+                  <input type="text" class="form-control text-white" id="size" name="size" placeholder="Size" value="<%= data.size %>" />
                 </div>
                 <br>
                 <div class="form-group">
                   <label for="quantity">Quantity</label>
                   <div class="input-group">
-                    <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Quantity"
-                      value="<%= data.quantity %>" />
+                    <input type="text" class="form-control text-white" id="quantity" name="quantity" placeholder="Quantity" value="<%= data.quantity %>" />
                   </div>
                 </div>
-                <br>
               </div>
             </div>
             <div class="form-group">
               <label for="description">Description</label>
-              <textarea class="form-control text-white" id="exampleTextarea1" rows="4" name="description">
-                <%= data.description %></textarea>
+              <textarea class="form-control text-white" id="exampleTextarea1" rows="4" name="description"><%= data.description %></textarea>
             </div>
             <br>
-            
+
             <div class="container-fluid">
               <label for="">File upload (Multiple Images)</label>
               <div class="row">
@@ -65,9 +64,7 @@
                     <div class="input-group">
                       <input type="file" name="images" class="form-control" />
                       <div class="input-group-append">
-                        <button class="btn btn-primary add-image-input" type="button">
-                          Add Image
-                        </button>
+                        <button class="btn btn-primary add-image-input" type="button">Add Image</button>
                       </div>
                     </div>
                   </div>
@@ -75,13 +72,12 @@
               </div>
             </div>
             <br><br>
-            <div class="form-group mt-4 container ">
+            <div class="form-group mt-4 container">
               <label for="deleteImages">Delete Existing Images</label>
               <div class="existing-images-container">
                 <% for (let i=0; i < data.images.length; i++) { %>
                 <div class="existing-image">
-                  <img src="/static/adminAssets/images/products/<%= data.images[i] %>" alt="Existing Image"
-                    class="product-image" />
+                  <img src="/static/adminAssets/images/products/<%= data.images[i] %>" alt="Existing Image" class="product-image" />
                   <input type="checkbox" name="deleteImages" value="<%= data.images[i] %>" />
                   Delete
                 </div>
@@ -91,14 +87,14 @@
             <div class="input-container">
               <input type="hidden" name="id" value="<%= data._id %>" />
             </div>
-            
+
             <div class="row mt-5">
               <div class="col-md-12 text-center">
                 <button type="submit" class="btn btn-primary mr-2">Submit</button>
                 <button class="btn btn-dark">Cancel</button>
               </div>
             </div>
-            
+
           </form>
         </div>
       </div>
@@ -123,14 +119,14 @@
   }
 
   .existing-images-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between; /* Adjust the gap for spacing */
-}
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* Adjust the gap for spacing */
+  }
 
-.existing-images-container .existing-image {
-  flex: 0 0 calc(25% - 10px); /* Set the width to 25% */
-}
+  .existing-images-container .existing-image {
+    flex: 0 0 calc(25% - 10px); /* Set the width to 25% */
+  }
 </style>
 
 <script>
@@ -163,4 +159,4 @@
   });
 </script>
 
-<%-include('../admin/layouts/footer.ejs') %>
+<%- include('../admin/layouts/footer.ejs') %>
