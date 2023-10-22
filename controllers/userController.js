@@ -460,47 +460,50 @@ const userLogout = async(req,res)=>{
 
 
 
-// // ========== serch product =========== 
-// const searchProducts = async (req, res) => {
-//     try {
-//       const keyword = req.query.keyword; // Get the search keyword from the query string
-//       const page = req.query.page || 1; // Get the current page from query parameters
-//       const pageSize = 4; // Set your desired page size
+// ========== serch product =========== 
+const searchProducts = async (req, res) => {
+    try {
+      const keyword = req.query.keyword; // Get the search keyword from the query string
+      const page = req.query.page || 1; // Get the current page from query parameters
+      const pageSize = 4; // Set your desired page size
   
-//       // Perform a case-insensitive search on product names and descriptions
-//       const products = await Product.find({
-//         $or: [
-//           { productName: { $regex: keyword, $options: 'i' } },
-//           { description: { $regex: keyword, $options: 'i' } },
-//         ],
-//       })
-//         .skip((page - 1) * pageSize)
-//         .limit(pageSize)
-//         .populate('category'); // Populate the category field
+      // Perform a case-insensitive search on product names and descriptions
+      const products = await Product.find({
+        $or: [
+          { productName: { $regex: keyword, $options: 'i' } },
+          { description: { $regex: keyword, $options: 'i' } },
+          { brand: { $regex: keyword, $options: 'i' } },
+        ],
+      })
+        .skip((page - 1) * pageSize)
+        .limit(pageSize)
+        .populate('category'); // Populate the category field
   
-//       const totalProducts = await Product.countDocuments({
-//         $or: [
-//           { productName: { $regex: keyword, $options: 'i' } },
-//           { description: { $regex: keyword, $options: 'i' } },
-//         ],
-//       });
-//       const totalPages = Math.ceil(totalProducts / pageSize);
+      const totalProducts = await Product.countDocuments({
+        $or: [
+          { productName: { $regex: keyword, $options: 'i' } },
+          { description: { $regex: keyword, $options: 'i' } },
+          { brand: { $regex: keyword, $options: 'i' } },
+        ],
+      });
+      const totalPages = Math.ceil(totalProducts / pageSize);
   
-//       // Fetch categories for the sidebar
-//       const categories = await Category.find();
+      // Fetch categories for the sidebar
+      const categories = await Category.find();
   
-//       res.render('product', {
-//         product: products,
-//         category: categories,
-//         currentPage: page,
-//         totalPages: totalPages,
-//       });
-  
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).send('Internal Server Error');
-//     }
-//  };
+      res.render('product', {
+    product: products,
+    category: categories,
+    currentPage: page,
+    totalPages: totalPages,
+    pages: Array.from({ length: totalPages }, (_, i) => i + 1),
+});
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    }
+ };
 
 
 module.exports = {
@@ -519,6 +522,6 @@ module.exports = {
     loadProducts,
     loadProductDetails,
     userLogout,
-    // searchProducts
+    searchProducts
     
 };
