@@ -20,6 +20,14 @@
                 <textarea class="form-control text-light" name="category_description" id="exampleInputDescription"
                   placeholder="Description" required style="height: 100px;"></textarea><br>
 
+                  <% 
+                  if(typeof message !== 'undefined'){
+                      %>
+                      <h5 id="invalid-msg" class=" text-danger text-center"><%- message %></h5>
+                      <%
+                  }
+                  %>
+
                 <div class="text-center mt-3"> 
                   <button type="submit" class="btn btn-lg btn-inverse-primary mr-2">Add Category</button>
                 </div>

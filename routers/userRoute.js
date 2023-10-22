@@ -54,6 +54,9 @@ user_route.get('/productDetails', userController.loadProductDetails);
 
 user_route.get('/logout',auth.isLogin,userController.userLogout)
 
+// user_route.get('/searchProducts', userController.searchProducts);
+
+
 
 
 

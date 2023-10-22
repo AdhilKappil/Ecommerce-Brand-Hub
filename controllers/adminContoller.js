@@ -89,18 +89,40 @@ const loadAddCategories = async(req,res)=>{
 }
 
 //======== insert category ===========
-const insertCategory = async (req,res)=>{
+// const insertCategory = async (req,res)=>{
+//   try {
+
+//     const data = await new category({
+//       name:req.body.category_name,
+//       description:req.body.category_description,
+//       isListed:true
+//     })
+    
+//     const result = await data.save()
+//     res.redirect('/admin/addCategories')
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+const insertCategory= async (req,res)=>{
   try {
+    const categoryname=req.body.category_name
+      const already=await category.findOne({name:{$regex:categoryname,'$options':'i'}})
+      if(already){
+          res.render('addCategories',{message : "Category Already Created"})
+      }else{
 
     const data = await new category({
       name:req.body.category_name,
       description:req.body.category_description,
       isListed:true
     })
-
+    
     const result = await data.save()
+    
     res.redirect('/admin/addCategories')
-  } catch (error) {
+  }} catch (error) {
     console.log(error);
   }
 }
