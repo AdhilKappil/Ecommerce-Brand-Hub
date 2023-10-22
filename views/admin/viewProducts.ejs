@@ -1,4 +1,3 @@
-
 <%-include('../admin/layouts/header.ejs') %>
 <%-include('../admin/layouts/sideBar.ejs') %>
 <%-include('../admin/layouts/navBar.ejs') %>
@@ -11,32 +10,32 @@
           <h2 class="card-title">PRODUCTS</h2>
 
           <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Product Name</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th>Quantity</th>
-                  <th>Description</th>
-                  <th>Image</th>
-                  <th>Size</th>
-                  <th>Edit</th>
-                  <th>Action</th>
+            <table class="table ">
+              <thead class=" text-white">
+                <tr class=" text-white">
+                  <th class=" text-white">Product Name</th>
+                  <th class=" text-white">Brand</th> <!-- New "Brand" column -->
+                  <th class=" text-white">Category</th>
+                  <th class=" text-white">Price</th>
+                  <th class=" text-white">Quantity</th>
+                  <th class=" text-white">Description</th>
+                  <th class=" text-white">Image</th>
+                  <th class=" text-white">Size</th>
+                  <th class=" text-white">Edit</th>
+                  <th class=" text-white">Action</th>
                 </tr>
               </thead>
               <tbody>
                 <% products.forEach(product => { %>
                   <tr>
                     <td><%= product.productName %></td>
+                    <td><%= product.brand %></td> <!-- Display the "Brand" field -->
                     <td><%= product.category.name %></td>
                     <td><%= product.price %></td>
                     <td><%= product.quantity %></td>
                     <td class="description-column"><%= product.description %></td>
                     <td>
-                      <% product.images.forEach(image => { %>
-                        <img src="/static/adminAssets/images/products/<%= image %>" alt="<%= product.productName %>">
-                      <% }); %>
+                      <img src="/static/adminAssets/images/products/<%= product.images[0] %>" alt="<%= product.productName %>"> <!-- Display the first image -->
                     </td>
                     <td><%= product.size %></td>
                     <td>
@@ -72,23 +71,26 @@
   </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
 <style>
   .description-column {
-  max-width: 200px; /* Adjust the maximum width as needed */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Add media query for smaller screens to adjust the description column width */
-@media (max-width: 768px) {
-  .description-column {
-    max-width: 100px; /* Adjust as needed for smaller screens */
+    max-width: 250px; /* Adjust the maximum width as needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-}
+
+  /* Add media query for smaller screens to adjust the description column width */
+  @media (max-width: 768px) {
+    .description-column {
+      max-width: 150px; /* Adjust as needed for smaller screens */
+    }
+  }
+
+  /* Increase the height of all table cells (th and td) */
+  .table th,
+  .table td {
+    padding: 20px 15px; /* Adjust the padding to increase cell height */
+  }
 </style>
 
 <%-include('../admin/layouts/footer.ejs') %>

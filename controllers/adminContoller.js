@@ -226,6 +226,7 @@ const userLoad =  async (req, res) => {
     try{
 
       const productname = req.body.productname;
+      const brand = req.body.brand;
       const category = req.body.category;
       const size = req.body.size
       const description = req.body.description;
@@ -239,6 +240,7 @@ const userLoad =  async (req, res) => {
   
       const newProduct = new product({
         productName:productname,
+        brand:brand,
         category:category,
         size:size,
         description:description,

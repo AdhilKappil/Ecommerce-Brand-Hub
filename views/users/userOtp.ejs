@@ -1,52 +1,82 @@
-
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <title>Brand Hub</title>
     <link rel="stylesheet" href="/static/user.css">
 </head>
+
 <body>
 
-<div class="full-page">
-<div class="container">
-<div class="text-center  center-div">
-    <div class="container col-6 py-5 p-4">
-        <div class="title pb-3">
-            <h1>OTP Verification</h1>
-                        <% 
-                        if(typeof message !== 'undefined'){
-                            %>
+    <div class="full-page">
+        <div class="container">
+            <div class="text-center  center-div">
+                <div class="container col-6 py-5 p-4">
+                    <div class="title pb-3">
+                        <h1>OTP Verification</h1>
+                        <% if(typeof message !=='undefined' ){ %>
                             <h5 id="invalid-msg" class=" text-danger text-center"><%- message %></h5>
-                            <%
-                        }
-                        %>
-         </div>
+                            <% } %>
+                    </div>
 
-        <form action="/userOtp" method="post">
-            <div class="form-group mt-3">
-                <input type="text" class="form-control" name="otp" placeholder="Enter OTP" id="">
+                    <form action="/userOtp" method="post">
+                        <div class="form-group mt-3">
+                            <input type="text" class="form-control" name="otp" placeholder="Enter OTP" id="">
+                        </div>
+                        <br>
+                        <input type="submit" class="btn btn-primary rounded-pill" value="Verify & Proceed">
+                        <p class="text-danger mt-3">Time left: <span id="timer">45</span></p>
+                        <button class="btn btn-dander" id="resendButton" onclick="resendOTP()"><a
+                                href="/resendOtp">Resend OTP</a></button>
+
+                    </form>
+                    <br>
+
+                </div>
             </div>
-            <% if (typeof otp !== 'undefined' && typeof timeRemaining !== 'undefined') { %>
-                <p>Time remaining: <span id="otp-timer"><%- timeRemaining %></span> seconds</p>
-              <% } %>
-              <a href="/resendOtp">Resend OTP</a>
-            <br><br>
-                <input type="submit" class="btn btn-primary rounded-pill" value="Verify & Proceed">
-
-        </form>
-        <br>
-       
-
+        </div>
     </div>
-</div>
-</div>
-</div>
 
-<script src="/static/script.js"></script>
+    <script>
+        let countdown = 45; // Initial countdown value in seconds
+        let timerElement = document.getElementById('timer');
+        let resendButton = document.getElementById('resendButton');
+        let countdownInterval;
+
+        // Function to update the countdown timer
+        function updateTimer() {
+            timerElement.textContent = countdown + ' seconds';
+            countdown--;
+            resendButton.disabled = true;
+            if (countdown < 0) {
+                clearInterval(countdownInterval);
+                timerElement.textContent = '0 seconds';
+                resendButton.disabled = false;
+            }
+        }
+
+        // Function to resend OTP
+        function resendOTP() {
+            // Simulate OTP resend logic here
+            // For example, you can make an API call to send a new OTP
+
+            // Reset the timer
+            countdown = 45;
+            timerElement.textContent = countdown + ' seconds';
+            resendButton.disabled = true;
+
+            // Start the countdown again
+            countdownInterval = setInterval(updateTimer, 1000);
+        }
+
+        // Initial countdown start
+        countdownInterval = setInterval(updateTimer, 1000);
+    </script>
 
 </body>
+
 </html>

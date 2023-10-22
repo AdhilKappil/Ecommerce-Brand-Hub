@@ -10,12 +10,21 @@
           <h2 class="card-title">PRODUCTS</h2>
           <form class="forms-sample" action="" method="post" enctype="multipart/form-data">
             <div class="row">
-
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="exampleInputName1">Product Name</label>
                   <input type="text" class="form-control text-white" id="exampleInputName1" name="productname" placeholder="Product Name">
                 </div><br>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="brand">Brand</label>
+                  <input type="text" class="form-control text-white" id="brand" name="brand" placeholder="Brand">
+                </div><br>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
                 <div class="form-group">
                   <label for="category">Category</label>
                   <select class="form-control text-white" id="category" name="category" required>
@@ -24,13 +33,11 @@
                     <% }); %>
                   </select>
                 </div><br>
-
                 <div class="form-group">
                   <label for="size">Size</label>
                   <input type="text" class="form-control text-white" id="size" name="size" placeholder="Size">
                 </div><br>
               </div>
-
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="price">Price</label>
@@ -79,6 +86,7 @@
 </div>
 
 <script>
+  // =========== image deleting ==============
   document.addEventListener("DOMContentLoaded", function () {
     const addImageButton = document.querySelector(".add-image-input");
     const dynamicImageInputs = document.querySelector(".dynamic-image-inputs");
@@ -107,5 +115,4 @@
   });
 </script>
 
-
-<%-include('../admin/layouts/footer.ejs') %>
+<%- include('../admin/layouts/footer.ejs') %>

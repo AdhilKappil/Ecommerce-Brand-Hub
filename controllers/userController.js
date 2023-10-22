@@ -179,7 +179,7 @@ const verifyOtp = async (req, res) => {
                     };        
                         // Send OTP to the user's email
                         sendVerificationEmail(req.session.email, req.session.otp.code);
-                        res.render("userOtp")
+                        res.render("userOtp",{message: "OTP has been send to your emaiil"})
                     } else {
                         res.render("registration",{message: "Password doesn't match"})
                     }
