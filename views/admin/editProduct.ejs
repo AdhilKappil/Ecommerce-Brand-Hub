@@ -91,7 +91,7 @@
             <div class="row mt-5">
               <div class="col-md-12 text-center">
                 <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                <button class="btn btn-dark">Cancel</button>
+                <button class="btn btn-dark" id="cancelButton" type="button">Cancel</button>
               </div>
             </div>
 
@@ -157,6 +157,18 @@
       dynamicImageInputs.appendChild(inputGroup);
     });
   });
+
+
+  // ========= cancel button redirecting ==========
+  document.addEventListener("DOMContentLoaded", function () {
+  const cancelButton = document.getElementById("cancelButton");
+  cancelButton.addEventListener("click", function () {
+    window.location.href = "/admin/viewProduct"; // Redirect to the desired route
+  });
+});
+
+
+
 </script>
 
 <%- include('../admin/layouts/footer.ejs') %>

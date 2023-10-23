@@ -8,18 +8,20 @@
       <div class="card">
         <div class="card-body">
           <h2 class="card-title">PRODUCTS</h2>
-          <form class="forms-sample" action="" method="post" enctype="multipart/form-data">
+            <form class="forms-sample" action="" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="exampleInputName1">Product Name</label>
                   <input type="text" class="form-control text-white" id="exampleInputName1" name="productname" placeholder="Product Name">
+                  <span id="productNameError" class="text-danger"></span>
                 </div><br>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="brand">Brand</label>
                   <input type="text" class="form-control text-white" id="brand" name="brand" placeholder="Brand">
+                  <span id="brandError" class="text-danger"></span>
                 </div><br>
               </div>
             </div>
@@ -36,18 +38,21 @@
                 <div class="form-group">
                   <label for="size">Size</label>
                   <input type="text" class="form-control text-white" id="size" name="size" placeholder="Size">
+                  <span id="sizeError" class="text-danger"></span>
                 </div><br>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="price">Price</label>
                   <input type="text" class="form-control text-white" id="inlineFormInputName1" name="price" placeholder="Price">
+                  <span id="priceError" class="text-danger"></span>
                 </div><br>
                 <div class="form-group">
                   <label for="quantity">Quantity</label>
                   <div class="input-group">
                     <input type="text" class="form-control text-white" id="quantity" name="quantity" placeholder="Quantity">
                   </div>
+                  <span id="quantityError" class="text-danger"></span>
                 </div><br>
               </div>
             </div>
@@ -55,6 +60,7 @@
             <div class="form-group">
               <label for="description">Description</label>
               <textarea class="form-control text-white" id="exampleTextarea1" rows="4" name="description"></textarea>
+              <span id="descriptionError" class="text-danger"></span>
             </div><br>
             
             <div class="container-fluid">
@@ -63,7 +69,7 @@
                 <div class="col-md-6 mb-0">
                   <div class="dynamic-image-inputs">
                     <div class="input-group">
-                      <input type="file" name="images" class="form-control" required>
+                      <input type="file" name="images" class="form-control" id="imageInput" multiple>
                       <div class="input-group-append">
                         <button class="btn btn-primary add-image-input" type="button">Add Image</button>
                       </div>
@@ -71,14 +77,18 @@
                   </div>
                 </div>
               </div>
+              <span id="imageError" class="text-danger"></span>
             </div>
-            <div class="row mt-5">
-              <div class="col-md-12 text-center">
-                <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                <button class="btn btn-dark">Cancel</button>
-              </div>
+            
+          
+          <div class="row mt-5">
+            <div class="col-md-12 text-center">
+              <button type="submit" class="btn btn-primary mr-2">Submit</button>
+              <button class="btn btn-dark" id="cancelButton">Cancel</button>
             </div>
-          </form>
+          </div>
+        </form>
+          
         </div>
       </div>
     </div>
@@ -113,6 +123,82 @@
       dynamicImageInputs.appendChild(inputGroup);
     });
   });
+
+  
+  // ========== validation ========
+  function validateForm() {
+  const productName = document.getElementById("exampleInputName1").value;
+  const brand = document.getElementById("brand").value;
+  const category = document.getElementById("category").value;
+  const size = document.getElementById("size").value;
+  const price = parseFloat(document.getElementById("inlineFormInputName1").value);
+  const quantity = parseInt(document.getElementById("quantity").value);
+  const description = document.getElementById("exampleTextarea1").value;
+
+  const imageInput = document.getElementById("imageInput");
+  const selectedFiles = imageInput.files;
+
+  if (productName === "") {
+    document.getElementById("productNameError").textContent = "Product Name is required.";
+    return false;
+  } else {
+    document.getElementById("productNameError").textContent = "";
+  }
+
+  if (brand === "") {
+    document.getElementById("brandError").textContent = "Brand is required.";
+    return false;
+  } else {
+    document.getElementById("brandError").textContent = "";
+  }
+
+  if (size === "") {
+    document.getElementById("sizeError").textContent = "Size is required.";
+    return false;
+  } else {
+    document.getElementById("sizeError").textContent = "";
+  }
+
+  if (price === "" || price <= 0 || isNaN(price)) {
+    document.getElementById("priceError").textContent = "Price must be a valid number greater than 0.";
+    return false;
+  } else {
+    document.getElementById("priceError").textContent = "";
+  }
+
+  if (quantity === "" || quantity < 0 || isNaN(quantity)) {
+    document.getElementById("quantityError").textContent = "Quantity must be a valid number of at least 0.";
+    return false;
+  } else {
+    document.getElementById("quantityError").textContent = "";
+  }
+
+  if (description === "") {
+    document.getElementById("descriptionError").textContent = "Description is required.";
+    return false;
+  } else {
+    document.getElementById("descriptionError").textContent = "";
+  }
+
+  if (selectedFiles.length === 0) {
+    document.getElementById("imageError").textContent = "Please select at least one image.";
+    return false;
+  } else {
+    document.getElementById("imageError").textContent = "";
+  }
+
+  return true;
+}
+
+
+// ========= cancel button redirecting ==========
+document.addEventListener("DOMContentLoaded", function () {
+  const cancelButton = document.getElementById("cancelButton");
+  cancelButton.addEventListener("click", function () {
+    window.location.href = "/admin/viewProduct"; // Navigate to the desired route
+  });
+});
+
 </script>
 
 <%- include('../admin/layouts/footer.ejs') %>

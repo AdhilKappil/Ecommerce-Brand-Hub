@@ -471,7 +471,6 @@ const searchProducts = async (req, res) => {
       const products = await Product.find({
         $or: [
           { productName: { $regex: keyword, $options: 'i' } },
-          { description: { $regex: keyword, $options: 'i' } },
           { brand: { $regex: keyword, $options: 'i' } },
         ],
       })
@@ -482,7 +481,6 @@ const searchProducts = async (req, res) => {
       const totalProducts = await Product.countDocuments({
         $or: [
           { productName: { $regex: keyword, $options: 'i' } },
-          { description: { $regex: keyword, $options: 'i' } },
           { brand: { $regex: keyword, $options: 'i' } },
         ],
       });
