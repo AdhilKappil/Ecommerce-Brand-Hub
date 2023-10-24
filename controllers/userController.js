@@ -436,7 +436,7 @@ const loadProductDetails = async(req,res)=>{
       const id = req.query.id
 
       const products = await Product.findById({_id:id})
-      res.render('productDetails',{product:products})
+      res.render('productDetails',{product:products,user:req.session.user_id})
   
     }catch(error){
       console.log(error);
@@ -504,6 +504,22 @@ const searchProducts = async (req, res) => {
  };
 
 
+
+ // ========== rendering cart page ===========
+ const loadCart = async(req,res)=>{
+
+    try{
+        
+        res.render('Cart')
+    }
+    catch (error)
+        {
+            console.log(error.message)
+       }
+  }
+
+
+
 module.exports = {
     loginLoad ,
     loadRegister,
@@ -520,6 +536,7 @@ module.exports = {
     loadProducts,
     loadProductDetails,
     userLogout,
-    searchProducts
+    searchProducts,
+    loadCart 
     
 };

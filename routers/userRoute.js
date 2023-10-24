@@ -1,6 +1,7 @@
 const express = require('express'); 
 const path = require("path");
 const userController = require("../controllers/userController"); 
+const cartController = require("../controllers/cartController"); 
 const session = require('express-session'); 
 const config = require('../config/confiq');
 const auth = require('../middleware/userAuth'); 
@@ -56,7 +57,9 @@ user_route.get('/logout',auth.isLogin,userController.userLogout)
 
 user_route.get('/searchProduct', userController.searchProducts);
 
+user_route.get('/viewCart', userController.loadCart);
 
+user_route.post('/addToCart',cartController.addToCart);
 
 
 
