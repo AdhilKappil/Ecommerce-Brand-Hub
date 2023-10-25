@@ -3,9 +3,8 @@
 
 
 	<!-- breadcrumb -->
-    <br><br><br>
 	<div class="container">
-		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg m-t-30">
+		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg m-t-90">
 			<a href="/home" class="stext-109 cl8 hov-cl1 trans-04">
 				Home
 				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
@@ -26,76 +25,54 @@
 					<div class="m-l-25 m-r--38 m-lr-0-xl">
 						<div class="wrap-table-shopping-cart">
 							<table class="table-shopping-cart">
-								<% if(total!=0){%>
+							  <% if (total != 0) { %>
 								<tr class="table_head">
-									<th class="column-1">Product</th>
-									<th class="column-2"></th>
-									<th class="column-3">Price</th>
-									<th class="column-4">Quantity</th>
-									<th class="column-5">Total</th>
+								  <th class="column-1">Product</th>
+								  <th class="column-2"></th>
+								  <th class="column-3">Price</th>
+								  <th class="column-4">Quantity</th>
+								  <th class="column-5">Total</th>
+								  <th class="column-6">Actions</th>
 								</tr>
-
-								<% for(i=0;i<cartItems.products.length;i++){ %>
-								<tr class="table_row">
+						  
+								<% for (i = 0; i < cartItems.products.length; i++) { %>
+								  <tr class="table_row">
 									<td class="column-1">
-										<div class="how-itemcart1">
-											<img src="/static/adminAssets/images/products/<%= cartItems.products[i].productId.images[0]%>" alt="IMG">
-
-										</div>
+									  <div class="how-itemcart1">
+										<img src="/static/adminAssets/images/products/<%= cartItems.products[i].productId.images[0] %>" alt="IMG">
+									  </div>
 									</td>
 									<td class="column-2"><%= cartItems.products[i].productId.productName %></td>
 									<td class="column-3">₹ <%= cartItems.products[i].productId.price %></td>
 									<td class="column-4">
-										<div class="wrap-num-product flex-w m-l-auto m-r-0">
-											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-minus"></i>
-											</div>
-
-											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product1" value="1">
-
-											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-plus"></i>
-											</div>
+									  <div class="wrap-num-product flex-w m-l-auto m-r-0">
+										<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+										  <i class="fs-16 zmdi zmdi-minus"></i>
 										</div>
-									</td>
-									<td class="column-5">₹ <%- (cartItems.products[i].productId.price)*(cartItems.products[i].quantity) %></td>
-								</tr>
-								<%}%>
-
-								<!-- <tr class="table_row">
-									<td class="column-1">
-										<div class="how-itemcart1">
-											<img src="/static/userAssets/images/item-cart-05.jpg" alt="IMG">
+										<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product1" value="1">
+										<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+										  <i class="fs-16 zmdi zmdi-plus"></i>
 										</div>
+									  </div>
 									</td>
-									<td class="column-2">Lightweight Jacket</td>
-									<td class="column-3">$ 16.00</td>
-									<td class="column-4">
-										<div class="wrap-num-product flex-w m-l-auto m-r-0">
-											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-minus"></i>
-											</div>
-
-											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product2" value="1">
-
-											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-plus"></i>
-											</div>
-										</div>
+									<td class="column-5">₹ <%- (cartItems.products[i].productId.price) * (cartItems.products[i].quantity) %></td>
+									<td class="column-6">
+										<button type="button" class="btn btn-danger" onclick="removeCartItem('<%= user._id %>',
+										'<%= cartItems.products[i].productId._id %>','<%= cartItems.products[i].quantity %>')">Remove</button>
 									</td>
-									<td class="column-5">$ 16.00</td>
-								</tr> -->
-								
-								<% } else { %>
-									<tr>
-										<td class="price-col w-100 text-center text-light" colspan="5">
-											<h2 class="icon-shopping-cart text-light"></h2>Your Cart is Empty
-										</td>
-									</tr>
+								  </tr>
 								<% } %>
-									
+						  
+							  <% } else { %>
+								<tr>
+								  <td class="price-col w-100 text-center text-light" colspan="6">
+									<h2 class="icon-shopping-cart text-light"></h2>Your Cart is Empty
+								  </td>
+								</tr>
+							  <% } %>
 							</table>
-						</div>
+						  </div>
+						  
 
 						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
 							<div class="flex-w flex-m m-r-20 m-tb-5">

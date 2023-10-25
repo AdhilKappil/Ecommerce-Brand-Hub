@@ -176,8 +176,47 @@ const addToCart = async (req, res) => {
 
 
 
+
+// ========= increase the product stock ==========
+const increaseStock = async(productId, quantity)=>{
+  try {
+    const product = await Product.findById(productId);
+    if (!product) {
+      throw new Error('Product not found');
+    }
+    product.stock += quantity;
+    const result = await product.save();
+    return result;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+// =========== removing cart items ==========
+const removeCart= async (req, res) => {
+  try {
+    const { user, product, qty } = req.body;
+    const cart = await Cart.findOne({ user: user });
+    const qtyFind = cart.products.find(item => item.productId.toString() == product.toString())
+    await increaseStock(product,qtyFind.quantity)
+
+    cart.products = cart.products.filter(
+      (cartProduct) => cartProduct.productId.toString() !== product.toString()
+    );
+    const remove = await cart.save();
+    console.log(remove);
+    console.log("Porduct removed");
+    res.json({ remove: 1 });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
 module.exports = {
     loadCart,
-    addToCart 
+    addToCart,
+    removeCart
 
 }    

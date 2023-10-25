@@ -1,6 +1,8 @@
 // const { $where } = require("../../../../models/bannerModel");
 const { response } = require("../../../routers/userRoute");
 
+
+// ===== add to cart =========
 function addCart(id,user) {
   
 //   function showAlertBox(){
@@ -53,4 +55,22 @@ function addCart(id,user) {
     window.location.href= '/login'
   }
 
+}
+
+
+
+// ========== removing cart items ========
+function removeCartItem(user,product,qty){
+  console.log(user,product,qty);
+  $.ajax({
+      url:'/removeCart',
+      method:'delete',
+      data:{user,product,qty},
+      success:(response)=>{
+          console.log(response);
+          if(response.remove==1){
+              location.reload()
+          }
+      }
+  })
 }
