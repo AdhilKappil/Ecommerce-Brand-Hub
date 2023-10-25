@@ -63,4 +63,8 @@ user_route.post('/addToCart',cartController.addToCart);
 
 user_route.delete('/removeCart',cartController.removeCart);
 
+user_route.get('/userProfile',auth.isLogin,userController.loadProfile);
+
+
+
 module.exports = user_route; 

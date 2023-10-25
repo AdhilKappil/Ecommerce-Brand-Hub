@@ -1,0 +1,213 @@
+
+<%-include('../users/layouts/header.ejs') %>
+    <%-include('../users/layouts/navBar.ejs') %>
+
+    <main class="main">
+        <div class="page-header text-center m-t-85">
+            <div class="container">
+                <h1 class="page-title text-dark">My Account</h1>
+            </div><!-- End .container -->
+        </div><!-- End .page-header -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item " aria-current="page">My Account</li>
+                </ol>
+            </div><!-- End .container -->
+        </nav><!-- End .breadcrumb-nav -->
+    
+        <div class="page-content">
+            <div class="dashboard">
+                <div class="container">
+                    <div class="row">
+                        <aside class="col-md-4 col-lg-3">
+                            <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="tab-dashboard-link" data-toggle="tab"
+                                        href="#tab-dashboard" role="tab" aria-controls="tab-dashboard"
+                                        aria-selected="true">My Profile</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account"
+                                        role="tab" aria-controls="tab-account" aria-selected="false">Edit Details</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="tab-order-link" data-toggle="tab" href="#tab-order"
+                                        role="tab" aria-controls="tab-order" aria-selected="false">My Orders</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address"
+                                        role="tab" aria-controls="tab-address" aria-selected="false">Manage Addresses</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/profile/coupons">Coupons</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/logout">Sign Out</a>
+                                </li>
+                            </ul>
+                        </aside><!-- End .col-lg-3 -->
+    
+                        <div class="col-md-8 col-lg-9">
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel"
+                                    aria-labelledby="tab-dashboard-link">
+                                    <h6 class="text-center fs-1 font-monospace text-decoration-underline">My Profile</h6>
+    
+                                    <form action="#">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label>First Name</label>
+                                                <input type="text" class="form-control" value="<%=user.firstName %>"
+                                                    disabled>
+                                            </div><!-- End .col-sm-6 -->
+                                            <div class="col-sm-6">
+                                                <label>Last Name</label>
+                                                <input type="text" class="form-control" value="<%=user.lastName %>"
+                                                    disabled>
+                                            </div>
+                                        </div><!-- End .row -->
+                                        <!-- <label>Full Name</label>
+                                        <input type="text" class="form-control" value="<%= user.firstName + " " + user.lastName %>"
+                                            disabled> -->
+                                        <label>Email address</label>
+                                        <input type="email" class="form-control" value="<%= user.email %>" disabled>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label>Mobile Number</label>
+                                                <input type="number" class="form-control" value="<%= user.mobile %>"
+                                                    name="pincode" disabled>
+                                            </div><!-- End .col-sm-6 -->
+                                        </div>
+                                    </form>
+                                </div><!-- .End .tab-pane -->
+    
+                                <div class="tab-pane fade" id="tab-order" role="tabpanel" aria-labelledby="tab-order-link">
+                                    <!-- <div class="row mx-auto"> -->
+                                        <div class="card col-md-5 col-10 m-2 shadow-sm" id="allorder"
+                                            style="border-radius: 7px; background: #F3F3F9; cursor: pointer;">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-center mt-1 py-4">
+                                                    <i class="fa-solid fa-box-open mx-3" style="font-size: 35px;"></i>
+                                                    <h5 class="m-0 align-self-center" style="font-weight: 300;">All Orders</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    <!-- </div> -->
+                                </div><!-- .End .tab-pane -->
+                            <div class="tab-pane fade" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
+                                
+    
+                                <a href="/address">
+                                    <div class="card col-md-5 col-10 m-2 shadow-sm" id="addressDiv"
+                                            style="border-radius: 7px; background: #F3F3F9; cursor: pointer;  height: 86px;">
+                                            <div class="card-body" style="height: 190px;">
+                                                <div class="d-flex justify-content-center mt-1 py-4">
+                                                    <i class="fa-solid fa-plus" style="color: #000000;"></i>
+                                                    <h5 class="m-0 align-self-center" style="font-weight: 300;">Add New Address</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </a>
+                                     
+                                <div class="row">
+                               <%if(address){%>
+                               <% for(let i=0;i<address.addresses.length;i++){%>
+                                    <div class="card  m-2 col-md-3 col-10 p-4" style="background: #F3F3F9; border-radius: 10px; width: 208px">
+                                        <div class="card-body ">
+                                            <h6 class="card-title" style="font-size: 15px;">
+                                                <%=address.addresses[i].fullName%>
+                                            </h6>
+                                            <p class="card-text">
+                                                <%=address.addresses[i].city%>, <%=address.addresses[i].state%>
+                                            </p>
+                                            <p class="card-text"> Number : <%=address.addresses[i].mobile%>
+                                            </p>
+                                            <p class="card-text">Pincode : <%=address.addresses[i].pincode%>, <%=address.addresses[i].country%>
+                                            </p>
+                                            <hr class="m-0 p-0 my-3">
+                                            <div class="d-flex justify-content-end ">
+                                               <a href="/editAddress?id=<%= address.addresses[i]._id %>"> <button class="text-dark" type="button" id="editBTN" data-bs-toggle="modal" data-bs-target="">Edit </button></a>
+                                                <p class="mx-3" style="margin-top: 10px;">|</p>
+                                                <a href="#"><button class="text-danger" type="button"   data-bs-toggle="modal" data-bs-target="">Remove</button></a>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                <%}%>
+                               <%}else{%>
+    
+                              <% } %>
+                            </div>
+    
+                                
+                            
+                                
+                            </div>
+    
+    
+                            
+                                <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
+                                    <h6 class="text-center fs-1 font-monospace text-decoration-underline">Edit Details</h6>
+                                    <form action="/updateUser" method="post">
+                                       <div class="row">
+                                            <div class="col-sm-6">
+                                                <label>First Name</label>
+                                                <input type="text" class="form-control" value="<%=user.firstName %>"
+                                                    >
+                                            </div><!-- End .col-sm-6 -->
+                                            <div class="col-sm-6">
+                                                <label>Last Name</label>
+                                                <input type="text" class="form-control" value="<%=user.lastName %>"
+                                                    >
+                                            </div>
+                                        </div><!-- End .row -->
+                                        <!-- <label>Full Name</label>
+                                        <input type="text" class="form-control" value="<%= user.firstName + " " + user.lastName %>"> -->
+                                        <label>Email address</label>
+                                        <input type="email" class="form-control" value="<%= user.email %>" disabled>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label>Mobile Number</label>
+                                                <input type="number" class="form-control" value="<%= user.mobile %>"
+                                                    name="pincode" >
+                                            </div><!-- End .col-sm-6 -->
+                                        </div>
+                                        <button type="submit" class="btn btn-outline-primary-login">
+                                            <span>SAVE CHANGES</span>
+                                            <i class="icon-long-arrow-right"></i>
+                                        </button>
+                                    </form>
+                                    <hr>
+                                    <h6 class="fs-1 font-monospace">Change Password</h6>
+                                    <form action="/changepassword" method="post">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <label>Current Password</label>
+                                                    <input type="password" name="oldPassword" class="form-control" required>
+                                                </div><!-- End .col-sm-6 -->
+                                                <div class="col-sm-6">
+                                                    <label>Create New Password</label>
+                                                    <input type="password" name="newPassword" class="form-control" required>
+                                                </div><!-- End .col-sm-6 -->
+                                            </div><!-- End .row -->
+                                            <button type="submit" class="btn btn-outline-primary-login">
+                                                <span>CHANGE PASSWORD</span>
+                                                <i class="icon-long-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div><!-- .End .tab-pane -->
+                            </div>
+                        </div><!-- End .col-lg-9 -->
+                    </div><!-- End .row -->
+                </div><!-- End .container -->
+            </div><!-- End .dashboard -->
+        </div><!-- End .page-content -->
+    </main><!-- End .main -->
+
+<%-include('../users/layouts/footer.ejs') %>

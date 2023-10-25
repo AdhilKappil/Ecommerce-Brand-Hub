@@ -7,6 +7,7 @@ const path = require("path")
 const otpGenerator = require("otp-generator")
 const Product = require('../models/product');
 const Category = require('../models/category');
+const Address = require('../models/userAddress');
 
 
 
@@ -505,18 +506,24 @@ const searchProducts = async (req, res) => {
 
 
 
- // ========== rendering cart page ===========
-//  const loadCart = async(req,res)=>{
-
-//     try{
-        
-//         res.render('Cart')
-//     }
-//     catch (error)
-//         {
-//             console.log(error.message)
-//        }
-//   }
+ // ========== rendering user profile ===========
+ const loadProfile = async (req,res)=>{
+    try{
+  
+      const id = req.session.user_id
+      const userData = await  User.findById({_id:id})
+      const userAddress = await Address.findOne({ userId: id })
+      console.log(userAddress);
+  
+      
+      console.log(userData);
+  
+      res.render('profile',{user:userData,address: userAddress})
+  
+    }catch(error){
+      console.log(error);
+    }
+  }
 
 
 
@@ -537,6 +544,7 @@ module.exports = {
     loadProductDetails,
     userLogout,
     searchProducts,
+    loadProfile
     
     
 };
