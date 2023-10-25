@@ -4,11 +4,11 @@ const isLogin = async (req, res, next) => {
         if (req.session.user_id) {
             return next(); // Proceed to the next middleware or route
         } else {
-            res.redirect('/home');
+            res.redirect('/login');
         }
     } catch (error) {
         console.log(error.message);
-        res.redirect('/home'); // Handle errors by redirecting
+        res.redirect('/login'); // Handle errors by redirecting
     }
 }
 

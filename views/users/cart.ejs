@@ -26,6 +26,7 @@
 					<div class="m-l-25 m-r--38 m-lr-0-xl">
 						<div class="wrap-table-shopping-cart">
 							<table class="table-shopping-cart">
+								<% if(total!=0){%>
 								<tr class="table_head">
 									<th class="column-1">Product</th>
 									<th class="column-2"></th>
@@ -34,14 +35,16 @@
 									<th class="column-5">Total</th>
 								</tr>
 
+								<% for(i=0;i<cartItems.products.length;i++){ %>
 								<tr class="table_row">
 									<td class="column-1">
 										<div class="how-itemcart1">
-											<img src="/static/userAssets/images/item-cart-04.jpg" alt="IMG">
+											<img src="/static/adminAssets/images/products/<%= cartItems.products[i].productId.images[0]%>" alt="IMG">
+
 										</div>
 									</td>
-									<td class="column-2">Fresh Strawberries</td>
-									<td class="column-3">$ 36.00</td>
+									<td class="column-2"><%= cartItems.products[i].productId.productName %></td>
+									<td class="column-3">₹ <%= cartItems.products[i].productId.price %></td>
 									<td class="column-4">
 										<div class="wrap-num-product flex-w m-l-auto m-r-0">
 											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
@@ -55,10 +58,11 @@
 											</div>
 										</div>
 									</td>
-									<td class="column-5">$ 36.00</td>
+									<td class="column-5">₹ <%- (cartItems.products[i].productId.price)*(cartItems.products[i].quantity) %></td>
 								</tr>
+								<%}%>
 
-								<tr class="table_row">
+								<!-- <tr class="table_row">
 									<td class="column-1">
 										<div class="how-itemcart1">
 											<img src="/static/userAssets/images/item-cart-05.jpg" alt="IMG">
@@ -80,7 +84,16 @@
 										</div>
 									</td>
 									<td class="column-5">$ 16.00</td>
-								</tr>
+								</tr> -->
+								
+								<% } else { %>
+									<tr>
+										<td class="price-col w-100 text-center text-light" colspan="5">
+											<h2 class="icon-shopping-cart text-light"></h2>Your Cart is Empty
+										</td>
+									</tr>
+								<% } %>
+									
 							</table>
 						</div>
 
@@ -115,7 +128,7 @@
 
 							<div class="size-209">
 								<span class="mtext-110 cl2">
-									$79.65
+									₹ <%= total%>
 								</span>
 							</div>
 						</div>
@@ -173,7 +186,7 @@
 
 							<div class="size-209 p-t-1">
 								<span class="mtext-110 cl2">
-									$79.65
+									₹ <%= total%>
 								</span>
 							</div>
 						</div>

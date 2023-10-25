@@ -57,7 +57,7 @@ user_route.get('/logout',auth.isLogin,userController.userLogout)
 
 user_route.get('/searchProduct', userController.searchProducts);
 
-user_route.get('/viewCart', userController.loadCart);
+user_route.get('/viewCart',auth.isLogin,cartController.loadCart);
 
 user_route.post('/addToCart',cartController.addToCart);
 

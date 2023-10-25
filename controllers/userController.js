@@ -506,17 +506,17 @@ const searchProducts = async (req, res) => {
 
 
  // ========== rendering cart page ===========
- const loadCart = async(req,res)=>{
+//  const loadCart = async(req,res)=>{
 
-    try{
+//     try{
         
-        res.render('Cart')
-    }
-    catch (error)
-        {
-            console.log(error.message)
-       }
-  }
+//         res.render('Cart')
+//     }
+//     catch (error)
+//         {
+//             console.log(error.message)
+//        }
+//   }
 
 
 
@@ -537,6 +537,6 @@ module.exports = {
     loadProductDetails,
     userLogout,
     searchProducts,
-    loadCart 
+    
     
 };

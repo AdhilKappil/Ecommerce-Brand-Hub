@@ -8,11 +8,11 @@ const User = require('../models/users');
 // ========== rendering cart page ==========
 // const loadCart = async (req, res, next) => {
 //     try {
-//         const user_id = req.session.user_id
+//         // const userId = req.session.user_id
+//         const email = req.session.user.email;
 //         const userData = await User.findOne({ email: email });
-//         let cartData = await Cart.findOne({ user: userData._id }).populate('products.productId');
-//         let totalPrice = 0;
-//         // dPrice = 0, subtotalPrice = 0;
+//         const cartData = await Cart.findOne({ user: userData._id }).populate('products.productId');
+//         const totalPrice = 0, cartTPrice = 0;
 //         let cartList = [];
 //         req.session.cartCount = 0
 //         if (cartData && cartData.products) {
@@ -21,10 +21,10 @@ const User = require('../models/users');
 //         if (cartData && cartData.products.length > 0) {
 //             cartList = cartData.products.map(({ productId, quantity, cartPrice}) => ({
 //                 productId,
-//                 // size,
 //                 quantity,
-//                 cartPrice
-//                 // cartDPrice,
+//                 cartPrice,
+//                 cartTPrice
+//                 // size,
 //                 // cartSubtotalPrice
 //             }));
 //             // console.log(cartList.length);
@@ -63,6 +63,79 @@ const User = require('../models/users');
 
 
 
+// ======== this function use to collect user Data =======
+const takeUserData = async (userId) => {
+  try {
+    return new Promise((resolve, reject) => {
+      User.findOne({ _id: userId }).then((response) => {
+        resolve(response);
+      });
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
+
+// ==== cart items price calculate function here ====
+const calculateTotalPrice = async (userId) => {
+  try {
+    const cart = await Cart.findOne({ user: userId }).populate(
+      "products.productId"
+    );
+
+    if (!cart) {
+      console.log("User does not have a cart.");
+    }
+
+    let totalPrice = 0;
+    for (const cartProduct of cart.products) {
+      const { productId, quantity } = cartProduct;
+      const productSubtotal = productId.price * quantity;
+      totalPrice += productSubtotal;
+    }
+
+    return totalPrice;
+  } catch (error) {
+    console.error("Error calculating total price:", error.message);
+    return 0;
+  }
+};
+
+
+
+// ========== rendering cart page ==========
+const  loadCart  = async (req, res) => {
+  try {
+    const userData = await takeUserData(req.session.user_id);
+    const cartDetails = await Cart.findOne({ user: req.session.user_id })
+      .populate({
+        path: "products.productId",
+        select: "productName price images",
+      })
+      .exec();
+
+    if (cartDetails) {
+
+      let total = await calculateTotalPrice(req.session.user_id);
+      
+      return res.render("cart", {
+        user: userData,
+        cartItems: cartDetails,
+        total,
+      });
+    } else {
+      return res.render("cart", { user: userData, cartItems: 0, total: 0 });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
+
+// ========= adding items to cart =========
 const addToCart = async (req, res) => {
         try {
           const existingCart = await Cart.findOne({user:req.body.user});
@@ -104,7 +177,7 @@ const addToCart = async (req, res) => {
 
 
 module.exports = {
-    // loadCart,
+    loadCart,
     addToCart 
 
 }    
