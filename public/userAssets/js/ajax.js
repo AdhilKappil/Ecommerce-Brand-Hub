@@ -58,7 +58,6 @@ function addCart(id,user) {
 }
 
 
-
 // ========== removing cart items ========
 function removeCartItem(user,product,qty){
   console.log(user,product,qty);
@@ -66,6 +65,23 @@ function removeCartItem(user,product,qty){
       url:'/removeCart',
       method:'delete',
       data:{user,product,qty},
+      success:(response)=>{
+          console.log(response);
+          if(response.remove==1){
+              location.reload()
+          }
+      }
+  })
+}
+
+
+// ======= deleting user address ========
+function removeAddress(id){
+  console.log(id);
+  $.ajax({
+      url:'/deleteAddress',
+      method:'delete',
+      data:{id},
       success:(response)=>{
           console.log(response);
           if(response.remove==1){

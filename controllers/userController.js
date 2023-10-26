@@ -633,13 +633,8 @@ const loadEditAddress = async(req,res)=>{
 const editAddress =async (req,res)=>{
     try {
          const user_id=req.session.user_id
-        //  const userData=await User.findById({_id:user_id})
          const addressId=req.body.id
-    
-         console.log('userdata:',user_id);
-         console.log('userdata:',addressId);
          
-          
          const details = await Address.updateOne(
             { userId:user_id, "address._id": addressId },
             {
@@ -653,7 +648,6 @@ const editAddress =async (req,res)=>{
               },
             }
           );
-         console.log(details);
          res.redirect('/userProfile')
 
     } catch (error) {
@@ -662,6 +656,29 @@ const editAddress =async (req,res)=>{
 }
 
 
+
+// ============ deleting user address =========
+const deleteAddress = async (req, res) => {
+    try {
+    
+      let userAddress = await Address.findOne({ userId: req.session.user_id });
+      const addressToDeleteIndex = userAddress.address.findIndex(
+        (address) => address.id === req.body.id
+      );
+      if (addressToDeleteIndex === -1) {
+        return res.status(404).json({ remove: 0 });
+      }
+      userAddress.address.splice(addressToDeleteIndex, 1);
+      await userAddress.save();
+      return res.json({ remove: 1 });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+
+
+  
 module.exports = {
     loginLoad ,
     loadRegister,
@@ -683,7 +700,8 @@ module.exports = {
     loadAddress,
     addAddress,
     loadEditAddress,
-    editAddress
+    editAddress,
+    deleteAddress
     
     
 };

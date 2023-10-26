@@ -133,13 +133,13 @@
                                 
                                                         <hr class="my-3">
                                                         <div class="d-flex justify-content-between">
-                                                            <a href="/editAddress?id=<%= address.address[i]._id %>">
+                                                            <a href="/editAddress?id=<%= address.address[i]._id %>" >
                                                                 <button class="text-info" type="button" id="editBTN" data-bs-toggle="modal" data-bs-target="">
                                                                     Edit
                                                                 </button>
                                                             </a>
-                                                            <a href="#">
-                                                                <button class="text-danger" type="button" data-bs-toggle="modal" data-bs-target="">
+                                                            <a onclick="removeAddress('<%=address.address[i]._id%>')">
+                                                                <button class="text-danger" type="button"  data-bs-toggle="modal" data-bs-target="">
                                                                     Remove
                                                                 </button>
                                                             </a>

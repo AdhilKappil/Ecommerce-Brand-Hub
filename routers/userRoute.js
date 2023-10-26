@@ -73,5 +73,8 @@ user_route.get('/editAddress',auth.isLogin,userController.loadEditAddress);
 
 user_route.post('/editAddress',auth.isLogin,userController.editAddress);
 
+user_route.delete('/deleteAddress',userController.deleteAddress);
+
+
 
 module.exports = user_route; 
