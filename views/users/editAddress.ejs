@@ -1,0 +1,62 @@
+
+<%-include('../users/layouts/header.ejs') %>
+<%-include('../users/layouts/navBar.ejs') %>
+
+<body>
+    <form action="/addAddress" method="post">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9 m-t-90">
+                    <h2 class="checkout-title mb-3">Edit Address</h2>
+                    <div class="form-group">
+                        <label for="company-name">Full Name</label>
+                        <input type="text" class="form-control" id="FullName" name="fullName" value="<%=addresses.fullName%>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Mobile </label>
+                        <input type="tel" class="form-control" id="phone" name="mobile" value="<%=addresses.mobile%>" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="state-county">State  </label>
+                                <input type="text" class="form-control" id="state" name="state" value="<%=addresses.state%>" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="country">District</label>
+                                <input type="text" class="form-control" id="district" name="district" value="<%=addresses.district%>" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="town-city">City </label>
+                                <input type="text" class="form-control" id="city" name="city" value="<%=addresses.city%>" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="postcode">Pin Code</label>
+                                <input type="text" class="form-control" id="pinCode" name="pincode" value="<%=addresses.pincode%>" required>
+                            </div>
+                        </div>
+                        <div class="col-12 text-center mb-3">
+                            <button type="submit" class="btn btn-success" style="border-radius:17px;">Submit</button>
+                        </div>
+                    </div>
+                    
+
+                </div>
+
+                
+            </div>
+        </div>
+    </form>
+    
+<%-include('../users/layouts/footer.ejs') %>    

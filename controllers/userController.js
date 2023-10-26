@@ -513,17 +513,95 @@ const searchProducts = async (req, res) => {
       const id = req.session.user_id
       const userData = await  User.findById({_id:id})
       const userAddress = await Address.findOne({ userId: id })
-      console.log(userAddress);
-  
-      
-      console.log(userData);
-  
+    
       res.render('profile',{user:userData,address: userAddress})
   
     }catch(error){
       console.log(error);
     }
   }
+
+
+ 
+// ========= rendering user address page ==========  
+const loadAddress = async(req,res)=>{
+    try{
+  
+      const userId = req.session.user_id
+          
+      res.render('address',{user:userId})
+  
+    }catch(error){
+      console.log(error);
+    }
+  
+}  
+ 
+
+  
+
+// =========== adding user address =========
+const addAddress = async(req,res)=>{
+  try {
+    
+    let userAddress = await Address.findOne({ userId: req.session.user_id });
+    if (!userAddress) {
+      userAddress = new Address({
+        userId: req.session.user_id,
+        address: [
+          {
+                fullName: req.body.fullName,
+                mobile: req.body.mobile,
+                state: req.body.state,
+                district: req.body.district,
+                city: req.body.city,
+                pincode: req.body.pincode,
+          },
+        ],
+      });
+    } else {
+      
+      userAddress.address.push({
+                fullName: req.body.fullName,
+                mobile: req.body.mobile,
+                state: req.body.state,
+                district: req.body.district,
+                city: req.body.city,
+                pincode: req.body.pincode,
+      });
+    }
+
+    
+    let result = await userAddress.save();
+    
+    
+    res.redirect('/userProfile');
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
+
+// ========== here user cand edit address =======
+const loadEditAddress = async(req,res)=>{
+    try{
+
+      const id = req.query.id
+      const userId = req.session.user_id
+  
+      let userAddress = await Address.findOne({ userId: userId  },{address:{$elemMatch:{_id:id}}})
+  
+      const address= userAddress.address
+  
+      res.render('editAddress',{user:userId,addresses:address[0]})
+  
+      
+    }catch(error){
+      console.log(error);
+    }
+  }
+  
 
 
 
@@ -544,7 +622,10 @@ module.exports = {
     loadProductDetails,
     userLogout,
     searchProducts,
-    loadProfile
+    loadProfile,
+    loadAddress,
+    addAddress,
+    loadEditAddress
     
     
 };

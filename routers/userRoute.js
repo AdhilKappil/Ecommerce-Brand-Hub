@@ -65,6 +65,12 @@ user_route.delete('/removeCart',cartController.removeCart);
 
 user_route.get('/userProfile',auth.isLogin,userController.loadProfile);
 
+user_route.get('/address',auth.isLogin,userController.loadAddress);
+
+user_route.post('/addAddress',auth.isLogin,userController.addAddress);
+
+user_route.get('/editAddress',auth.isLogin,userController.loadEditAddress);
+
 
 
 module.exports = user_route; 

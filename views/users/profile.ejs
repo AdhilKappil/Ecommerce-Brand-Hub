@@ -105,7 +105,7 @@
                                             style="border-radius: 7px; background: #F3F3F9; cursor: pointer;  height: 86px;">
                                             <div class="card-body" style="height: 190px;">
                                                 <div class="d-flex justify-content-center mt-1 py-4">
-                                                    <i class="fa-solid fa-plus" style="color: #000000;"></i>
+                                                    <!-- <i class="fa-solid fa-plus" style="color: #000000;"></i> -->
                                                     <h5 class="m-0 align-self-center" style="font-weight: 300;">Add New Address</h5>
                                                 </div>
                                             </div>
@@ -113,43 +113,48 @@
                                 </a>
                                      
                                 <div class="row">
-                               <%if(address){%>
-                               <% for(let i=0;i<address.addresses.length;i++){%>
-                                    <div class="card  m-2 col-md-3 col-10 p-4" style="background: #F3F3F9; border-radius: 10px; width: 208px">
-                                        <div class="card-body ">
-                                            <h6 class="card-title" style="font-size: 15px;">
-                                                <%=address.addresses[i].fullName%>
-                                            </h6>
-                                            <p class="card-text">
-                                                <%=address.addresses[i].city%>, <%=address.addresses[i].state%>
-                                            </p>
-                                            <p class="card-text"> Number : <%=address.addresses[i].mobile%>
-                                            </p>
-                                            <p class="card-text">Pincode : <%=address.addresses[i].pincode%>, <%=address.addresses[i].country%>
-                                            </p>
-                                            <hr class="m-0 p-0 my-3">
-                                            <div class="d-flex justify-content-end ">
-                                               <a href="/editAddress?id=<%= address.addresses[i]._id %>"> <button class="text-dark" type="button" id="editBTN" data-bs-toggle="modal" data-bs-target="">Edit </button></a>
-                                                <p class="mx-3" style="margin-top: 10px;">|</p>
-                                                <a href="#"><button class="text-danger" type="button"   data-bs-toggle="modal" data-bs-target="">Remove</button></a>
-                                                
+                                    <% if (address) { %>
+                                        <% for (let i = 0; i < address.address.length; i++) { %>
+                                            <div class="col-md-6 col-12 mb-3 mt-3">
+                                                <div class="card p-4" style="background: #F3F3F9; border-radius: 10px;">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title" style="font-size: 15px;">
+                                                            <%= address.address[i].fullName %>
+                                                        </h6>
+                                                        <p class="card-text mt-3">
+                                                            Number: <%= address.address[i].mobile %>
+                                                        </p>
+                                                        <p class="card-text">
+                                                            Location: <%= address.address[i].state %>, <%= address.address[i].district %>, <%= address.address[i].city %>
+                                                        </p>
+                                                        <p class="card-text">
+                                                            Pincode: <%= address.address[i].pincode %>
+                                                        </p>
+                                
+                                                        <hr class="my-3">
+                                                        <div class="d-flex justify-content-between">
+                                                            <a href="/editAddress?id=<%= address.address[i]._id %>">
+                                                                <button class="text-info" type="button" id="editBTN" data-bs-toggle="modal" data-bs-target="">
+                                                                    Edit
+                                                                </button>
+                                                            </a>
+                                                            <a href="#">
+                                                                <button class="text-danger" type="button" data-bs-toggle="modal" data-bs-target="">
+                                                                    Remove
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    
-                                <%}%>
-                               <%}else{%>
-    
-                              <% } %>
-                            </div>
-    
+                                        <% } %>
+                                    <% } else { %>
+                                        <% } %>
+                                </div>
                                 
-                            
                                 
                             </div>
     
-    
-                            
                                 <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
                                     <h6 class="text-center fs-1 font-monospace text-decoration-underline">Edit Details</h6>
                                     <form action="/updateUser" method="post">
