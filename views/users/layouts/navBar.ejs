@@ -15,17 +15,20 @@
 							Help & FAQs
 						</a>
 
-						<a href="#" class="flex-c-m trans-04 p-lr-25">
+						<a href="/userProfile" class="flex-c-m trans-04 p-lr-25">
 							My Account
 						</a>
-
+						
+						<% if (!user) { %>
 						<a href="/login" class="flex-c-m trans-04 p-lr-25">
 							Login
 						</a>
-
-						<!-- <a href="/logout" class="flex-c-m trans-04 p-lr-25">
+						<% } else { %>
+						<a href="/logout" class="flex-c-m trans-04 p-lr-25">
 							Log out
-						</a> -->
+						</a>
+						<% } %>
+
 					</div>
 				</div>
 			</div>
@@ -91,9 +94,14 @@
 						</a>
 
                          <!-- ============ user profile icone ========== -->
-						<a href="/userProfile" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-profile">
+						<!-- <a href="/userProfile" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-profile">
 							<i class="zmdi zmdi-account"></i>
-						</a>
+						</a> -->
+
+						  <!-- ============ log out icone ========== -->
+						<!-- <a href="/logout" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-logout">
+							<i class="zmdi zmdi-power"></i>
+						</a> -->
 						
 					</div>
 				</nav>

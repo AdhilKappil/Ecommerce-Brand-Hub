@@ -45,7 +45,7 @@ const loginLoad = async(req,res)=>{
 const loadHome = async(req,res)=>{
 
     try {
-        res.render('home'); 
+        res.render('home',{user:req.session.user_id}); 
 
     } catch (error) {
         console.log(error.message); 
@@ -451,7 +451,7 @@ const loadProductDetails = async(req,res)=>{
 const userLogout = async(req,res)=>{
 
     try{
-        req.session.destroy()
+        req.session.user_id = null
         res.redirect('/login')
     }
     catch (error)
@@ -604,32 +604,8 @@ const loadEditAddress = async(req,res)=>{
 }
 
 
-
-// ========== editing user address =========
-// const editAddress = async(req,res)=>{
-//     try {
-        
-//         const Addresses = req.body;
-//         console.log(Addresses);
-//         const userAddress = await Address.findOne({ userId: req.session.user_id });
-//         console.log(userAddress);
-//         const selectedAddress = await userAddress.address.find(address => address._id === Addresses.id);
-//         console.log(selectedAddress);
-
-//         selectedAddress.district = Addresses.district ;
-//         selectedAddress.fullName = Addresses.fullName;
-//         selectedAddress.mobile = Addresses.mobileNumber;
-//         selectedAddress.pincode = Addresses.pincode;
-//         selectedAddress.city = Addresses.city;
-//         selectedAddress.state = Addresses.state;
-//         await userAddress.save();
-    
-//         res.redirect("/userProfile/address");
-//       } catch (error) {
-//         console.log(error.message);
-//       }
-//   };
-  
+ 
+// ========== edit user address ==========
 const editAddress =async (req,res)=>{
     try {
          const user_id=req.session.user_id
