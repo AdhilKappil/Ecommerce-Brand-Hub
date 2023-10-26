@@ -3,11 +3,12 @@
 <%-include('../users/layouts/navBar.ejs') %>
 
 <body>
-    <form action="/addAddress" method="post">
+    <form action="/editAddress" method="post">
         <div class="container">
             <div class="row">
                 <div class="col-lg-9 m-t-90">
                     <h2 class="checkout-title mb-3">Edit Address</h2>
+                    <input type="hidden" name="id" value="<%=addresses._id%>">
                     <div class="form-group">
                         <label for="company-name">Full Name</label>
                         <input type="text" class="form-control" id="FullName" name="fullName" value="<%=addresses.fullName%>" required>
@@ -47,7 +48,7 @@
                             </div>
                         </div>
                         <div class="col-12 text-center mb-3">
-                            <button type="submit" class="btn btn-success" style="border-radius:17px;">Submit</button>
+                            <button type="submit" class="btn btn-success" style="border-radius:17px;">Update</button>
                         </div>
                     </div>
                     

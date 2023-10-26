@@ -71,6 +71,7 @@ user_route.post('/addAddress',auth.isLogin,userController.addAddress);
 
 user_route.get('/editAddress',auth.isLogin,userController.loadEditAddress);
 
+user_route.post('/editAddress',auth.isLogin,userController.editAddress);
 
 
 module.exports = user_route; 

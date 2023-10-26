@@ -8,6 +8,7 @@ const otpGenerator = require("otp-generator")
 const Product = require('../models/product');
 const Category = require('../models/category');
 const Address = require('../models/userAddress');
+const { ObjectId}=require('mongodb')
 
 
 
@@ -600,9 +601,65 @@ const loadEditAddress = async(req,res)=>{
     }catch(error){
       console.log(error);
     }
-  }
-  
+}
 
+
+
+// ========== editing user address =========
+// const editAddress = async(req,res)=>{
+//     try {
+        
+//         const Addresses = req.body;
+//         console.log(Addresses);
+//         const userAddress = await Address.findOne({ userId: req.session.user_id });
+//         console.log(userAddress);
+//         const selectedAddress = await userAddress.address.find(address => address._id === Addresses.id);
+//         console.log(selectedAddress);
+
+//         selectedAddress.district = Addresses.district ;
+//         selectedAddress.fullName = Addresses.fullName;
+//         selectedAddress.mobile = Addresses.mobileNumber;
+//         selectedAddress.pincode = Addresses.pincode;
+//         selectedAddress.city = Addresses.city;
+//         selectedAddress.state = Addresses.state;
+//         await userAddress.save();
+    
+//         res.redirect("/userProfile/address");
+//       } catch (error) {
+//         console.log(error.message);
+//       }
+//   };
+  
+const editAddress =async (req,res)=>{
+    try {
+         const user_id=req.session.user_id
+        //  const userData=await User.findById({_id:user_id})
+         const addressId=req.body.id
+    
+         console.log('userdata:',user_id);
+         console.log('userdata:',addressId);
+         
+          
+         const details = await Address.updateOne(
+            { userId:user_id, "address._id": addressId },
+            {
+              $set: {
+                "address.$.fullName": req.body.fullName,
+                "address.$.pincode": req.body.pincode,
+                "address.$.city": req.body.city,
+                "address.$.mobile": req.body.mobile,
+                "address.$.state": req.body.state,
+                "address.$.district": req.body.district,
+              },
+            }
+          );
+         console.log(details);
+         res.redirect('/userProfile')
+
+    } catch (error) {
+      console.log(error);
+    }
+}
 
 
 module.exports = {
@@ -625,7 +682,8 @@ module.exports = {
     loadProfile,
     loadAddress,
     addAddress,
-    loadEditAddress
+    loadEditAddress,
+    editAddress
     
     
 };
