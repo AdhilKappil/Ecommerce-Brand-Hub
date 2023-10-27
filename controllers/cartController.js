@@ -5,63 +5,6 @@ const User = require('../models/users');
 
 
 
-// ========== rendering cart page ==========
-// const loadCart = async (req, res, next) => {
-//     try {
-//         // const userId = req.session.user_id
-//         const email = req.session.user.email;
-//         const userData = await User.findOne({ email: email });
-//         const cartData = await Cart.findOne({ user: userData._id }).populate('products.productId');
-//         const totalPrice = 0, cartTPrice = 0;
-//         let cartList = [];
-//         req.session.cartCount = 0
-//         if (cartData && cartData.products) {
-//             req.session.cartCount = cartData.products.length
-//         }
-//         if (cartData && cartData.products.length > 0) {
-//             cartList = cartData.products.map(({ productId, quantity, cartPrice}) => ({
-//                 productId,
-//                 quantity,
-//                 cartPrice,
-//                 cartTPrice
-//                 // size,
-//                 // cartSubtotalPrice
-//             }));
-//             // console.log(cartList.length);
-//             for (const { productId, quantity } of cartList) {
-//                 await Cart.updateOne(
-//                     { user: userData._id, 'products.productId': productId },
-//                     {
-//                         $set: {
-//                             'products.$.cartPrice': quantity * productId.price,
-//                             // 'products.$.cartDPrice': quantity * productId.discountPrice,
-//                             // 'products.$.cartSubtotalPrice': quantity * productId.price + productId.discountPrice
-//                         }
-//                     }
-//                 );
-//             }
-//             // Fetch updated cart data after the updates
-//             cartData = await Cart.findOne({ user: userData._id }).populate('products.productId');
-//             cartList = cartData.products.map(({ productId, quantity, cartPrice}) => ({
-//                 productId,
-//                 // size,
-//                 quantity,
-//                 cartPrice
-//                 // cartDPrice,
-//                 // cartSubtotalPrice
-//             }));
-//             totalPrice = cartList.reduce((acc, curr) => acc + curr.cartPrice, 0);
-//             // dPrice = cartList.reduce((acc, curr) => acc + curr.cartDPrice, 0);
-//             // subtotalPrice = cartList.reduce((acc, curr) => acc + curr.cartSubtotalPrice, 0);
-//             await Cart.updateOne({ user: userData._id }, { $set: { totalPrice: totalPrice } });
-//         }
-//         res.render('cart', { user: userData, title: 'Cart',  totalPrice, cartData: cartList, cartCount: req.session.cartCount });
-//     } catch (error) {
-//         next(error);
-//     }
-// };
-
-
 
 // ======== this function use to collect user Data =======
 const takeUserData = async (userId) => {
@@ -214,9 +157,36 @@ const removeCart= async (req, res) => {
 };
 
 
+
+// ========== quantity management ============= 
+const updateCart = async (req, res) => {
+  try {
+      const user = req.session.user_id;
+      const productID = req.body.productID;
+      const quantity = req.body.quantity;
+
+      // Find the cart item with the specified product ID and user ID
+      const updatedCartItem = await Cart.findOneAndUpdate(
+        { 'products.productId': productID, user: user },
+        { $set: { 'products.$.quantity': quantity } },
+        { new: true }
+      );
+      
+      // Send the updated cart item back to the client
+      res.json(updatedCartItem);
+  } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Internal Server Error');
+  }
+};
+
+
+
 module.exports = {
+
     loadCart,
     addToCart,
-    removeCart
+    removeCart,
+    updateCart
 
 }    

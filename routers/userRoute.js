@@ -62,7 +62,8 @@ user_route.get('/searchProduct', userController.searchProducts);
 user_route.get('/viewCart',auth.isLogin,cartController.loadCart);
 user_route.post('/addToCart',cartController.addToCart);
 user_route.delete('/removeCart',cartController.removeCart);
- 
+user_route.post('/updateCart',cartController.updateCart);
+
 
 // ================ user profile routes ================
 user_route.get('/userProfile',auth.isLogin,profileController.loadProfile);

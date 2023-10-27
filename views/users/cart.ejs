@@ -43,19 +43,19 @@
 									  </div>
 									</td>
 									<td class="column-2"><%= cartItems.products[i].productId.productName %></td>
-									<td class="column-3">₹ <%= cartItems.products[i].productId.price %></td>
+									<td class="column-3 product-price"><%= cartItems.products[i].productId.price %></td>
 									<td class="column-4">
 									  <div class="wrap-num-product flex-w m-l-auto m-r-0">
-										<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+										<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m js-btn-minus">
 										  <i class="fs-16 zmdi zmdi-minus"></i>
 										</div>
-										<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product1" value="1">
-										<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+										<input class="mtext-104 cl3 txt-center num-product quantity-input" type="number" name="num-product1" data-product-id="<%= cartItems.products[i].productId._id %>" value="<%= cartItems.products[i].quantity %>">
+										<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m js-btn-plus">
 										  <i class="fs-16 zmdi zmdi-plus"></i>
 										</div>
 									  </div>
 									</td>
-									<td class="column-5">₹ <%- (cartItems.products[i].productId.price) * (cartItems.products[i].quantity) %></td>
+									<td class="column-5 total-price"><%- (cartItems.products[i].productId.price) * (cartItems.products[i].quantity) %></td>
 									<td class="column-6">
 										<button type="button" class="btn btn-danger" onclick="removeCartItem('<%= user._id %>',
 										'<%= cartItems.products[i].productId._id %>','<%= cartItems.products[i].quantity %>')">Remove</button>
@@ -104,7 +104,7 @@
 							</div>
 
 							<div class="size-209">
-								<span class="mtext-110 cl2">
+								<span class="mtext-110 cl2 subtotal">
 									₹ <%= total%>
 								</span>
 							</div>
@@ -162,7 +162,7 @@
 							</div>
 
 							<div class="size-209 p-t-1">
-								<span class="mtext-110 cl2">
+								<span class="mtext-110 cl2 subtotal">
 									₹ <%= total%>
 								</span>
 							</div>
@@ -176,5 +176,117 @@
 			</div>
 		</div>
 	</form>
+
+
+	<!-- // ================ quantity managmenet =================== -->
+	<script>
+
+		document.addEventListener("DOMContentLoaded", function () {
+		const quantityInputs = document.querySelectorAll(".quantity-input");
+		const totalPriceElements = document.querySelectorAll(".total-price");
+		const productPrices = Array.from(document.querySelectorAll(".product-price"))
+								  .map(price => parseFloat(price.textContent))
+								  .filter(price => !isNaN(price)); // Filter out NaN values
+								  console.log(productPrices);
+	
+		const subtotalElement = document.querySelector(".subtotal");
+	   
+	
+		quantityInputs.forEach((input, index) => {
+			const minusButton = input.parentElement.querySelector(".js-btn-minus");
+			const plusButton = input.parentElement.querySelector(".js-btn-plus");
+			const productID = input.getAttribute('data-product-id');  
+			console.log(productID);
+	
+			function updateMinusButtonStatus() {
+				const quantity = parseInt(input.value, 10);
+				if (quantity === 1) {
+					minusButton.disabled = true;
+				} else {
+					minusButton.disabled = false;
+				}
+			}
+	
+			minusButton.addEventListener("click", function () {
+				const quantity = parseInt(input.value, 10);
+	
+				if (quantity >= 1) {
+				  quantitys = quantity - 1;
+				  
+				   handleQuantityUpdate(productID, quantity, index);
+					const totalPrice = quantity * productPrices[index];
+					totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
+					updateSubtotal();
+					updateMinusButtonStatus();
+					
+				}
+			});
+	
+			plusButton.addEventListener("click", function () {
+				const quantity = parseInt(input.value, 10);
+				quantitys = quantity;
+				
+				handleQuantityUpdate(productID, quantitys, index);
+	
+				const totalPrice = quantitys * productPrices[index];
+				totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
+				updateSubtotal();
+				updateMinusButtonStatus();
+				
+			});
+		});
+	
+		async function handleQuantityUpdate(productID, quantitys, index) {
+		try {
+			const response = await fetch('/updateCart', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ productID: productID, quantity: quantitys })
+			});
+		   
+			const data = await response.json();
+	
+			// Check if the response contains valid data
+			if (data && data.products && data.products.length > 0) {
+				const updatedItem = data.products[0];
+				const productPrice = parseFloat(updatedItem.productID.price);
+				const quantity = parseInt(updatedItem.quantity, 10);
+	
+				// Check if both quantity and product price are valid numbers
+				if (!isNaN(productPrice) && !isNaN(quantity)) {
+					const totalPrice = quantity * productPrice;
+	
+					// Update the total price in the UI
+					totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
+				} else {
+					console.error('Invalid quantity or product price:', updatedItem);
+				}
+			} else {
+				console.error('Invalid response data:', data);
+			}
+	
+			// Update the subtotal and other UI elements
+			updateSubtotal();
+		} catch (error) {
+			console.error('Error updating cart quantity:', error);
+		}
+	}
+	
+		function updateSubtotal() {
+			const totalPrices = Array.from(totalPriceElements)
+								 .map(total => parseFloat(total.textContent.replace("₹ ", "")))
+								 .reduce((acc, val) => acc + val, 0);
+			subtotalElement.textContent = `₹ ${totalPrices.toFixed(2)}`;
+		}
+	
+	   
+	
+	});
+	
+	
+	</script>	
+
 
 <%-include('../users/layouts/footer.ejs') %>
