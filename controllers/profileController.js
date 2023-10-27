@@ -11,6 +11,22 @@ const { ObjectId}=require('mongodb')
 
 
 
+
+// ========== pasword security ==========
+// const securePassword = async(password)=>{
+
+//     try {
+        
+//         const passwordHash = await bcrypt.hash(password,10);
+//         return passwordHash;
+
+//     } catch (error) {
+//         console.log(error.message);
+//     }
+// }
+
+
+
 // ========== rendering user profile ===========
 const loadProfile = async (req,res)=>{
     try{
@@ -158,11 +174,11 @@ const deleteAddress = async (req, res) => {
 
 
 
+// ======== updating user detailesl =========
 const updateUser =async (req,res)=>{
     try {
 
          const user_id=req.session.user_id
-         console.log(user_id);
          
          const details = await User.updateOne(
             { _id:user_id },
@@ -188,6 +204,38 @@ const updateUser =async (req,res)=>{
 
 
 
+// ======== updating user detailesl =========
+const resetPassword =async (req,res)=>{
+
+  try {
+    const userDetails = await User.findOne({_id:req.session.user_id})
+
+    bcrypt.compare(req.body.oldPassword,userDetails.password)
+    .then(async (status)=>{
+      if(status){
+        const newSecurePassword = await bcrypt.hash(req.body.newPassword, 10);
+
+          const change = await User.updateOne(
+            { _id: userDetails._id },
+            { $set: { password: newSecurePassword } }
+          );
+          console.log(change);
+          res.redirect("/userProfile");
+          console.log("password changed...");
+        } else {
+          console.log("wrong old password");
+          res.redirect("/userProfile");
+        }
+      
+    })
+  } catch (error) {
+    console.log(error);
+}
+}
+
+
+
+
 module.exports = {
    
     loadProfile,
@@ -196,7 +244,7 @@ module.exports = {
     loadEditAddress,
     editAddress,
     deleteAddress,
-    updateUser
-    
+    updateUser,
+    resetPassword
     
 };

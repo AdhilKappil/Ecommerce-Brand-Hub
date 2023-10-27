@@ -72,6 +72,7 @@ user_route.get('/editAddress',auth.isLogin,profileController.loadEditAddress);
 user_route.post('/editAddress',auth.isLogin,profileController.editAddress);
 user_route.delete('/deleteAddress',profileController.deleteAddress);
 user_route.post('/updateUser',auth.isLogin,profileController.updateUser);
+user_route.post('/resetPassword',auth.isLogin,profileController.resetPassword);
 
 
 // ============== checkout page routes ===============
