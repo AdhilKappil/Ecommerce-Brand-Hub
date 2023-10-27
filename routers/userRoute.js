@@ -2,6 +2,7 @@ const express = require('express');
 const path = require("path");
 const userController = require("../controllers/userController"); 
 const cartController = require("../controllers/cartController"); 
+const profileController = require("../controllers/profileController"); 
 const session = require('express-session'); 
 const config = require('../config/confiq');
 const auth = require('../middleware/userAuth'); 
@@ -24,56 +25,57 @@ user_route.set('views','./views/users');
 user_route.use(express.json());
 user_route.use(express.urlencoded({ extended: true }));
 
+
+// =========== home page =============
 user_route.get('/',userController. loadHome);
 user_route.get('/home',userController. loadHome);
 
+
+// ========== login, register, log out ===========
 user_route.post('/login',userController. verifLoadHome);
-
 user_route.get('/login',auth.isLogout,userController. loginLoad);
-
 user_route.get('/register',userController.loadRegister);
-
-user_route.post('/register',userController.verifyOtp);
-
-user_route.get('/userOtp',userController.loadOtpPage);
-
-user_route.post('/userOtp',userController.insertUser);
-
-user_route.get('/resendOtp', userController.resendOtp); 
-
-user_route.get('/forgotPassword', userController.loadForgotPassword); 
-
-user_route.post('/forgotPassword', userController.forgotVerify); 
-
-user_route.get('/changePassword', userController.loadChangePassword);
-
-user_route.post('/changePassword', userController.updatePassword); 
-
-user_route.get('/products', userController.loadProducts);
-
-user_route.get('/productDetails', userController.loadProductDetails);
-
 user_route.get('/logout',auth.isLogin,userController.userLogout)
 
+
+// =============== otp routes ============
+user_route.post('/register',userController.verifyOtp);
+user_route.get('/userOtp',userController.loadOtpPage);
+user_route.post('/userOtp',userController.insertUser);
+user_route.get('/resendOtp', userController.resendOtp); 
+
+
+// =============== forgot password routes ===============
+user_route.get('/forgotPassword', userController.loadForgotPassword); 
+user_route.post('/forgotPassword', userController.forgotVerify); 
+user_route.get('/changePassword', userController.loadChangePassword);
+user_route.post('/changePassword', userController.updatePassword); 
+
+
+// =============== product routes ==============
+user_route.get('/products', userController.loadProducts);
+user_route.get('/productDetails', userController.loadProductDetails);
 user_route.get('/searchProduct', userController.searchProducts);
 
+
+// ============= cart routes =================
 user_route.get('/viewCart',auth.isLogin,cartController.loadCart);
-
 user_route.post('/addToCart',cartController.addToCart);
-
 user_route.delete('/removeCart',cartController.removeCart);
+ 
 
-user_route.get('/userProfile',auth.isLogin,userController.loadProfile);
+// ================ user profile routes ================
+user_route.get('/userProfile',auth.isLogin,profileController.loadProfile);
+user_route.get('/address',auth.isLogin,profileController.loadAddress);
+user_route.post('/addAddress',auth.isLogin,profileController.addAddress);
+user_route.get('/editAddress',auth.isLogin,profileController.loadEditAddress);
+user_route.post('/editAddress',auth.isLogin,profileController.editAddress);
+user_route.delete('/deleteAddress',profileController.deleteAddress);
+user_route.post('/updateUser',auth.isLogin,profileController.updateUser);
 
-user_route.get('/address',auth.isLogin,userController.loadAddress);
 
-user_route.post('/addAddress',auth.isLogin,userController.addAddress);
-
-user_route.get('/editAddress',auth.isLogin,userController.loadEditAddress);
-
-user_route.post('/editAddress',auth.isLogin,userController.editAddress);
-
-user_route.delete('/deleteAddress',userController.deleteAddress);
+// ============== checkout page routes ===============
+user_route.get('/checkout',auth.isLogin,userController.loadCheckout);
 
 
 

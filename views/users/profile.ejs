@@ -162,23 +162,23 @@
                                        <div class="row">
                                             <div class="col-sm-6">
                                                 <label>First Name</label>
-                                                <input type="text" class="form-control" value="<%=user.firstName %>"
+                                                <input type="text" class="form-control" name="Fname" value="<%=user.firstName %>"
                                                     >
                                             </div><!-- End .col-sm-6 -->
                                             <div class="col-sm-6">
                                                 <label>Last Name</label>
-                                                <input type="text" class="form-control" value="<%=user.lastName %>"
+                                                <input type="text" class="form-control" name="Lname" value="<%=user.lastName %>"
                                                     >
                                             </div>
                                         </div><!-- End .row -->
                                         <!-- <label>Full Name</label>
                                         <input type="text" class="form-control" value="<%= user.firstName + " " + user.lastName %>"> -->
                                         <label>Email address</label>
-                                        <input type="email" class="form-control" value="<%= user.email %>" disabled>
+                                        <input type="email" class="form-control" name="email" value="<%= user.email %>" disabled>
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <label>Mobile Number</label>
-                                                <input type="number" class="form-control" value="<%= user.mobile %>"
+                                                <input type="text" class="form-control" name="mobile" value="<%= user.mobile %>"
                                                     name="pincode" >
                                             </div><!-- End .col-sm-6 -->
                                         </div>
