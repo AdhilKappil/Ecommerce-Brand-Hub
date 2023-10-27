@@ -3,6 +3,7 @@ const path = require("path");
 const userController = require("../controllers/userController"); 
 const cartController = require("../controllers/cartController"); 
 const profileController = require("../controllers/profileController"); 
+const orderController = require("../controllers/orderController"); 
 const session = require('express-session'); 
 const config = require('../config/confiq');
 const auth = require('../middleware/userAuth'); 
@@ -76,8 +77,8 @@ user_route.post('/updateUser',auth.isLogin,profileController.updateUser);
 user_route.post('/resetPassword',auth.isLogin,profileController.resetPassword);
 
 
-// ============== checkout page routes ===============
-user_route.get('/checkout',auth.isLogin,userController.loadCheckout);
+// ============== order page routes ===============
+user_route.get('/checkout',auth.isLogin,orderController.loadCheckout);
 
 
 

@@ -509,18 +509,6 @@ const searchProducts = async (req, res) => {
 
 
 
-// ======== loading chekout page =========
-const loadCheckout = async(req,res)=>{
-    try{
-          
-      res.render('checkout',{user:req.session.user_id})
-  
-    }catch(error){
-      console.log(error);
-    }
-  
-}  
- 
 
   
 module.exports = {
@@ -540,7 +528,6 @@ module.exports = {
     loadProductDetails,
     userLogout,
     searchProducts,
-    loadCheckout
     
     
 };

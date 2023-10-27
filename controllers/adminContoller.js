@@ -213,6 +213,7 @@ const userLoad =  async (req, res) => {
       const user = await User.findById(id);
 
       if (user) {
+        
         user.isBlock = !user.isBlock 
         await user.save(); 
         

@@ -19,7 +19,7 @@
 
 	<!-- Shoping Cart -->
 	<form class="bg0 p-t-75 p-b-85">
-		<div class="container">
+		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
 					<div class="m-l-25 m-r--38 m-lr-0-xl">
@@ -167,10 +167,8 @@
 								</span>
 							</div>
 						</div>
+						<a href="/checkout" class="btn  btn-order btn-block btn-dark">PROCEED TO CHECKOUT</a>
 
-						<a href="/checkout"><button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
-							Proceed to Checkout
-						</button></a>
 					</div>
 				</div>
 			</div>
@@ -215,7 +213,7 @@
 				  
 				   handleQuantityUpdate(productID, quantity, index);
 					const totalPrice = quantity * productPrices[index];
-					totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
+					totalPriceElements[index].textContent = ` ${totalPrice.toFixed(2)}`;
 					updateSubtotal();
 					updateMinusButtonStatus();
 					
@@ -229,7 +227,7 @@
 				handleQuantityUpdate(productID, quantitys, index);
 	
 				const totalPrice = quantitys * productPrices[index];
-				totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
+				totalPriceElements[index].textContent = ` ${totalPrice.toFixed(2)}`;
 				updateSubtotal();
 				updateMinusButtonStatus();
 				
@@ -259,7 +257,7 @@
 					const totalPrice = quantity * productPrice;
 	
 					// Update the total price in the UI
-					totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
+					totalPriceElements[index].textContent = ` ${totalPrice.toFixed(2)}`;
 				} else {
 					console.error('Invalid quantity or product price:', updatedItem);
 				}
@@ -276,9 +274,9 @@
 	
 		function updateSubtotal() {
 			const totalPrices = Array.from(totalPriceElements)
-								 .map(total => parseFloat(total.textContent.replace("₹ ", "")))
+								 .map(total => parseFloat(total.textContent.replace(" ", "")))
 								 .reduce((acc, val) => acc + val, 0);
-			subtotalElement.textContent = `₹ ${totalPrices.toFixed(2)}`;
+			subtotalElement.textContent = ` ${totalPrices.toFixed(2)}`;
 		}
 	
 	   

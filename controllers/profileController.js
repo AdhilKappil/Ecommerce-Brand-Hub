@@ -1,10 +1,4 @@
 const bcrypt = require("bcrypt");
-// const nodemailer = require("nodemailer")
-// const randomstring = require('randomstring')
-// const path = require("path")
-// const otpGenerator = require("otp-generator")
-// const Product = require('../models/product');
-// const Category = require('../models/category');
 const User = require('../models/users');
 const Address = require('../models/userAddress');
 const { ObjectId}=require('mongodb')
