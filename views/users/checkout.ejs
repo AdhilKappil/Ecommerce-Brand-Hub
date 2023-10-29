@@ -1,10 +1,11 @@
 <%- include('../users/layouts/header.ejs') %>
 <%- include('../users/layouts/navBar.ejs') %>
 
+
 <main class="main">
-    <div class="page-header text-center m-t-85" style="background-image: url('user/images/page-header-bg.jpg')">
+    <div class="page-header text-center m-t-85">
         <div class="container">
-            <h1 class="page-title text-dark">Checkout</h1>
+            <h1 class="page-title text-white">Checkout</h1>
         </div><!-- End .container -->
     </div><!-- End .page-header -->
     <nav aria-label="breadcrumb" class="breadcrumb-nav">
@@ -13,9 +14,10 @@
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item " aria-current="page">Shopping Cart</li>
                 <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+
             </ol>
         </div><!-- End .container -->
-    </nav>
+    </nav><!-- End .breadcrumb-nav -->
 
     <div class="page-content ">
         <div class="cart mb-5">
@@ -23,54 +25,57 @@
                 <div class="row">
                     <div class="col-lg-9 cart-item-box">
                         <h5 class="text-dark mb-3">1. &nbsp; Select a delivery address</h5>
-                        <%if(address !=0){%>
+
+                        <% if(address!=0){%>
                             <form action="/checkout" method="post" id="addressForm">
-                                <% for(i=address.length-1; i>=0; i--) { %>
-                                <label class="p-3 border rounded-4 m-2 custom-label">
-                                    <div class="form-check d-flex align-items-center mx-4">
-                                        <input class="form-check-input " type="radio" value="<%= address[i].id %>"
-                                            name="address" id="Radio<%=address[i]._id %>"  <% if(i==address.length-1) { %> checked <% } %> 
-                                            >
-                                            <div class="mx-5">
-                                                <p class="text-dark"><b><%= address[i].fullName %></b>,<%= address[i].state %> ,<%= address[i].city %>,  
-                                                    
-                                                            Contanct
-                                                            Number:
-                                                            <b style="color: #043a6c;">
-                                                                <span class="material-symbols-outlined"
-                                                                    style="font-size: 13px;"></b><%= address[i].mobile %> </p></span>
-                                                            
-                                                <p>
-                                                    <%= address[i].pincode %>,<%= address[i].country %>
-                                                </p>
-                                            </div>
-                                    </div>
-                                </label>
-                                <% } %>
+                            <% for(i=address.length-1;i>=0;i--) {%>
+
+                                    <label class="p-3 border rounded-4 m-2 custom-label">
+                                        <div class="form-check d-flex align-items-center mx-4">
+                                            <input class="form-check-input " type="radio" value="<%=address[i]._id %>"
+                                                name="address" id="Radio<%=address[i]._id %>" <%
+                                                if(i==address.length-1){ %> checked <%}%>
+                                                >
+                                                <div class="mx-5">
+                                                    <p class="text-dark"><b>
+                                                            <%=address[i].fullName%> <br>
+                                                        </b> Location : <%=address[i].city%>, <%=address[i].district%>, <%=address[i].state%> 
+                                                                 <br>
+                                                                <b style="color: #043a6c;">
+                                                                    <span class="material-symbols-outlined"
+                                                                        style="font-size: 13px;">Mobile:</span>
+                                                                    <%=address[i].mobile%>
+                                                                </b></p>
+                                                    <p>
+                                                        Pincode : <%=address[i].pincode%> 
+                                                    </p>
+                                                </div>
+                                        </div>
+                                    </label>
+                                    
+                                    
+                                    <%}%>
+                                </form>
                                 
-                                
-                            </form>
-
-                        <%}else{%>
-                            <div class=" text-center w-100 card">
-                                <h6 class="mt-2 ">You have no shipping Address</h6>
-                                <p class="">Kindly add a shipping address to proceed.</p>
-                                <button type="button"
-                                    class="btn btn-outline-primary-2 mx-auto  mt-1 "
-                                    data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                    style="border-radius: 0px; font-size: 13px; width: 30rem;"> +
-                                    Add a new
-                                    address</button>
-                            </div>
-
-                       <% }%>
-                       <% if(address!=0) { %>
-
+                                    <%}else{%>
+                                        <div class=" text-center w-100 card">
+                                            <h6 class="mt-2 ">You have no shipping Address</h6>
+                                            <p class="">Kindly add a shipping address to proceed.</p>
+                                            <button type="button"
+                                                class="btn btn-outline-primary-2 mx-auto  mt-1 "
+                                                data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                style="border-radius: 0px; font-size: 13px; width: 30rem;"> +
+                                                Add a new
+                                                address</button>
+                                        </div>
+                                        <%}%>
+                                        <%if(address!=0){%>
                                         <button type="button" class="btn btn-outline-primary-2 mt-3"
                                         data-bs-toggle="modal" data-bs-target="#exampleModal"
                                         style="border-radius: 0px; font-size: 13px;"> + Add a new
                                         address</button>
-                        <% } %>
+                                        <%}%>
+
 
                                             <hr>
 
@@ -90,14 +95,13 @@
                     </div><!-- End .col-lg-9 -->
                     <aside class="col-lg-3">
                         <div class="summary summary-cart">
-                            <% if(address !=0){ %>
+                            <% if(address!=0){%>
                             <button id="addressSubmitBtn" class="btn btn-outline-primary-2  btn-block py-3"
                                 style="background-color: #000; color: #fff; "
                                 onMouseOver="this.style.background='#575757'"
                                 onMouseOut="this.style.background='#000'">Use This
                                 Address</button>
-                            <%}%>
-
+                                <%}%>
                             <h3 class="summary-title"></h3>
 
                             <table class="table table-summary">
@@ -106,7 +110,7 @@
                                     <tr class="summary-subtotal">
                                         <td>Subtotal:</td>
                                         <td>₹<span id="subTotalDisplay">
-                                                <%=products.total %>
+                                                <%= total%>
                                             </span></td>
                                     </tr><!-- End .summary-subtotal -->
 
@@ -120,11 +124,15 @@
                                         <td>0.00</td>
                                     </tr><!-- End .summary-shipping-row -->
 
+
+
+
+
                                     <tr class="summary-total">
                                         <td>Total:</td>
                                         <td>₹<span id="totalDisplay">
-                                            <%= products.total %>
-                                        </span></td>
+                                                <%= total%>
+                                            </span></td>
                                     </tr><!-- End .summary-total -->
                                 </tbody>
                             </table><!-- End .table table-summary -->
@@ -207,24 +215,5 @@
     </div>
 </div>
 <!-- model end -->
-
-
-
-<script>
-    // Add a click event listener to the labels
-    $(".custom-label").click(function () {
-        // Remove the "checked" class from all labels
-        $(".custom-label").removeClass("checked");
-
-        // Add the "checked" class to the clicked label
-        $(this).addClass("checked");
-    });
-
-    // form submit handil
-    document.getElementById("addressSubmitBtn").addEventListener("click",function(){
-        document.getElementById("addressForm").submit();
-    })
-</script>
-
 
 <%-include('../users/layouts/footer.ejs') %> 

@@ -7,6 +7,9 @@ const app = express();
 
 app.use("/static", express.static(path.join(__dirname, "public")));
 
+// app.set('view engine','ejs');
+// app.set('views','./views/errorPage');
+
 // ========== cache contoling =========
 const disable = (req, res, next) => {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');

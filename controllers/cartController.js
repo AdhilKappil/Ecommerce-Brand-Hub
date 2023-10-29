@@ -61,7 +61,7 @@ const  loadCart  = async (req, res) => {
 
     if (cartDetails) {
 
-      let total = await calculateTotalPrice(req.session.user_id);
+      const total = await calculateTotalPrice(req.session.user_id);
       
       return res.render("cart", {
         user: userData,

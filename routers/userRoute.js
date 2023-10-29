@@ -81,5 +81,12 @@ user_route.post('/resetPassword',auth.isLogin,profileController.resetPassword);
 user_route.get('/checkout',auth.isLogin,orderController.loadCheckout);
 
 
+// ========= 404 page to handile=======
+// user_route.use('*',(req,res)=>{
+//   res.render('404-error')
+// })
+
+
+
 
 module.exports = user_route; 

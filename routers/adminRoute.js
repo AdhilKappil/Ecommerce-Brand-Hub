@@ -83,7 +83,10 @@ admin_route.get('/logout',auth.isLogin,adminController.adminLogout)
 
 // admin_route.get('/addBaner',auth.isLogin,adminController.loadBaner)
 
-
+// ========= 404 page to handile=======
+// admin_route.use('*',(req,res)=>{
+//   res.render('error-404')
+// })
 
 
 module.exports = admin_route;
