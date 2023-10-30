@@ -216,12 +216,15 @@ const userLoad =  async (req, res) => {
         
         user.isBlock = !user.isBlock 
         await user.save(); 
-        
+
+        if (req.session.user_id === id) { 
+          req.session.user_id = null;
+        }
       }
   
       const Users = await User.find();
  
-      res.render('users', { users: Users });
+      res.redirect('/admin/users');
 
     } catch (error) {   
       console.log(error);
@@ -436,6 +439,7 @@ const adminLogout = async(req,res)=>{
 }
 
 
+
 // const loadBaner = async(req,res)=>{
 
 //   try {
@@ -447,6 +451,35 @@ const adminLogout = async(req,res)=>{
 // }
  
 
+
+// ========== rendering 404 error page =========
+const  load404 = async(req,res)=>{
+
+  try{
+      
+      res.render('error-404')
+  }
+  catch (error)
+      {
+          console.log(error.message)
+     }
+}
+
+
+
+
+// ========== rendering 500 error page =========
+const  load500 = async(req,res)=>{
+
+  try{
+      
+      res.render('error-500')
+  }
+  catch (error)
+      {
+          console.log(error.message)
+     }
+}
 
 
 
@@ -469,5 +502,7 @@ module.exports = {
     editProduct,
     unlistProduct,
     adminLogout,
+    load404,
+    load500
     // loadBaner
 }

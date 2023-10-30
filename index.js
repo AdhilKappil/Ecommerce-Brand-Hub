@@ -24,17 +24,17 @@ const disable = (req, res, next) => {
 const userRoute = require('./routers/userRoute');
 app.use('/',userRoute);
  
- 
- 
 // Admin Route
 const adminRoute = require('./routers/adminRoute');
 app.use('/admin',adminRoute);
     
  
+ 
+ 
 // ========= 404 page to handile cache =======
-  app.use('*',(req,res)=>{
-    res.send('404')
-})
+//   app.use('*',(req,res)=>{
+//     res.send('404')
+// })
 
 app.listen(3000,()=>{
     console.log("Server is running...");

@@ -2,10 +2,11 @@
 <%- include('../users/layouts/navBar.ejs') %>
 
 
+
 <main class="main">
     <div class="page-header text-center m-t-85">
         <div class="container">
-            <h1 class="page-title text-white">Checkout</h1>
+            <h1 class="page-title text-dark">Checkout</h1>
         </div><!-- End .container -->
     </div><!-- End .page-header -->
     <nav aria-label="breadcrumb" class="breadcrumb-nav">
@@ -65,8 +66,8 @@
                                                 class="btn btn-outline-primary-2 mx-auto  mt-1 "
                                                 data-bs-toggle="modal" data-bs-target="#exampleModal"
                                                 style="border-radius: 0px; font-size: 13px; width: 30rem;"> +
-                                                Add a new
-                                                address</button>
+                                                Add a new address
+                                            </button>
                                         </div>
                                         <%}%>
                                         <%if(address!=0){%>
@@ -79,7 +80,7 @@
 
                                             <hr>
 
-                                            <div class=" py-4  mt-2  "
+                                            <!-- <div class=" py-4  mt-2  "
                                                 style="border-radius: 10px; background: #F3F3F9;">
                                                 <div class="form-check d-flex align-items-center mx-4 ">
                                                     <h5>2. Payment method</h5>
@@ -90,10 +91,11 @@
                                                 <div class="form-check d-flex align-items-center mx-4 ">
                                                     <h5>3. Items and delivery</h5>
                                                 </div>
-                                            </div>
+                                            </div> -->
 
                     </div><!-- End .col-lg-9 -->
-                    <aside class="col-lg-3">
+
+                    <!-- <aside class="col-lg-3">
                         <div class="summary summary-cart">
                             <% if(address!=0){%>
                             <button id="addressSubmitBtn" class="btn btn-outline-primary-2  btn-block py-3"
@@ -112,7 +114,7 @@
                                         <td>₹<span id="subTotalDisplay">
                                                 <%= total%>
                                             </span></td>
-                                    </tr><!-- End .summary-subtotal -->
+                                    </tr>
 
 
 
@@ -122,7 +124,7 @@
                                             <label class="" for="standart-shipping">Discount:</label>
                                         </td>
                                         <td>0.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
+                                    </tr><
 
 
 
@@ -133,14 +135,116 @@
                                         <td>₹<span id="totalDisplay">
                                                 <%= total%>
                                             </span></td>
-                                    </tr><!-- End .summary-total -->
+                                    </tr>
                                 </tbody>
-                            </table><!-- End .table table-summary -->
+                            </table>
 
-                            <!-- <button class="btn btn-outline-primary-2 btn-order btn-block ">Use This
-                                Address</button> -->
-                        </div><!-- End .summary -->
-                    </aside><!-- End .col-lg-3 -->
+                            
+                        </div>
+                    </aside> -->
+
+                    <aside class="col-lg-3">
+                        <div class="summary">
+                          <h3 class="summary-title">Your Order</h3>
+                          <!-- End .summary-title -->
+          
+                          <table class="table table-summary">
+                            <thead>
+                              <tr>
+                                <th>Product</th>
+                                <th>Total</th>
+                              </tr>
+                            </thead>
+                          <% products.forEach((value,index)=> { %>
+        
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <a
+                                    ><%= value.productId.productName %> (Set: <%= value.quantity
+                                    %>)</a
+                                  >
+                                </td>
+                                <td> <%= (value.productId.price) *  (value.quantity) %></td>
+                              </tr>
+                              <% }) %>
+          
+                              <tr class="summary-subtotal">
+                                <td>Subtotal:</td>
+                                <td id="total1" ><%= total %> </td>
+                              </tr>
+          
+                              <!-- End .summary-subtotal -->
+                              <tr>
+                                <td>Shipping:</td>
+                                <td>Free shipping</td>
+                              </tr>
+                              <tr class="summary-total">
+                                <td>Total:</td>
+          
+                                <td id="total1" > <%= total %></td>
+                              </tr>
+                              <!-- End .summary-total -->
+                            </tbody>
+                          </table>
+          
+                          <div class="d-flex align-items-center">
+                            <div class="mr-2">
+                              <input
+                                required
+                                type="radio"
+                                id="COD"
+                                name="payment"
+                                value="COD"
+                              />
+                            </div>
+                            <a href="" class="d-block text-dark" for="pay1"
+                              >Cash On Delivery</a
+                            >
+                          </div>
+          
+                          <div class="d-flex align-items-center">
+                            <div class="mr-2">
+                              <input
+                                required
+                                type="radio"
+                                id="payment"        
+                                name="payment"
+                                value="onlinePayment"
+                                checked
+                              />
+                            </div>
+                            <a href="" class="d-block text-dark" for="pay2"
+                              >Online Payment</a
+                            >
+                          </div>
+          
+                          <div class="d-flex align-items-center">
+                            <div class="mr-2">
+                              <input
+                                required
+                                type="radio"
+                                id="wallet"
+                                name="payment"
+                                value="wallet"
+                              />
+                            </div>
+                            <a href="" class="d-block text-dark" for="pay3">Wallet</a>
+                          </div>
+                          <button
+                            type="submit"
+                            class="btn btn-outline-primary-2 btn-order btn-block"
+                          >
+                            <span class="btn-text">Place Order</span>
+                            <span class="btn-hover-text">Proceed to Checkout</span>
+                          </button>
+                        </div>
+          
+                        <!-- End .summary -->
+                      </aside>
+          
+
+                    
                 </div><!-- End .row -->
             </div><!-- End .container -->
         </div><!-- End .cart -->
@@ -153,51 +257,49 @@
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content p-4">
+        <div class="modal-content p-4 m-t-125">
             <div class="modal-header">
                 <h5 class="" id="exampleModalLabel">Add New Address</h5>
                 <button type="button" class=" btn-dark " data-bs-dismiss="modal" aria-label="Close">x</button>
             </div>
-            <form action="/shippingaddress" method="post">
+            <form action="/addShippingAddress" method="post">
                 <div class="modal-body p-4">
                     <div class="mb-1">
-                        <label for="exampleFormControlInput1" class="form-label m-0">Country/Region
-                        </label>
-                        <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                            name="country" required>
-                    </div>
-                    <div class="mb-1">
-                        <label for="exampleFormControlInput1" class="form-label m-0">Full name (First and Last
-                            name)
+                        <label for="exampleFormControlInput1" class="form-label m-0">Full Name
                         </label>
                         <input type="text" class="form-control address-input" id="exampleFormControlInput1"
                             name="fullName" required>
                     </div>
                     <div class="mb-1">
-                        <label for="exampleFormControlInput1" class="form-label m-0">Mobile number
-                        </label>
-                        <input type="number" class="form-control address-input" id="exampleFormControlInput1"
-                            name="mobileNumber" required>
-                    </div>
-                    <div class="mb-1">
-                        <label for="exampleFormControlInput1" class="form-label m-0">Area, Street, Sector,
-                            Village
+                        <label for="exampleFormControlInput1" class="form-label m-0">Mobile Number
                         </label>
                         <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                            name="city" required>
+                            name="mobile" required>
+                    </div>
+                    <div class="mb-1">
+                        <label for="exampleFormControlInput1" class="form-label m-0">State
+                        </label>
+                        <input type="text" class="form-control address-input" id="exampleFormControlInput1"
+                            name="state" required>
+                    </div>
+                    <div class="mb-1">
+                        <label for="exampleFormControlInput1" class="form-label m-0">District
+                        </label>
+                        <input type="text" class="form-control address-input" id="exampleFormControlInput1"
+                            name="district" required>
                     </div>
 
                     <div class=" row ">
                         <div class=" col-6">
-                            <label for="exampleFormControlInput1" class="form-label m-0">State
+                            <label for="exampleFormControlInput1" class="form-label m-0">City
                             </label>
                             <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                name="state" required>
+                                name="city" required>
                         </div>
                         <div class=" col-6">
                             <label for="exampleFormControlInput1" class="form-label m-0">Pincode
                             </label>
-                            <input type="number" class="form-control address-input"
+                            <input type="text" class="form-control address-input"
                                 id="exampleFormControlInput1" name="pincode" required>
                         </div>
                     </div>
@@ -207,13 +309,31 @@
                     <a class="btn btn-outline-primary-2" style="border-radius: 7px;"
                         data-bs-dismiss="modal">Close</a>
                     <button type="submit" class="btn btn-outline-primary-2"
-                        style="border-radius: 7px; background: #000; color: #fff;">Add
-                        now</button>
+                        style="border-radius: 7px; background: #000; color: #fff;">Add now
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 <!-- model end -->
+
+<script>
+            // Add a click event listener to the labels
+            $(".custom-label").click(function () {
+                // Remove the "checked" class from all labels
+                $(".custom-label").removeClass("checked");
+
+                // Add the "checked" class to the clicked label
+                $(this).addClass("checked");
+            });
+
+            // form submit handil
+            document.getElementById("addressSubmitBtn").addEventListener("click",function(){
+                document.getElementById("addressForm").submit();
+            })
+        </script>
+
+        
 
 <%-include('../users/layouts/footer.ejs') %> 

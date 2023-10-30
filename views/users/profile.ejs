@@ -135,12 +135,12 @@
                                                         <hr class="my-3">
                                                         <div class="d-flex justify-content-between">
                                                             <a href="/editAddress?id=<%= address.address[i]._id %>" >
-                                                                <button class="text-info" type="button" id="editBTN" data-bs-toggle="modal" data-bs-target="">
+                                                                <button class="btn btn-outline-primary-2" type="button" id="editBTN" data-bs-toggle="modal" data-bs-target="">
                                                                     Edit
                                                                 </button>
                                                             </a>
                                                             <a onclick="removeAddress('<%=address.address[i]._id%>')">
-                                                                <button class="text-danger" type="button"  data-bs-toggle="modal" data-bs-target="">
+                                                                <button class="btn btn-outline-primary-2" type="button"  data-bs-toggle="modal" data-bs-target="">
                                                                     Remove
                                                                 </button>
                                                             </a>
@@ -182,7 +182,7 @@
                                                     name="pincode" >
                                             </div><!-- End .col-sm-6 -->
                                         </div>
-                                        <button type="submit" class="btn btn-dark" style="border-radius: 5px;">
+                                        <button type="submit" class="btn btn-outline-primary-2">
                                             <span>Save Changes</span>
                                             <!-- <i class="icon-long-arrow-right"></i> -->
                                         </button>
@@ -201,7 +201,7 @@
                                                     <input type="password" name="newPassword" class="form-control" required>
                                                 </div><!-- End .col-sm-6 -->
                                             </div><!-- End .row -->
-                                            <button type="submit" class="btn btn-dark" style="border-radius: 5px;">
+                                            <button type="submit" class="btn btn-outline-primary-2">
                                                 <span>Save Changes</span>
                                             </button>
                                         </div>

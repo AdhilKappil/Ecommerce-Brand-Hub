@@ -80,7 +80,7 @@ const loadCheckout = async (req, res) => {
       const cartDetails = await Cart.findOne({ user: req.session.user_id })
         .populate({
           path: "products.productId",
-          select: "productName",
+          select: "productName price",
         })
         .exec();
   
@@ -95,12 +95,14 @@ const loadCheckout = async (req, res) => {
             user: req.session.user_id,
             total,
             address: userAddress.address,
+            products:cartDetails.products
           });
         } else {
           return res.render("checkout", {
             user: req.session.user_id,
             total,
             address: 0,
+            products:cartDetails.products
           });
         }
       } else {
@@ -109,12 +111,56 @@ const loadCheckout = async (req, res) => {
     } catch (error) {
       console.log(error.message);
     }
-  };
+};
+
+
+
+// =========== adding user address =========
+const addShippingAddress = async(req,res)=>{
+  try {
+    
+    let userAddress = await Address.findOne({ userId: req.session.user_id });
+    if (!userAddress) {
+      userAddress = new Address({
+        userId: req.session.user_id,
+        address: [
+          {
+                fullName: req.body.fullName,
+                mobile: req.body.mobile,
+                state: req.body.state,
+                district: req.body.district,
+                city: req.body.city,
+                pincode: req.body.pincode,
+          },
+        ],
+      });
+    } else {
+      
+      userAddress.address.push({
+                fullName: req.body.fullName,
+                mobile: req.body.mobile,
+                state: req.body.state,
+                district: req.body.district,
+                city: req.body.city,
+                pincode: req.body.pincode,
+      });
+    }
+
+    
+    let result = await userAddress.save();
+    
+    
+    res.redirect('/checkout');
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 
 module.exports = {
  
-    loadCheckout
+    loadCheckout,
+    addShippingAddress
     
     
 };

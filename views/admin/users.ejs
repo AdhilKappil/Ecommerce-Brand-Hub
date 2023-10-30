@@ -58,11 +58,11 @@
       
                                         <% if (users[i].isBlock == false) { %>
                                             <a href="/admin/blockUsers?id=<%= users[i]._id %>">
-                                          <button type="button" class="btn btn-inverse-danger">Un Block</button>
+                                          <button type="button" class="btn btn-inverse-danger">Block</button>
                                         </a>
                                         <% } else { %>
                                             <a href="/admin/blockUsers?id=<%= users[i]._id %>">
-                                          <button type="button" class="btn btn-inverse-success">Block</button>
+                                          <button type="button" class="btn btn-inverse-success">Un Block</button>
                                         </a>
                                        <%}%>
                                     </td>

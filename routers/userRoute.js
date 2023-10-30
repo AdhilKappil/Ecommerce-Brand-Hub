@@ -79,12 +79,18 @@ user_route.post('/resetPassword',auth.isLogin,profileController.resetPassword);
 
 // ============== order page routes ===============
 user_route.get('/checkout',auth.isLogin,orderController.loadCheckout);
+user_route.post('/addShippingAddress',auth.isLogin,orderController.addShippingAddress);
 
 
-// ========= 404 page to handile=======
-// user_route.use('*',(req,res)=>{
-//   res.render('404-error')
-// })
+
+
+
+
+
+
+// ========= error  page to handile=======
+user_route.get('/error-500',userController.load500)
+user_route.get('/*',userController.load404)
 
 
 

@@ -505,8 +505,39 @@ const searchProducts = async (req, res) => {
       console.error(error);
       res.status(500).send('Internal Server Error');
     }
- };
+};
 
+
+
+// ========== rendering 404 error page =========
+const  load404 = async(req,res)=>{
+
+    try{
+        
+        res.render('404-error')
+    }
+    catch (error)
+        {
+            console.log(error.message)
+       }
+  }
+  
+  
+  
+  
+  // ========== rendering 500 error page =========
+  const  load500 = async(req,res)=>{
+  
+    try{
+        
+        res.render('500-error')
+    }
+    catch (error)
+        {
+            console.log(error.message)
+       }
+  }
+  
 
 
 
@@ -528,6 +559,7 @@ module.exports = {
     loadProductDetails,
     userLogout,
     searchProducts,
-    
+    load404,
+    load500
     
 };
