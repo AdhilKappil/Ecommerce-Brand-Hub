@@ -17,15 +17,9 @@
     <div class="container col-6 py-5 p-4">
         <div class="title pb-3">
             <h2>Create a new account</h2>
-                        <!-- <% 
-                        if(typeof message !== 'undefined'){
-                            %>
-                            <div id="invalid-msg" class="alert alert-danger  text-center">
-                                <h4><%- message %></h4>
-                            </div>
-                            <%
-                        }
-                        %> -->
+            <%  if(typeof message !== 'undefined'){ %>
+                 <h5 id="invalid-msg" class=" text-danger text-center"><%- message %></h5>
+            <% }  %>
          </div>
 
         <form action="/register" method="post" onsubmit="return validRegister()">
@@ -56,60 +50,7 @@
 </div>
 </div>
 
-<script>
-
-function validRegister() {
-  const name = document.getElementById('Fname').value;
-  const lname = document.getElementById('Lname').value;
-  const email = document.getElementById('email').value;
-  const mobile = document.getElementById('mobile').value;
-  const password = document.getElementById('password').value;
-  const cpassword = document.getElementById('Cpassword').value;
-
-  // Clear any previous error messages
-  document.getElementById('Fname-error').textContent = '';
-  document.getElementById('Lname-error').textContent = '';
-  document.getElementById('email-error').textContent = '';
-  document.getElementById('mobile-error').textContent = '';
-  document.getElementById('password-error').textContent = '';
-  document.getElementById('password-mismatch').textContent = '';
-
-  if (!name) {
-      document.getElementById('Fname-error').textContent = 'First name field should not be empty!';
-      return false;
-  }
-
-  if (!lname) {
-      document.getElementById('Lname-error').textContent = 'Last name field should not be empty!';
-      return false;
-  }
-
-
-  if (!email) {
-      document.getElementById('email-error').textContent = 'Email field should not be empty!';
-      return false;
-  }
-
-  if (!mobile || mobile.length < 10) {
-      document.getElementById('mobile-error').textContent = 'Mobile number should be at least 10 characters.';
-      return false;
-  }
-
-  if (!password || password.length < 6) {
-      document.getElementById('password-error').textContent = 'Password must be at least 6 characters.';
-      return false;
-  }
-
-  if (password !== cpassword) {
-      document.getElementById('password-mismatch').textContent = 'Passwords do not match. Please try again.';
-      return false;
-  }
-
-  return true;
-}
-
-
-</script>
+<script src="/static/userAssets/js/validation.js"></script>
 
 </body>
 </html>

@@ -28,8 +28,36 @@
 							Log out
 						</a>
 						<% } %>
+						
+						<!-- <li class="nav-item menu-items">
+							<a class="nav-link" data-toggle="collapse" href="#user-account" aria-expanded="false" aria-controls="user-account">
+								<span class="menu-icon">
+									<i class="mdi mdi-account"></i>
+								</span>
+								<span class="menu-title">My Account</span>
+								<i class="menu-arrow"></i>
+							</a>
+							<div class="collapse" id="user-account">
+								<ul class="nav flex-column sub-menu">
+									<li class="nav-item">
+										<a class="nav-link" href="/userProfile">Profile</a>
+									</li>
+									<% if (!user) { %>
+										<li class="nav-item">
+											<a class="nav-link" href="/login">Login</a>
+										</li>
+									<% } else { %>
+										<li class="nav-item">
+											<a class="nav-link" href="/logout">Logout</a>
+										</li>
+									<% } %>
+								</ul>
+							</div>
+						</li> -->
+						
 
 					</div>
+
 				</div>
 			</div>
 
@@ -46,11 +74,11 @@
 						<ul class="main-menu">
 							<li class="active-menu">
 								<a href="/home">Home</a>
-								<ul class="sub-menu">
+								<!-- <ul class="sub-menu">
 									<li><a href="index.html">Homepage 1</a></li>
 									<li><a href="home-02.html">Homepage 2</a></li>
 									<li><a href="home-03.html">Homepage 3</a></li>
-								</ul>
+								</ul> -->
 							</li>
 
 							<li>
@@ -172,11 +200,11 @@
 			<ul class="main-menu-m">
 				<li>
 					<a href="/home">Home</a>
-					<ul class="sub-menu-m">
+					<!-- <ul class="sub-menu-m">
 						<li><a href="index.html">Homepage 1</a></li>
 						<li><a href="home-02.html">Homepage 2</a></li>
 						<li><a href="home-03.html">Homepage 3</a></li>
-					</ul>
+					</ul> -->
 					<span class="arrow-main-menu-m">
 						<i class="fa fa-angle-right" aria-hidden="true"></i>
 					</span>

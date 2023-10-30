@@ -57,7 +57,7 @@
 									</td>
 									<td class="column-5 total-price"><%- (cartItems.products[i].productId.price) * (cartItems.products[i].quantity) %></td>
 									<td class="column-6">
-										<button type="button" class="btn btn-danger" onclick="removeCartItem('<%= user._id %>',
+										<button type="button" class="btn btn btn-outline-primary-2" onclick="removeCartItem('<%= user._id %>',
 										'<%= cartItems.products[i].productId._id %>','<%= cartItems.products[i].quantity %>')">Remove</button>
 									</td>
 								  </tr>
@@ -167,7 +167,7 @@
 								</span>
 							</div>
 						</div>
-						<a href="/checkout" class="btn  btn-order btn-block btn-dark">PROCEED TO CHECKOUT</a>
+						<a href="/checkout" class="btn  btn-order btn-block btn btn-outline-primary-2">PROCEED TO CHECKOUT</a>
 
 					</div>
 				</div>
@@ -285,6 +285,6 @@
 	
 	
 	</script>	
-
+	
 
 <%-include('../users/layouts/footer.ejs') %>

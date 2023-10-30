@@ -150,6 +150,7 @@ const editAddress =async (req,res)=>{
 // ============ deleting user address =========
 const deleteAddress = async (req, res) => {
     try {
+      
     
       let userAddress = await Address.findOne({ userId: req.session.user_id });
       const addressToDeleteIndex = userAddress.address.findIndex(

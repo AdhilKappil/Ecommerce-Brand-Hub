@@ -164,7 +164,7 @@ const verifyOtp = async (req, res) => {
         const userCheck = await User.findOne({email:req.body.email})
         if(userCheck)
         {
-            res.render('registration',{message:"User already exist"});
+            res.render('registration',{message:"Email already exist change your email"});
         }
         else{
             const spassword = await securePassword(req.body.password);

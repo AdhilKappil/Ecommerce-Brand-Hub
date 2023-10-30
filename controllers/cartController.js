@@ -139,6 +139,7 @@ const increaseStock = async(productId, quantity)=>{
 // =========== removing cart items ==========
 const removeCart= async (req, res) => {
   try {
+    
     const { user, product, qty } = req.body;
     const cart = await Cart.findOne({ user: user });
     const qtyFind = cart.products.find(item => item.productId.toString() == product.toString())
@@ -148,8 +149,7 @@ const removeCart= async (req, res) => {
       (cartProduct) => cartProduct.productId.toString() !== product.toString()
     );
     const remove = await cart.save();
-    console.log(remove);
-    console.log("Porduct removed");
+    
     res.json({ remove: 1 });
   } catch (error) {
     console.log(error.message);
