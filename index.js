@@ -8,8 +8,8 @@ const app = express();
 
 app.use("/static", express.static(path.join(__dirname, "public")));
 
-// app.set('view engine','ejs');
-// app.set('views','./views/errorPage');
+app.set('view engine','ejs');
+app.set('views','./views/users');
 
 // ========== cache contoling =========
 const disable = (req, res, next) => {
@@ -33,9 +33,9 @@ app.use('/admin',adminRoute);
  
  
 // ========= 404 page to handile cache =======
-//   app.use('*',(req,res)=>{
-//     res.send('404')
-// })
+  app.use('*',(req,res)=>{
+    res.render('404-error')
+})
 
 app.listen(process.env.port,()=>{
     console.log("Server is running...");

@@ -2,7 +2,7 @@
 <%-include('../users/layouts/header.ejs') %>
 <%-include('../users/layouts/navBar.ejs') %>
 
-<body>
+
     <form action="/editAddress" method="post" onsubmit="return validAddress()">
         <div class="container">
             <div class="row">
@@ -25,7 +25,9 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="state-county">State</label>
-                                <input type="text" class="form-control" id="state" name="state" value="<%=addresses.state%>">
+                                <select class="form-control" id="state" name="state">
+                                    <option value="<%= addresses.state %>"><%= addresses.state %></option>
+                                </select>
                                 <p id="state-error" style="color: red;"></p>
                             </div>
                         </div>

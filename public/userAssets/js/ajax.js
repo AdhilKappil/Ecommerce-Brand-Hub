@@ -55,7 +55,8 @@ function removeCartItem(user,product,qty){
               title: 'Success!',
               text: 'item removed from cart!',
               icon: 'success',
-              timer:2000
+              timer:2000,
+              
              
             }).then(() => {
               location.reload();

@@ -80,9 +80,7 @@ user_route.post('/resetPassword',auth.isLogin,profileController.resetPassword);
 // ============== order page routes ===============
 user_route.get('/checkout',auth.isLogin,orderController.loadCheckout);
 user_route.post('/addShippingAddress',auth.isLogin,orderController.addShippingAddress);
-
-
-
+user_route.post('/placeOrder',auth.isLogin,orderController.placeOrder);
 
 
 
@@ -90,7 +88,7 @@ user_route.post('/addShippingAddress',auth.isLogin,orderController.addShippingAd
 
 // ========= error  page to handile=======
 user_route.get('/error-500',userController.load500)
-user_route.get('/*',userController.load404)
+// user_route.get('/*',userController.load404)
 
 
 

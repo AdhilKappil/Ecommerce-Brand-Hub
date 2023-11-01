@@ -510,17 +510,17 @@ const searchProducts = async (req, res) => {
 
 
 // ========== rendering 404 error page =========
-const  load404 = async(req,res)=>{
+// const  load404 = async(req,res)=>{
 
-    try{
+//     try{
         
-        res.render('404-error')
-    }
-    catch (error)
-        {
-            console.log(error.message)
-       }
-  }
+//         res.render('404-error')
+//     }
+//     catch (error)
+//         {
+//             console.log(error.message)
+//        }
+//   }
   
   
   
@@ -559,7 +559,7 @@ module.exports = {
     loadProductDetails,
     userLogout,
     searchProducts,
-    load404,
+    // load404,
     load500
     
 };

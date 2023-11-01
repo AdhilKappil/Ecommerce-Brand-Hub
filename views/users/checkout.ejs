@@ -1,330 +1,310 @@
 <%- include('../users/layouts/header.ejs') %>
-<%- include('../users/layouts/navBar.ejs') %>
+  <%- include('../users/layouts/navBar.ejs') %>
 
 
 
-<main class="main">
-    <div class="page-header text-center m-t-85">
+    <main class="main">
+      <div class="page-header text-center m-t-85">
         <div class="container">
-            <h1 class="page-title text-dark">Checkout</h1>
+          <h1 class="page-title text-dark">Checkout</h1>
         </div><!-- End .container -->
-    </div><!-- End .page-header -->
-    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+      </div><!-- End .page-header -->
+      <nav aria-label="breadcrumb" class="breadcrumb-nav">
         <div class="container">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item " aria-current="page">Shopping Cart</li>
-                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item " aria-current="page">Shopping Cart</li>
+            <li class="breadcrumb-item active" aria-current="page">Checkout</li>
 
-            </ol>
+          </ol>
         </div><!-- End .container -->
-    </nav><!-- End .breadcrumb-nav -->
+      </nav><!-- End .breadcrumb-nav -->
 
-    <div class="page-content ">
+      <div class="page-content ">
         <div class="cart mb-5">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-9 cart-item-box">
-                        <h5 class="text-dark mb-3">1. &nbsp; Select a delivery address</h5>
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-9 cart-item-box">
+                <h5 class="text-dark mb-3">1. &nbsp; Select a delivery address</h5>
 
-                        <% if(address!=0){%>
-                            <form action="/checkout" method="post" id="addressForm">
-                            <% for(i=address.length-1;i>=0;i--) {%>
+                <% if(address!=0){%>
+                  <form action="/checkout" method="post" id="addressForm">
+                    <% for(i=address.length-1;i>=0;i--) {%>
 
-                                    <label class="p-3 border rounded-4 m-2 custom-label">
-                                        <div class="form-check d-flex align-items-center mx-4">
-                                            <input class="form-check-input " type="radio" value="<%=address[i]._id %>"
-                                                name="address" id="Radio<%=address[i]._id %>" <%
-                                                if(i==address.length-1){ %> checked <%}%>
-                                                >
-                                                <div class="mx-5">
-                                                    <p class="text-dark"><b>
-                                                            <%=address[i].fullName%> <br>
-                                                        </b> Location : <%=address[i].city%>, <%=address[i].district%>, <%=address[i].state%> 
-                                                                 <br>
-                                                                <b style="color: #043a6c;">
-                                                                    <span class="material-symbols-outlined"
-                                                                        style="font-size: 13px;">Mobile:</span>
-                                                                    <%=address[i].mobile%>
-                                                                </b></p>
-                                                    <p>
-                                                        Pincode : <%=address[i].pincode%> 
-                                                    </p>
-                                                </div>
-                                        </div>
-                                    </label>
-                                    
-                                    
-                                    <%}%>
-                                </form>
-                                
-                                    <%}else{%>
-                                        <div class=" text-center w-100 card">
-                                            <h6 class="mt-2 ">You have no shipping Address</h6>
-                                            <p class="">Kindly add a shipping address to proceed.</p>
-                                            <button type="button"
-                                                class="btn btn-outline-primary-2 mx-auto  mt-1 "
-                                                data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                                style="border-radius: 0px; font-size: 13px; width: 30rem;"> +
-                                                Add a new address
-                                            </button>
-                                        </div>
-                                        <%}%>
-                                        <%if(address!=0){%>
-                                        <button type="button" class="btn btn-outline-primary-2 mt-3"
-                                        data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                        style="border-radius: 0px; font-size: 13px;"> + Add a new
-                                        address</button>
-                                        <%}%>
-
-
-                                            <hr>
-
-                                            <!-- <div class=" py-4  mt-2  "
-                                                style="border-radius: 10px; background: #F3F3F9;">
-                                                <div class="form-check d-flex align-items-center mx-4 ">
-                                                    <h5>2. Payment method</h5>
-                                                </div>
-                                            </div>
-                                            <div class=" py-4  mt-1  "
-                                                style="border-radius: 10px; background: #F3F3F9;">
-                                                <div class="form-check d-flex align-items-center mx-4 ">
-                                                    <h5>3. Items and delivery</h5>
-                                                </div>
-                                            </div> -->
-
-                    </div><!-- End .col-lg-9 -->
-
-                    <!-- <aside class="col-lg-3">
-                        <div class="summary summary-cart">
-                            <% if(address!=0){%>
-                            <button id="addressSubmitBtn" class="btn btn-outline-primary-2  btn-block py-3"
-                                style="background-color: #000; color: #fff; "
-                                onMouseOver="this.style.background='#575757'"
-                                onMouseOut="this.style.background='#000'">Use This
-                                Address</button>
-                                <%}%>
-                            <h3 class="summary-title"></h3>
-
-                            <table class="table table-summary">
-                                <tbody>
-
-                                    <tr class="summary-subtotal">
-                                        <td>Subtotal:</td>
-                                        <td>₹<span id="subTotalDisplay">
-                                                <%= total%>
-                                            </span></td>
-                                    </tr>
-
-
-
-
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <label class="" for="standart-shipping">Discount:</label>
-                                        </td>
-                                        <td>0.00</td>
-                                    </tr><
-
-
-
-
-
-                                    <tr class="summary-total">
-                                        <td>Total:</td>
-                                        <td>₹<span id="totalDisplay">
-                                                <%= total%>
-                                            </span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            
-                        </div>
-                    </aside> -->
-
-                    <aside class="col-lg-3">
-                        <div class="summary">
-                          <h3 class="summary-title">Your Order</h3>
-                          <!-- End .summary-title -->
-          
-                          <table class="table table-summary">
-                            <thead>
-                              <tr>
-                                <th>Product</th>
-                                <th>Total</th>
-                              </tr>
-                            </thead>
-                          <% products.forEach((value,index)=> { %>
-        
-                            <tbody>
-                              <tr>
-                                <td>
-                                  <a
-                                    ><%= value.productId.productName %> (Set: <%= value.quantity
-                                    %>)</a
-                                  >
-                                </td>
-                                <td> <%= (value.productId.price) *  (value.quantity) %></td>
-                              </tr>
-                              <% }) %>
-          
-                              <tr class="summary-subtotal">
-                                <td>Subtotal:</td>
-                                <td id="total1" ><%= total %> </td>
-                              </tr>
-          
-                              <!-- End .summary-subtotal -->
-                              <tr>
-                                <td>Shipping:</td>
-                                <td>Free shipping</td>
-                              </tr>
-                              <tr class="summary-total">
-                                <td>Total:</td>
-          
-                                <td id="total1" > <%= total %></td>
-                              </tr>
-                              <!-- End .summary-total -->
-                            </tbody>
-                          </table>
-          
-                          <div class="d-flex align-items-center">
-                            <div class="mr-2">
-                              <input
-                                required
-                                type="radio"
-                                id="COD"
-                                name="payment"
-                                value="COD"
-                              />
-                            </div>
-                            <a href="" class="d-block text-dark" for="pay1"
-                              >Cash On Delivery</a
+                      <label class="p-3 border rounded-4 m-2 custom-label">
+                        <div class="form-check d-flex align-items-center mx-4">
+                          <input class="form-check-input " type="radio" value="<%=address[i]._id %>" name="address"
+                            id="Radio<%=address[i]._id %>" <% if(i==address.length-1){ %> checked <%}%>
                             >
-                          </div>
-          
-                          <div class="d-flex align-items-center">
-                            <div class="mr-2">
-                              <input
-                                required
-                                type="radio"
-                                id="payment"        
-                                name="payment"
-                                value="onlinePayment"
-                                checked
-                              />
+                            <div class="mx-5">
+                              <p class="text-dark"><b>
+                                  <%=address[i].fullName%> <br>
+                                </b> Location : <%=address[i].city%>, <%=address[i].district%>, <%=address[i].state%>
+                                      <br>
+                                      <b style="color: #043a6c;">
+                                        <span class="material-symbols-outlined" style="font-size: 13px;">Mobile:</span>
+                                        <%=address[i].mobile%>
+                                      </b></p>
+                              <p>
+                                Pincode : <%=address[i].pincode%>
+                              </p>
                             </div>
-                            <a href="" class="d-block text-dark" for="pay2"
-                              >Online Payment</a
-                            >
-                          </div>
-          
-                          <div class="d-flex align-items-center">
-                            <div class="mr-2">
-                              <input
-                                required
-                                type="radio"
-                                id="wallet"
-                                name="payment"
-                                value="wallet"
-                              />
-                            </div>
-                            <a href="" class="d-block text-dark" for="pay3">Wallet</a>
-                          </div>
-                          <button
-                            type="submit"
-                            class="btn btn-outline-primary-2 btn-order btn-block"
-                          >
-                            <span class="btn-text">Place Order</span>
-                            <span class="btn-hover-text">Proceed to Checkout</span>
-                          </button>
                         </div>
-          
-                        <!-- End .summary -->
-                      </aside>
-          
+                      </label>
 
-                    
-                </div><!-- End .row -->
-            </div><!-- End .container -->
+
+                      <%}%>
+                  </form>
+
+                  <%}else{%>
+                    <div class=" text-center w-100 card">
+                      <h6 class="mt-2 ">You have no shipping Address</h6>
+                      <p class="">Kindly add a shipping address to proceed.</p>
+                      <button type="button" class="btn btn-outline-primary-2 mx-auto  mt-1 " data-bs-toggle="modal"
+                        data-bs-target="#exampleModal" style="border-radius: 0px; font-size: 13px; width: 30rem;"> +
+                        Add a new address
+                      </button>
+                    </div>
+                    <%}%>
+                      <%if(address!=0){%>
+                        <button type="button" class="btn btn-outline-primary-2 mt-3" data-bs-toggle="modal"
+                          data-bs-target="#exampleModal" style="border-radius: 0px; font-size: 13px;"> + Add a new
+                          address</button>
+                        <%}%>
+
+                          <hr>
+
+              </div><!-- End .col-lg-9 -->
+
+              <aside class="col-lg-3">
+                <div class="summary">
+                  <h3 class="summary-title">Your Order</h3>
+                  <!-- End .summary-title -->
+
+                  <table class="table table-summary">
+                    <thead>
+                      <tr>
+                        <th>Product</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <% products.forEach((value,index)=> { %>
+
+                      <tbody>
+                        <tr>
+                          <td>
+                            <a>
+                              <%= value.productId.productName %> (Set: <%= value.quantity %>)
+                            </a>
+                          </td>
+                          <td>
+                            <%= (value.productId.price) * (value.quantity) %>
+                          </td>
+                        </tr>
+                        <% }) %>
+
+                          <tr class="summary-subtotal">
+                            <td>Subtotal:</td>
+                            <td id="total1">
+                              <%= total %>
+                            </td>
+                          </tr>
+
+                          <!-- End .summary-subtotal -->
+                          <tr>
+                            <td>Shipping:</td>
+                            <td>Free shipping</td>
+                          </tr>
+                          <tr class="summary-total">
+                            <td>Total:</td>
+
+                            <td id="total1">
+                              <%= total %>
+                            </td>
+                          </tr>
+                          <!-- End .summary-total -->
+                      </tbody>
+                  </table>
+
+                  <div class="d-flex align-items-center">
+                    <div class="mr-2">
+                      <input required type="radio" id="COD" name="payment" value="COD" />
+                    </div>
+                    <a href="" class="d-block text-dark" for="pay1">Cash On Delivery</a>
+                  </div>
+
+                  <div class="d-flex align-items-center">
+                    <div class="mr-2">
+                      <input required type="radio" id="payment" name="payment" value="onlinePayment" checked />
+                    </div>
+                    <a href="" class="d-block text-dark" for="pay2">Online Payment</a>
+                  </div>
+
+                  <div class="d-flex align-items-center">
+                    <div class="mr-2">
+                      <input required type="radio" id="wallet" name="payment" value="wallet" />
+                    </div>
+                    <a href="" class="d-block text-dark" for="pay3">Wallet</a>
+                  </div>
+                  <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+                    <span class="btn-text">Place Order</span>
+                    <span class="btn-hover-text">Proceed to Checkout</span>
+                  </button>
+                </div>
+
+                <!-- End .summary -->
+              </aside>
+
+
+
+            </div><!-- End .row -->
+          </div><!-- End .container -->
         </div><!-- End .cart -->
-    </div><!-- End .page-content -->
-</main><!-- End .main -->
+      </div><!-- End .page-content -->
+    </main><!-- End .main -->
 
-<!-- address adding model  -->
+    <!-- address adding model  -->
 
 
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content p-4 m-t-125">
-            <div class="modal-header">
-                <h5 class="" id="exampleModalLabel">Add New Address</h5>
-                <button type="button" class=" btn-dark " data-bs-dismiss="modal" aria-label="Close">x</button>
-            </div>
+          <div class="modal-header">
+            <h5 class="" id="exampleModalLabel">Add New Address</h5>
+            <button type="button" class=" btn-dark " data-bs-dismiss="modal" aria-label="Close">x</button>
+          </div>
 
-            <form action="/addShippingAddress" method="post" onsubmit="return validAddress()">
-                <div class="modal-body p-4">
-                    <div class="mb-1">
-                        <label for="fullName" class="form-label m-0">Full Name</label>
-                        <input type="text" class="form-control address-input" id="fullName" name="fullName">
-                        <span id="name-error" class="text-danger"></span>
-                    </div>
-                    <div class="mb-1">
-                        <label for="phone" class="form-label m-0">Mobile Number</label>
-                        <input type="text" class="form-control address-input" id="phone" name="mobile">
-                        <span id="mobile-error" class="text-danger"></span>
-                    </div>
-                    <div class="mb-1">
-                        <label for="state" class="form-label m-0">State</label>
-                        <input type="text" class="form-control address-input" id="state" name="state">
-                        <span id="state-error" class="text-danger"></span>
-                    </div>
-                    <div class="mb-1">
-                        <label for="district" class="form-label m-0">District</label>
-                        <input type="text" class="form-control address-input" id="district" name="district">
-                        <span id="district-error" class="text-danger"></span>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <label for="city" class="form-label m-0">City</label>
-                            <input type="text" class="form-control address-input" id="city" name="city">
-                            <span id="city-error" class="text-danger"></span>
-                        </div>
-                        <div class="col-6">
-                            <label for="pinCode" class="form-label m-0">Pincode</label>
-                            <input type="text" class="form-control address-input" id="pinCode" name="pincode">
-                            <span id="pincode-error" class="text-danger"></span>
-                        </div>
-                    </div>
+          <form action="/addShippingAddress" method="post" onsubmit="return validAddress()">
+            <div class="modal-body p-4">
+              <div class="mb-1">
+                <label for="fullName" class="form-label m-0">Full Name</label>
+                <input type="text" class="form-control address-input" id="fullName" name="fullName">
+                <span id="name-error" class="text-danger"></span>
+              </div>
+              <div class="mb-1">
+                <label for="phone" class="form-label m-0">Mobile Number</label>
+                <input type="text" class="form-control address-input" id="phone" name="mobile">
+                <span id="mobile-error" class="text-danger"></span>
+              </div>
+              <div class="mb-1">
+                <label for="state" class="form-label m-0">State</label>
+                <select class="form-control address-input" id="state" name="state">
+                  <option value="">Select State</option>
+                </select>
+                <span id="state-error" class="text-danger"></span>
+              </div>
+              <div class="mb-1">
+                <label for="district" class="form-label m-0">District</label>
+                <input type="text" class="form-control address-input" id="district" name="district">
+                <span id="district-error" class="text-danger"></span>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <label for="city" class="form-label m-0">City</label>
+                  <input type="text" class="form-control address-input" id="city" name="city">
+                  <span id="city-error" class="text-danger"></span>
                 </div>
-                <div class="modal-footer">
-                    <a class="btn btn-outline-primary-2" style="border-radius: 7px;" data-bs-dismiss="modal">Close</a>
-                    <button type="submit" class="btn btn-outline-primary-2" style="border-radius: 7px">Add now</button>
+                <div class="col-6">
+                  <label for="pinCode" class="form-label m-0">Pincode</label>
+                  <input type="text" class="form-control address-input" id="pinCode" name="pincode">
+                  <span id="pincode-error" class="text-danger"></span>
                 </div>
-            </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <a class="btn btn-outline-primary-2" style="border-radius: 7px;" data-bs-dismiss="modal">Close</a>
+              <button type="submit" class="btn btn-outline-primary-2" style="border-radius: 7px">Add now</button>
+            </div>
+          </form>
 
         </div>
+      </div>
     </div>
-</div>
-<!-- model end -->
+    <!-- model end -->
 
-<script>
-            // Add a click event listener to the labels
-            $(".custom-label").click(function () {
-                // Remove the "checked" class from all labels
-                $(".custom-label").removeClass("checked");
+    <script>
+      // Add a click event listener to the labels
+      $(".custom-label").click(function () {
+        // Remove the "checked" class from all labels
+        $(".custom-label").removeClass("checked");
 
-                // Add the "checked" class to the clicked label
-                $(this).addClass("checked");
-            });
+        // Add the "checked" class to the clicked label
+        $(this).addClass("checked");
+      });
 
-            // form submit handil
-            document.getElementById("addressSubmitBtn").addEventListener("click",function(){
-                document.getElementById("addressForm").submit();
-            })
-        </script>
+      // form submit handil
+      document.getElementById("addressSubmitBtn").addEventListener("click", function () {
+        document.getElementById("addressForm").submit();
+      })
 
-        <script src="/static/userAssets/js/validation.js"></script>
+    </script>
 
-<%-include('../users/layouts/footer.ejs') %> 
+    <script src="/static/userAssets/js/validation.js"></script>
+
+
+
+    <script>
+function placeOrder() {
+  const placeOrderBtn = document.querySelector('.btn-order');
+  placeOrderBtn.addEventListener('click', async function (event) {
+    event.preventDefault();
+
+    try {
+  const addressId = document.querySelector('input[name="address"]:checked').value;
+  const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+
+  const data = {
+    address: addressId,
+    payment: paymentMethod
+  };
+
+  const response = await fetch('/placeOrder', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  });
+
+  console.log(response);
+
+  if (response.ok) {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const responseData = await response.json();
+      Swal.fire({
+        title: 'Success!',
+        text: 'Order placed successfully!...',
+        icon: 'success',
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      }).then(() => {
+        window.location.href = '/viewOrder';
+      });
+    } else {
+      throw new Error('Response was not in JSON format');
+    }
+  } else {
+    const errorData = await response.json();
+    Swal.fire('Order placement failed:', errorData.message);
+  }
+} catch (error) {
+  console.error('There was an error:', error);
+  Swal.fire('An error occurred while placing the order');
+}
+  });
+}
+
+placeOrder(); // Call the function to handle the order placement
+
+
+</script>
+
+ <!-- // ================ swal ============= -->
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <%-include('../users/layouts/footer.ejs') %>

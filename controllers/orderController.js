@@ -3,46 +3,7 @@ const Cart = require('../models/cart');
 const Product = require('../models/product');
 const User = require('../models/users');
 const Address = require('../models/userAddress');
-
-
-
-
-// ======== loading chekout page =========
-// const loadCheckout = async(req,res)=>{
-//     try {
-
-//         const id = req.session.user_id;
-//         const UserData=await User.findById(id)
-//         const products = await Cart.findOne({ user:id }).populate(
-//             "products.productId"
-//         );
-//         console.log(products);
-//         const address = await Address.findOne({ userId:id },{address:1})
-    
-//         if(products)
-//         {
-//         if(address)
-//         {
-//         res.render('checkout', { products, address,UserData,user:req.session.user_id})
-//         }else{
-//             res.render('checkout',{
-//                 UserData,
-//                 products,
-//                 address:0,
-//                 user:req.session.user_id
-
-//             })
-//         }
-//     }else{
-//         console.log('sbh');
-//         res.redirect('/viewCart')
-//     }
-
-//     } catch (err) {
-//        console.log(err);
-//     }
-// }
-
+const Order = require('../models/order');
 
 
 
@@ -157,10 +118,108 @@ const addShippingAddress = async(req,res)=>{
 };
 
 
+
+//genarate Order uniq Id
+// --------------------------
+const generateUniqueTrackId = async()=>{
+  try {
+    let orderID;
+    let isUnique = false;
+
+  // Keep generating order IDs until a unique one is found
+  while (!isUnique) {
+    // Generate a random 6-digit number
+    orderID = Math.floor(100000 + Math.random() * 900000);
+
+    // Check if the order ID already exists in the database
+    const existingOrder = await Order.findOne({ orderID });
+
+    // If no existing order with the same orderID is found, it's unique
+    if (!existingOrder) {
+      isUnique = true;
+    }
+  }
+
+  return orderID;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+
+// =========== place order ===========
+const placeOrder = async (req, res) => {
+
+
+  try {
+    
+    const addressId = req.body.address;
+    const paymentType = req.body.payment;
+    const cartDetails = await Cart.findOne({ user: req.session.user_id });
+
+    const userAddrs = await Address.findOne({ userId: req.session.user_id });
+    const shipAddress = userAddrs.address.find((address) => {
+      return address._id.toString() === addressId.toString();
+    });
+
+    console.log("collected:", shipAddress);
+
+    if (!shipAddress) {
+      return res.status(400).json({ error: "Address not found" });
+    }
+    console.log("collected :" + shipAddress);
+    const { fullName, mobile, state,district, city,pincode, } =
+      shipAddress;
+   
+
+    const cartProducts = cartDetails.products.map((productItem) => ({
+      productId: productItem.productId,
+      quantity: productItem.quantity,
+      OrderStatus: "pending",
+      StatusLevel: 1,
+      paymentStatus: "pending",
+      "returnOrderStatus.status":"none",
+      "returnOrderStatus.reason":"none"
+    }));
+
+    const total = await calculateTotalPrice(req.session.user_id);
+
+   
+    const trackId = await generateUniqueTrackId()
+    const order = new Order({
+      userId: req.session.user_id,
+      "shippingAddress.fullName": fullName,
+      "shippingAddress.mobile": mobile,
+      "shippingAddress.state":state ,
+      "shippingAddress.district": district,
+      "shippingAddress.city": city,
+      "shippingAddress.pincode": pincode,
+      products: cartProducts,
+      totalAmount: total,
+      paymentMethod: paymentType,
+    
+      orderDate:new Date(),
+      trackId
+    });
+
+    
+    const placeorder = await order.save();
+    res.status(200).json({ placeorder, message: "Order placed successfully" });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ error: "An error occurred" });
+  }
+};
+
+
+
+
 module.exports = {
  
     loadCheckout,
-    addShippingAddress
+    addShippingAddress,
+    placeOrder
     
     
 };

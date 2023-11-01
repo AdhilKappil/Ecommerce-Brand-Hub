@@ -17,22 +17,22 @@ const userAddressSchema = new mongoose.Schema({
           type: Number,
           required: true,
         },
-        pincode: {
-          type: Number,
-          required: true,
-        },
         state: {
           type: String,
           required: true,
         },
         district: {
-            type: String,
-            required: true,
-          },
+          type: String,
+          required: true,
+        },
         city: {
-            type: String,
-            required: true,
-          },  
+          type: String,
+          required: true,
+        },  
+        pincode: {
+          type: Number,
+          required: true,
+        },
       }
     ]
   });
