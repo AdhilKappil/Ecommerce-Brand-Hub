@@ -19,6 +19,7 @@
   "homepage": "https://github.com/AdhilKappil/eCommerce-Brand-Hub#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-ejs-layouts": "^2.5.1",

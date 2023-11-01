@@ -50,7 +50,16 @@ function removeCartItem(user,product,qty){
       success:(response)=>{
           console.log(response);
           if(response.remove==1){
-              location.reload()
+            Swal.fire({
+              
+              title: 'Success!',
+              text: 'item removed from cart!',
+              icon: 'success',
+              timer:2000
+             
+            }).then(() => {
+              location.reload();
+            });
           }
       }
   })
@@ -61,18 +70,26 @@ function removeCartItem(user,product,qty){
 function removeAddress(id){
   console.log(id);
   $.ajax({
-      url:'/deleteAddress',
-      method:'delete',
-      data:{id},
-      success:(response)=>{
-          console.log(response);
-          if(response.remove==1){
-              location.reload()
+      url: '/deleteAddress',
+      method: 'delete',
+      data: { id },
+      success: (response) => {
+          console.log(response)
+          if (response.remove == 1) {
+            Swal.fire({
+              
+              title: 'Success!',
+              text: 'address removed!',
+              icon: 'success',
+              timer:2000
+             
+            }).then(() => {
+              location.reload();
+            });
           }
       }
-  })
+  });
 }
-
 
 // ======= deleting user address ========
 // function removeAddress(id) {

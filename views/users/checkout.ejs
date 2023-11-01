@@ -262,57 +262,48 @@
                 <h5 class="" id="exampleModalLabel">Add New Address</h5>
                 <button type="button" class=" btn-dark " data-bs-dismiss="modal" aria-label="Close">x</button>
             </div>
-            <form action="/addShippingAddress" method="post">
+
+            <form action="/addShippingAddress" method="post" onsubmit="return validAddress()">
                 <div class="modal-body p-4">
                     <div class="mb-1">
-                        <label for="exampleFormControlInput1" class="form-label m-0">Full Name
-                        </label>
-                        <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                            name="fullName" required>
+                        <label for="fullName" class="form-label m-0">Full Name</label>
+                        <input type="text" class="form-control address-input" id="fullName" name="fullName">
+                        <span id="name-error" class="text-danger"></span>
                     </div>
                     <div class="mb-1">
-                        <label for="exampleFormControlInput1" class="form-label m-0">Mobile Number
-                        </label>
-                        <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                            name="mobile" required>
+                        <label for="phone" class="form-label m-0">Mobile Number</label>
+                        <input type="text" class="form-control address-input" id="phone" name="mobile">
+                        <span id="mobile-error" class="text-danger"></span>
                     </div>
                     <div class="mb-1">
-                        <label for="exampleFormControlInput1" class="form-label m-0">State
-                        </label>
-                        <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                            name="state" required>
+                        <label for="state" class="form-label m-0">State</label>
+                        <input type="text" class="form-control address-input" id="state" name="state">
+                        <span id="state-error" class="text-danger"></span>
                     </div>
                     <div class="mb-1">
-                        <label for="exampleFormControlInput1" class="form-label m-0">District
-                        </label>
-                        <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                            name="district" required>
+                        <label for="district" class="form-label m-0">District</label>
+                        <input type="text" class="form-control address-input" id="district" name="district">
+                        <span id="district-error" class="text-danger"></span>
                     </div>
-
-                    <div class=" row ">
-                        <div class=" col-6">
-                            <label for="exampleFormControlInput1" class="form-label m-0">City
-                            </label>
-                            <input type="text" class="form-control address-input" id="exampleFormControlInput1"
-                                name="city" required>
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="city" class="form-label m-0">City</label>
+                            <input type="text" class="form-control address-input" id="city" name="city">
+                            <span id="city-error" class="text-danger"></span>
                         </div>
-                        <div class=" col-6">
-                            <label for="exampleFormControlInput1" class="form-label m-0">Pincode
-                            </label>
-                            <input type="text" class="form-control address-input"
-                                id="exampleFormControlInput1" name="pincode" required>
+                        <div class="col-6">
+                            <label for="pinCode" class="form-label m-0">Pincode</label>
+                            <input type="text" class="form-control address-input" id="pinCode" name="pincode">
+                            <span id="pincode-error" class="text-danger"></span>
                         </div>
                     </div>
-
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-outline-primary-2" style="border-radius: 7px;"
-                        data-bs-dismiss="modal">Close</a>
-                    <button type="submit" class="btn btn-outline-primary-2"
-                    style="border-radius: 7px" >Add now
-                    </button>
+                    <a class="btn btn-outline-primary-2" style="border-radius: 7px;" data-bs-dismiss="modal">Close</a>
+                    <button type="submit" class="btn btn-outline-primary-2" style="border-radius: 7px">Add now</button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
@@ -334,6 +325,6 @@
             })
         </script>
 
-        
+        <script src="/static/userAssets/js/validation.js"></script>
 
 <%-include('../users/layouts/footer.ejs') %> 

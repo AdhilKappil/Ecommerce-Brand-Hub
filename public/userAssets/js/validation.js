@@ -39,18 +39,18 @@ function validRegister() {
       return false;
   }
   
-  const mobileRegex = /^\d{10}$/;
-  
-  if (!mobile || !mobileRegex.test(mobile)) {
-      document.getElementById('mobile-error').textContent = 'Mobile number should be a 10-digit numeric value.';
-      return false;
-  }
-  
-  if (new Set(mobile).size === 1) {
-      document.getElementById('mobile-error').textContent = 'Mobile number should not consist of the same digit.';
-      return false;
-  }
-  
+const mobileRegex = /^[6-9]\d{9}$/;
+
+if (!mobile || !mobileRegex.test(mobile)) {
+    document.getElementById('mobile-error').textContent = 'Mobile number should be a 10-digit valid number';
+    return false;
+}
+
+if (new Set(mobile).size === 1) {
+    document.getElementById('mobile-error').textContent = 'Mobile number should not consist of the same digit.';
+    return false;
+}
+
   
     const passwordRegex = /^(?=.*[!@#$%^&*]).{6,}$/;
   
@@ -95,87 +95,66 @@ function validForgotPassword() {
 
 
 
-// ========== for registration ===============
-// function validAddress() {
-//     const name = document.getElementById('fullName').value;
-//     const email = document.getElementById('email').value;
-//     const mobile = document.getElementById('mobile').value;
-//     const state = document.getElementById('state').value;
-//     const district = document.getElementById('district').value;
-//     const city = document.getElementById('city').value;
-//     const pincode = document.getElementById('pinCode').value;
-  
-//     // Clear any previous error messages
-//     document.getElementById('name-error').textContent = '';
-//     document.getElementById('state-error').textContent = '';
-//     document.getElementById('email-error').textContent = '';
-//     document.getElementById('mobile-error').textContent = '';
-//     document.getElementById('district-error').textContent = '';
-//     document.getElementById('city-error').textContent = '';
-//     document.getElementById('pincode-error').textContent = '';
-  
-//     if (!name) {
-//         document.getElementById('name-error').textContent = 'Name field should not be empty!';
-//         return false;
-//     }
-  
-//     if (!state) {
-//         document.getElementById('state-error').textContent = 'State field should not be empty!';
-//         return false;
-//     }
-  
-  
-//     if (!email) {
-//         document.getElementById('email-error').textContent = 'Email field should not be empty!';
-//         return false;
-//     }
-  
-//     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
-  
-//   if (!email || !emailRegex.test(email)) {
-//       document.getElementById('email-error').textContent = 'Please enter a valid email address. (eg: example@gmail.com)';
-//       return false;
-//   }
-  
-//   const mobileRegex = /^\d{10}$/;
-  
-//   if (!mobile || !mobileRegex.test(mobile)) {
-//       document.getElementById('mobile-error').textContent = 'Mobile number should be a 10-digit numeric value.';
-//       return false;
-//   }
-  
-//   if (new Set(mobile).size === 1) {
-//       document.getElementById('mobile-error').textContent = 'Mobile number should not consist of the same digit.';
-//       return false;
-//   }
-  
-  
-//   if (!district) {
-//     document.getElementById('district-error').textContent = 'District field should not be empty!';
-//     return false;
-// }
+// ========== for address ===============
+function validAddress() {
+    const name = document.getElementById('fullName').value;
+    const mobile = document.getElementById('phone').value;
+    const state = document.getElementById('state').value;
+    const district = document.getElementById('district').value;
+    const city = document.getElementById('city').value;
+    const pincode = document.getElementById('pinCode').value;
 
-// if (!city) {
-//     document.getElementById('city-error').textContent = 'City field should not be empty!';
-//     return false;
-// }
+    document.getElementById('name-error').textContent = '';
+    document.getElementById('state-error').textContent = '';
+    document.getElementById('mobile-error').textContent = '';
+    document.getElementById('district-error').textContent = '';
+    document.getElementById('city-error').textContent = '';
+    document.getElementById('pincode-error').textContent = '';
 
-// const pincodeRegex = /^\d{6}$/;
-  
-// if (!pincode || !pincodeRegex.test(pincode)) {
-//     document.getElementById('pincode-error').textContent = 'Pincode should be a 6-digit numeric value.';
-//     return false;
-// }
+    if (!name) {
+        document.getElementById('name-error').textContent = 'Name field should not be empty!';
+        return false;
+    }
 
-// if (new Set(pincode).size === 1) {
-//     document.getElementById('pincode-error').textContent = 'Pincode should not consist of the same digit.';
-//     return false;
-// }
+    if (!state) {
+        document.getElementById('state-error').textContent = 'State field should not be empty!';
+        return false;
+    }
+
+    const mobileRegex = /^[6-9]\d{9}$/;
+
+if (!mobile || !mobileRegex.test(mobile)) {
+    document.getElementById('mobile-error').textContent = 'Mobile number should be a 10-digit valid number';
+    return false;
+}
+
+if (new Set(mobile).size === 1) {
+    document.getElementById('mobile-error').textContent = 'Mobile number should not consist of the same digit.';
+    return false;
+}
+
+    if (!district) {
+        document.getElementById('district-error').textContent = 'District field should not be empty!';
+        return false;
+    }
+
+    if (!city) {
+        document.getElementById('city-error').textContent = 'City field should not be empty!';
+        return false;
+    }
+
+    const pincodeRegex = /^\d{6}$/;
+
+    if (!pincode || !pincode.match(pincodeRegex)) {
+        document.getElementById('pincode-error').textContent = 'Pincode should be a 6-digit numeric value.';
+        return false;
+    }
+
+    return true;
+}
 
 
-  
-//     return true;
-// }
+
 
 
   

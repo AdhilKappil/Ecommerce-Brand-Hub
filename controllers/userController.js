@@ -76,7 +76,7 @@ const sendVerificationEmail = async (email, otp) => {
             requireTLS: true,
             auth: {
                 user: 'adhilaliotheruse@gmail.com',
-                pass: 'xkmc oady uruw zkkq',
+                pass: process.env.smtp,
             },
         });
 

@@ -1,6 +1,7 @@
+require('dotenv').config();
 const mongoose = require("mongoose");
 const path = require("path")
-mongoose.connect("mongodb://127.0.0.1:27017/Brand-Hub")
+mongoose.connect(process.env.mongoose)
 const express = require("express");
 
 const app = express();
@@ -36,6 +37,6 @@ app.use('/admin',adminRoute);
 //     res.send('404')
 // })
 
-app.listen(3000,()=>{
+app.listen(process.env.port,()=>{
     console.log("Server is running...");
 })

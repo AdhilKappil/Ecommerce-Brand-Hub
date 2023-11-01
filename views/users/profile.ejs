@@ -158,47 +158,49 @@
     
                                 <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
                                     <h6 class="text-center fs-1 font-monospace text-decoration-underline">Edit Details</h6>
-                                    <form action="/updateUser" method="post">
-                                       <div class="row">
+                                    <form action="/updateUser" method="post" onsubmit="return validEditAddress()">
+                                        <div class="row">
+                                            <!-- First Name -->
                                             <div class="col-sm-6">
                                                 <label>First Name</label>
-                                                <input type="text" class="form-control" name="Fname" value="<%=user.firstName %>"
-                                                    >
-                                            </div><!-- End .col-sm-6 -->
+                                                <input type="text" class="form-control" name="Fname" id="Fname" value="<%=user.firstName %>">
+                                                <span id="Fname-error" class="text-danger"></span>
+                                            </div>
+                                            <!-- Last Name -->
                                             <div class="col-sm-6">
                                                 <label>Last Name</label>
-                                                <input type="text" class="form-control" name="Lname" value="<%=user.lastName %>"
-                                                    >
+                                                <input type="text" class="form-control" name="Lname" id="Lname" value="<%=user.lastName %>">
+                                                <span id="Lname-error" class="text-danger"></span>
                                             </div>
-                                        </div><!-- End .row -->
-                                        <!-- <label>Full Name</label>
-                                        <input type="text" class="form-control" value="<%= user.firstName + " " + user.lastName %>"> -->
-                                        <label>Email address</label>
+                                        </div>
+                                        <!-- Email and Mobile Number -->
                                         <input type="email" class="form-control" name="email" value="<%= user.email %>" disabled>
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <label>Mobile Number</label>
-                                                <input type="text" class="form-control" name="mobile" value="<%= user.mobile %>"
-                                                    name="pincode" >
-                                            </div><!-- End .col-sm-6 -->
+                                                <input type="text" class="form-control" name="mobile" id="mobile" value="<%= user.mobile %>" name="pincode">
+                                                <span id="mobile-error" class="text-danger"></span>
+                                            </div>
                                         </div>
                                         <button type="submit" class="btn btn-outline-primary-2">
                                             <span>Save Changes</span>
-                                            <!-- <i class="icon-long-arrow-right"></i> -->
                                         </button>
                                     </form>
+
                                     <hr>
                                     <h6 class="fs-1 font-monospace">Change Password</h6>
-                                    <form action="/resetPassword" method="post">
+                                    <form action="/resetPassword" method="post" onsubmit="return validatePasswords()">
                                         <div class="form-group">
                                             <div class="row">
                                                 <div class="col-sm-6">
                                                     <label>Current Password</label>
-                                                    <input type="password" name="oldPassword" class="form-control" required>
+                                                    <input type="password" name="oldPassword" class="form-control">
+                                                    <span id="current-password-error" class="text-danger"></span>
                                                 </div><!-- End .col-sm-6 -->
                                                 <div class="col-sm-6">
                                                     <label>Create New Password</label>
-                                                    <input type="password" name="newPassword" class="form-control" required>
+                                                    <input type="password" name="newPassword" class="form-control">
+                                                    <span id="new-password-error" class="text-danger"></span>
                                                 </div><!-- End .col-sm-6 -->
                                             </div><!-- End .row -->
                                             <button type="submit" class="btn btn-outline-primary-2">
@@ -206,6 +208,7 @@
                                             </button>
                                         </div>
                                     </form>
+
                                 </div><!-- .End .tab-pane -->
                             </div>
                         </div><!-- End .col-lg-9 -->
@@ -214,5 +217,83 @@
             </div><!-- End .dashboard -->
         </div><!-- End .page-content -->
     </main><!-- End .main -->
+
+
+    <!-- // ================ swal ============= -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <!-- // ========= edit validation ============ -->
+    <script>
+        function validatePasswords() {
+            const currentPassword = document.querySelector('input[name="oldPassword"]').value;
+            const newPassword = document.querySelector('input[name="newPassword"]').value;
+    
+            const passwordRegex = /^(?=.*[!@#$%^&*]).{6,}$/;
+    
+            if (!currentPassword || !passwordRegex.test(currentPassword)) {
+                document.getElementById('current-password-error').textContent = 'Current password must be at least 6 characters and contain a special character.';
+                return false;
+            }
+    
+            if (!newPassword || !passwordRegex.test(newPassword)) {
+                document.getElementById('new-password-error').textContent = 'New password must be at least 6 characters and contain a special character.';
+                return false;
+            }
+    
+            return true;
+        }
+    
+        function validEditAddress() {
+            const name = document.getElementById('Fname').value;
+            const lname = document.getElementById('Lname').value;
+            const mobile = document.getElementById('mobile').value;
+    
+            document.getElementById('Fname-error').textContent = '';
+            document.getElementById('Lname-error').textContent = '';
+            document.getElementById('mobile-error').textContent = '';
+    
+            if (!name) {
+                document.getElementById('Fname-error').textContent = 'First name field should not be empty!';
+                return false;
+            }
+    
+            if (!lname) {
+                document.getElementById('Lname-error').textContent = 'Last name field should not be empty!';
+                return false;
+            }
+    
+            const mobileRegex = /^[6-9]\d{9}$/;
+    
+            if (!mobile || !mobileRegex.test(mobile)) {
+                document.getElementById('mobile-error').textContent = 'Mobile number should be a 10-digit valid number';
+                return false;
+            }
+    
+            if (new Set(mobile).size === 1) {
+                document.getElementById('mobile-error').textContent = 'Mobile number should not consist of the same digit.';
+                return false;
+            }
+    
+            return true;
+        }
+    </script>
+    
+    <script>
+        window.onload = function() {
+            const editForm = document.querySelector('form[action="/updateUser"]');
+            const resetPasswordForm = document.querySelector('form[action="/resetPassword"]');
+    
+            editForm.onsubmit = function() {
+                return validEditAddress();
+            };
+    
+            resetPasswordForm.onsubmit = function() {
+                return validatePasswords();
+            };
+        };
+    </script>
+    
+
 
 <%-include('../users/layouts/footer.ejs') %>
