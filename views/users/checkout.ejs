@@ -133,19 +133,19 @@
                     <a href="" class="d-block text-dark" for="pay1">Cash On Delivery</a>
                   </div>
 
-                  <div class="d-flex align-items-center">
+                  <!-- <div class="d-flex align-items-center">
                     <div class="mr-2">
                       <input required type="radio" id="payment" name="payment" value="onlinePayment" checked />
                     </div>
                     <a href="" class="d-block text-dark" for="pay2">Online Payment</a>
-                  </div>
+                  </div> -->
 
-                  <div class="d-flex align-items-center">
+                  <!-- <div class="d-flex align-items-center">
                     <div class="mr-2">
                       <input required type="radio" id="wallet" name="payment" value="wallet" />
                     </div>
                     <a href="" class="d-block text-dark" for="pay3">Wallet</a>
-                  </div>
+                  </div> -->
                   <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
                     <span class="btn-text">Place Order</span>
                     <span class="btn-hover-text">Proceed to Checkout</span>
@@ -277,7 +277,7 @@ function placeOrder() {
         title: 'Success!',
         text: 'Order placed successfully!...',
         icon: 'success',
-        timer: 3000,
+        timer: 2500,
         timerProgressBar: true,
         didOpen: () => {
           Swal.showLoading();

@@ -1,0 +1,222 @@
+
+<%-include('../users/layouts/header.ejs') %>
+<%-include('../users/layouts/navBar.ejs') %>
+
+
+<main class="main">
+    <div
+      class="page-header text-center"
+      style="background-image: url('assets/images/page-header-bg.jpg')"
+    >
+      <div class="container">
+        <h1 class="page-title">Orders<span>Details</span></h1>
+      </div>
+      <!-- End .container -->
+    </div>
+    <!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+      <div class="container">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item"><a href="/orders">Orders</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Details</li>
+        </ol>
+      </div>
+      <!-- End .container -->
+    </nav>
+    <!-- End .breadcrumb-nav -->
+  
+    <div class="page-content">
+      <div class="checkout">
+        <div class="container">
+          <!-- End .checkout-discount -->
+          <div>
+          
+            
+            
+            <div class="row">
+              <!-- End .col-lg-9 -->
+              <aside class="col-lg-12">
+                <div class="summary">
+                  <h3 class="summary-title">Your Order</h3>
+                  <!-- End .summary-title -->
+  
+                  <table class="table table-summary">
+                    <thead>
+                      <tr>
+                        <th>Products</th>
+                        <th>Price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if( orders.products.length > 0 ){
+                      orders.products.forEach((data)=>{ %>
+  
+                      <tr>
+                        <td>
+                          <h6>
+                            <%= data.productId.productName %>&nbsp&nbsp <span
+                              style="
+                                border-radius: 50%;
+                                font-weight: 100;
+                                background-color: #c96;
+                                padding: 3px 7px;
+                              "
+                              class="badge"
+                              ><%= data.quantity %></span
+                            >
+                          </h6>
+                        </td>
+                        <td>₹ <%= data.productId.price%></td>
+                      </tr>
+                      <% }) %> <%}%>
+                      <tr class="summary-subtotal">
+                        <td>Billing Address: &nbsp</td>
+                        <td><%= orders.deliveryDetails %></td>
+                      </tr>
+                      <tr>
+                        <td>Ordered Date:</td>
+                        <td>
+                          <%= orders.date.toLocaleDateString('en-US', { year:
+                          'numeric', month: 'short', day: '2-digit'
+                          }).replace(/\//g, '-') %>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Order Status:</td>
+                        <td><%= orders.status %></td>
+                      </tr>
+                      <tr>
+                        <td>Payment Method:</td>
+                        <td><%= orders.paymentMethod %></td>
+                      </tr>
+                      
+                      
+  
+                      <tr class="summary-total">
+                        <td>Total:</td>
+                        <td><b><%= orders.totalAmount %></b></td>
+                      </tr>
+                      <!-- End .summary-total -->
+                    </tbody>
+                  </table>
+                  <!-- End .table table-summary -->
+                  
+                  
+                  <% if(orders.status == "placed" || orders.status == "pending"){ %>
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary-2 btn-order btn-block"
+                    data-bs-toggle="modal" data-bs-target="#exampleModal"
+                  >
+                    <span class="btn-text">Cancel Order</span>
+                    <span class="btn-hover-text"
+                      >Proceed to Cancel the Order</span
+                    >
+                  </button>
+  
+                  <%}%>
+                    
+  
+  
+                </div>
+                <!-- End .summary -->
+              </aside>
+              <% if(orders.status == "delivered" ) {%>
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header p-5">
+                        <h5  id="exampleModalLabel">Are you sure?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body p-5">
+                        <form action="/productReturn" method="post">
+                          <input type="hidden" value="<%= orders._id %>" name="orderid">
+                          <input type="hidden" value="<%= orders.totalAmount %>" name="totalPrice">
+    
+                          <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Give reason for order returning:</label>
+                            <textarea name="reason" class="form-control" id="message-text" placeholder="eg: Not in good condition."></textarea>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                            <button type="submit" class="btn btn-primary">Yes</button>
+                          </div>
+                        </form>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+  
+                <% }else{ %>
+  
+              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header p-5">
+                      <h5  id="exampleModalLabel">Are you sure?</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-5">
+                      <form action="/orderCancel" method="post">
+                        <input type="hidden" value="<%= orders._id %>" name="orderid">
+                        <input type="hidden" value="<%= orders.totalAmount %>" name="totalPrice">
+  
+                        
+  
+                        <div class="mb-3">
+                          <label for="message-text" class="col-form-label">Give reason for order cancelling:</label>
+                          <textarea name="reason" class="form-control" id="message-text" placeholder="eg: I changed my mind"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                          <button type="submit" class="btn btn-primary">Yes</button>
+                        </div>
+                      </form>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+              <% } %>
+              
+  
+              
+  
+  
+              
+            </div>
+            <!-- End .row -->
+              </div>
+        </div>
+        <!-- End .container -->
+      </div>
+      <!-- End .checkout -->
+    </div>
+    <!-- End .page-content -->
+  </main>
+  <!-- End .main -->
+  
+  <script>
+    var exampleModal = document.getElementById('exampleModal')
+  exampleModal.addEventListener('show.bs.modal', function (event) {
+    // Button that triggered the modal
+    var button = event.relatedTarget
+    // Extract info from data-bs-* attributes
+    var recipient = button.getAttribute('data-bs-whatever')
+    // If necessary, you could initiate an AJAX request here
+    // and then do the updating in a callback.
+    //
+    // Update the modal's content.
+    var modalTitle = exampleModal.querySelector('.modal-title')
+    var modalBodyInput = exampleModal.querySelector('.modal-body input')
+  
+    modalTitle.textContent = 'New message to ' + recipient
+    modalBodyInput.value = recipient
+  })
+  </script>
+
+
+<%-include('../users/layouts/footer.ejs') %>    

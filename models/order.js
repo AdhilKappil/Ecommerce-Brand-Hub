@@ -43,10 +43,10 @@ const orderSchema = new mongoose.Schema({
           type: Number,
           required: true,
         },
-        OrderStatus:{
-          type:String,
-          require:true
-        },
+        // OrderStatus:{
+        //   type:String,
+        //   require:true
+        // },
         StatusLevel:{
           type: Number,
           required: true
@@ -83,14 +83,18 @@ const orderSchema = new mongoose.Schema({
       type:String,
       require:true
     },
-    // coupon:{
-    //     type: String,
-    //     required: true
-    // },
     trackId:{
       type:Number,
       require:true
-    }
+    },
+    expectedDelivery:{
+      type:Date,
+      required:true
+    },
+    OrderStatus:{
+      type:String,
+      require:true
+    },
   });
 
   module.exports = mongoose.model('order',orderSchema)

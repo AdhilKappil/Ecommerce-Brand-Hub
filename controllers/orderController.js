@@ -7,6 +7,7 @@ const Order = require('../models/order');
 
 
 
+
 // ==== cart items price calculate function here ====
 const calculateTotalPrice = async (userId) => {
     try {
@@ -151,7 +152,6 @@ const generateUniqueTrackId = async()=>{
 // =========== place order ===========
 const placeOrder = async (req, res) => {
 
-
   try {
     
     const addressId = req.body.address;
@@ -163,12 +163,10 @@ const placeOrder = async (req, res) => {
       return address._id.toString() === addressId.toString();
     });
 
-    console.log("collected:", shipAddress);
-
     if (!shipAddress) {
       return res.status(400).json({ error: "Address not found" });
     }
-    console.log("collected :" + shipAddress);
+
     const { fullName, mobile, state,district, city,pincode, } =
       shipAddress;
    
@@ -176,7 +174,6 @@ const placeOrder = async (req, res) => {
     const cartProducts = cartDetails.products.map((productItem) => ({
       productId: productItem.productId,
       quantity: productItem.quantity,
-      OrderStatus: "pending",
       StatusLevel: 1,
       paymentStatus: "pending",
       "returnOrderStatus.status":"none",
@@ -185,6 +182,9 @@ const placeOrder = async (req, res) => {
 
     const total = await calculateTotalPrice(req.session.user_id);
 
+    const today = new Date();
+      const deliveryDate = new Date(today);
+      deliveryDate.setDate(today.getDate() + 7);
    
     const trackId = await generateUniqueTrackId()
     const order = new Order({
@@ -198,13 +198,28 @@ const placeOrder = async (req, res) => {
       products: cartProducts,
       totalAmount: total,
       paymentMethod: paymentType,
-    
+      expectedDelivery:deliveryDate,
       orderDate:new Date(),
-      trackId
+      trackId,
+      OrderStatus: "pending",
     });
 
     
     const placeorder = await order.save();
+
+    if (paymentType === 'COD') {
+      for (const item of cartDetails.products) {
+        const productId = item.productId._id;
+        const quantity = parseInt(item.quantity, 10);
+
+        await Product.findByIdAndUpdate({_id:productId}, {
+          $inc: { quantity: -quantity },
+        });
+      }
+    }
+
+    await Cart.findOneAndDelete({userid:req.body.user_id}) 
+ 
     res.status(200).json({ placeorder, message: "Order placed successfully" });
   } catch (error) {
     console.log(error.message);
@@ -213,13 +228,40 @@ const placeOrder = async (req, res) => {
 };
 
 
+// =========== rendering order page ============
+const loadOrderPage = async(req,res)=>{
+
+  try{
+
+    const userId = req.session.user_id
+    const cart = await Cart.findOne({user:userId})
+    const userData = await User.findById({_id:userId})
+    let cartCount=0; 
+
+
+    if(cart){
+      cartCount = cart.products.lenght
+    }
+
+    const orderData = await Order.find({userId:userId}).sort({date:-1})
+
+    res.render('orders',{user:userData,orders:orderData,cartCount})
+
+
+  }catch(error){
+    console.log(error);
+  }
+}
+
+
 
 
 module.exports = {
  
     loadCheckout,
     addShippingAddress,
-    placeOrder
+    placeOrder,
+    loadOrderPage
     
     
 };

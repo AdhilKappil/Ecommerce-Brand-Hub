@@ -1,0 +1,97 @@
+
+<%-include('../users/layouts/header.ejs') %>
+<%-include('../users/layouts/navBar.ejs') %>
+
+
+<main class="main">
+    <div class="page-header text-center m-t-85" style="background-image: url('assets/images/page-header-bg.jpg')">
+        <div class="container">
+            <h1 class="page-title">Orders</h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                
+                <li class="breadcrumb-item active" aria-current="page">Orders</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="cart">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-cart table-mobile">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Order Date</th>
+                                    <th>Amount</th>
+                                    <th>Payment</th>
+                                    <th>Status</th>
+                                    <th>Expected Delivery</th>
+                                    <th>Tracking Number</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                              <% if(orders.length>0){%>
+                                   <% for(let i=0; i<orders.length;i++){%>
+                                <tr>
+                                    <td><%= i+1 %></td>
+                                    <td><%= orders[i].orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %></td>
+                                    <td>₹ <%= orders[i].totalAmount %></td>
+                                    <td> <%= orders[i].paymentMethod %></td>
+                                    <td><%= orders[i].OrderStatus %></td>
+                                    <td><%= orders[i].expectedDelivery.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %></td>
+                                    <td><%= orders[i].trackId %></td>
+                                    <td>
+                                        <a href="/orderDetails?id=<%= orders[i]._id %>" class=" btn-outline-dark btn-round">View Details</a>
+                                    </td>
+                                </td>
+                                
+                                <!-- <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td> -->
+                                    
+                                </tr>
+                                <% }%>
+                               <% }else{%>
+                               
+                                
+                                    <div
+                class="error-content text-center">
+                <div class="container">
+                  <h1 class="error-title">No Orders</h1>
+                  
+                  <p>
+                    You Ordered Nothing.
+                  </p>
+                  <a
+                    href="/product"
+                    class="btn btn-outline-primary-2 btn-minwidth-lg"
+                  >
+                    <span >SHOPPING</span>
+                    <i class="icon-long-arrow-right"></i>
+                  </a>
+                </div>
+                
+              </div>
+                                <%}%>
+              
+                            </tbody>
+                        </table><!-- End .table table-wishlist -->
+
+                        
+                    </div><!-- End .col-lg-9 -->
+                    
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .cart -->
+    </div><!-- End .page-content -->
+</main><!-- End .main -->
+
+
+<%-include('../users/layouts/footer.ejs') %>

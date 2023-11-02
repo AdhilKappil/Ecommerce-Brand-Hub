@@ -81,7 +81,7 @@ user_route.post('/resetPassword',auth.isLogin,profileController.resetPassword);
 user_route.get('/checkout',auth.isLogin,orderController.loadCheckout);
 user_route.post('/addShippingAddress',auth.isLogin,orderController.addShippingAddress);
 user_route.post('/placeOrder',auth.isLogin,orderController.placeOrder);
-
+user_route.get('/viewOrder',auth.isLogin,orderController.loadOrderPage);
 
 
 
