@@ -50,7 +50,7 @@
                                     <td><%= orders[i].expectedDelivery.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %></td>
                                     <td><%= orders[i].trackId %></td>
                                     <td>
-                                        <a href="/orderDetails?id=<%= orders[i]._id %>" class=" btn-outline-dark btn-round">View Details</a>
+                                        <a href="/orderDetailes?id=<%= orders[i]._id %>" class=" btn-outline-dark btn-round">View Details</a>
                                     </td>
                                 </td>
                                 

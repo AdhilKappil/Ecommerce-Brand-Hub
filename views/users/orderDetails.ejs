@@ -1,0 +1,156 @@
+
+<%-include('../users/layouts/header.ejs') %>
+<%-include('../users/layouts/navBar.ejs') %>
+
+
+<div class="container mt-5">
+  <div class="row justify-content-center m-t-100">
+    <div class="col-md-8">
+      <div class="card border-0 shadow">
+        <div class="card-body text-center">
+          <i class="bi bi-check2-circle-fill order-icon"></i>
+          <h1 class="order-title mt-4">Order Placed Successfully</h1>
+          <p class="card-text">Thank you for your order! We have received it and will process it shortly.</p>
+          <p class="order-id">Your tracking ID is: <strong>
+              <%=order.trackId%>
+            </strong></p>
+        </div>
+      </div>
+      <div class="card mt-4 border-0 shadow">
+        <div class="card-body">
+          <h2 class="mb-4">Order Details</h2>
+          <% if (order && order.products && order.products.length> 0) {
+            order.products.forEach((products) => { %>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped text-center">
+              <thead>
+               
+                  <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total Price</th>
+                  </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><img src="/static/adminAssets/images/products/<%=products.productId.images[0]%>" alt="Product Image"></td>
+                  <td class="align-middle">
+                    <%=products.productId.productName%>
+                  </td>
+                  <td class="align-middle">
+                    <%=products.productId.price%>
+                  </td>
+                  <td class="align-middle">
+                    <%=products.quantity%>
+                  </td>
+                  <td class="align-middle">
+                      $<%=order.totalAmount%>
+                    </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+      <div class="card mt-4 border-0 shadow">
+        <div class="card-body">
+          <h2 class="mb-4">Delivery Information</h2>
+          <div class="row">
+            <div class="col-md-6">
+              <h5>Order Date:</h5>
+              <p>
+                <%=order.orderDate.toLocaleDateString('en-US', { year: 'numeric' , month: 'short' ,
+                day: '2-digit' }).replace(/\//g,'-')%>
+              </p>
+            </div>
+            <div class="col-md-6">
+              <h5>Expected Delivery:</h5>
+              <p>
+                <%=order.expectedDelivery.toLocaleDateString('en-US', { year: 'numeric' , month: 'short' ,
+                day: '2-digit' }).replace(/\//g,'-')%>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-4 border-0 shadow">
+        <div class="card-body">
+          <h2 class="mb-4">Shipping Address</h2>
+          <p>
+            <%=order.shippingAddress.fullName%>
+          </p>
+          <p>
+            Mobile : <%=order.shippingAddress.mobile%>
+          </p>
+          <p>
+            Location : <%= order.shippingAddress.city %>, <%= order.shippingAddress.district %>, <%= order.shippingAddress.state %>
+          </p>
+          <p>
+            Pincode : <%=order.shippingAddress.pincode%>
+          </p>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <a href="/products" class="btn btn-primary continue-btn mb-4"><i class="bi bi-house-door"></i> Continue Shopping</a>
+      </div>
+    </div>
+  </div>
+</div>
+<% } %>
+
+<style>
+  body {
+    background-color: #f8f9fa;
+  }
+
+  .order-icon {
+    font-size: 4rem;
+    color: #ff8c00;
+    /* Orange color */
+  }
+
+  .order-title {
+    color: #ff8c00;
+    /* Orange color */
+  }
+
+  .order-id {
+    font-size: 1.2rem;
+  }
+
+  .table th {
+    background-color: #ff8c00;
+    /* Orange color */
+    color: #fff;
+  }
+
+  .continue-btn {
+    background-color: #ff8c00;
+    /* Orange color */
+    border-color: #ff8c00;
+    /* Orange color */
+  }
+
+  .continue-btn:hover {
+    background-color: #e67800;
+    /* Slightly darker orange color */
+    border-color: #e67800;
+    /* Slightly darker orange color */
+  }
+
+  .card {
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .table img {
+    max-height: 100px;
+    border-radius: 8px;
+  }
+</style>
+
+
+<%-include('../users/layouts/footer.ejs') %>    

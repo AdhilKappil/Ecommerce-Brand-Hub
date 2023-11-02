@@ -283,7 +283,7 @@ function placeOrder() {
           Swal.showLoading();
         }
       }).then(() => {
-        window.location.href = '/viewOrder';
+        window.location.href = '/orderDetailes';
       });
     } else {
       throw new Error('Response was not in JSON format');

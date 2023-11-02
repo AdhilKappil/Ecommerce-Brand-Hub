@@ -201,7 +201,7 @@ const placeOrder = async (req, res) => {
       expectedDelivery:deliveryDate,
       orderDate:new Date(),
       trackId,
-      OrderStatus: "pending",
+      OrderStatus: "Placed",
     });
 
     
@@ -255,13 +255,53 @@ const loadOrderPage = async(req,res)=>{
 
 
 
+// ========= rendering order details page ==========
+const loadOrderDetailes = async (req, res, next) => {
+  try {
+
+      const userId = req.session.user_id;
+      const orderId = req.query.id;
+
+      let order; // Declare order variable outside the if-else block
+
+      if (orderId) {
+          order = await Order.findOne({ _id: orderId })
+              .populate({
+                  path: 'products.productId',
+              })
+              .sort({ orderDate: -1 });
+      } else {
+          order = await Order.findOne({ userId: userId })
+              .populate({
+                  path: 'products.productId',
+              })
+              .sort({ orderDate: -1 });
+      }
+
+      const products = await Cart.findOne({ user: userId }).populate('products.productId');
+
+      if (!order) {
+          return res.status(404).json({
+              success: false,
+              message: 'No orders found for the user.',
+          });
+      }
+
+      res.render('orderDetails', { order, products, user: req.session.user_id });
+  } catch (err) {
+      next(err);
+  }
+};
+
+
 
 module.exports = {
  
     loadCheckout,
     addShippingAddress,
     placeOrder,
-    loadOrderPage
+    loadOrderPage,
+    loadOrderDetailes
     
     
 };
