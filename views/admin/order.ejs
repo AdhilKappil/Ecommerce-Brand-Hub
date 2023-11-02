@@ -1,0 +1,133 @@
+<%-include('../admin/layouts/header.ejs') %>
+<%-include('../admin/layouts/sideBar.ejs') %>
+<%-include('../admin/layouts/navBar.ejs') %>
+
+<div class="main-panel">
+  <div class="content-wrapper">
+
+    <div class="row ">
+
+        <div class="col-12 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-5 ">
+                        <ul class="navbar-nav w-100">
+                            <li class="nav-item w-100">
+                                <!-- d-none -->
+                                <!-- <form action="" method="get" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
+                                <input type="text" name="key" class="form-control mb-1 text-light" placeholder="Search Users">
+                                <button type="submit" class="btn-inverse-info mb-1">search</button>
+                            </form> -->
+                            </li>
+                        </ul>
+                    </div>
+                    <h4 class="card-title">All Orders</h4>
+                    <div class="table-responsive">
+                        <table class="table" id="user-table">
+                            <thead>
+                                <tr>
+
+                                    <th> Product </th>
+                                    <th> User </th>
+                                    <th> Order Date</th>
+                                    <th> Quantity</th>
+                                    <th> Price</th>
+                                    <th> Pyament Status</th>
+                                    <th> Order Status</th>
+                                    <th> Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <%for(i=orders.length-1;i>=0;i--){%>
+                                    <tr>
+                                        <!-- list -->
+                                        <td>
+                                            <div class="product-image-container">
+                                            <img class="" alt="image" src="/static/adminAssets/images/products/<%= orders[i].product.images[0]%>" />
+                                            </div>
+                                            <span>
+                                                <%= orders[i].product.productName %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <%= orders[i].user.email %>
+                                        </td>
+                                        <td>
+                                            <span style="font-weight: 100;" class="pl-2 ">
+                                                <%= orders[i].orderDetails.orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %>
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+                                            <%= orders[i].orderDetails.quantity %>
+                                        </td>
+                                        <td>
+                                            ₹<%= orders[i].orderDetails.totalAmount %>
+                                        </td>
+
+                                        <td>
+                                            <button 
+                                            <%if( orders[i].orderDetails.paymentStatus == "pending"){%>
+                                            class="btn-inverse-warning" 
+                                            <%}else if(orders[i].orderDetails.paymentStatus == "success"){%>
+                                                class="btn-inverse-success" 
+                                            <%}else if(orders[i].orderDetails.paymentStatus == "failed"){%>
+                                                class="btn-inverse-danger" 
+                                            <%}%>        
+                                            ><%= orders[i].orderDetails.paymentStatus %></button>
+                                        </td>
+
+                                        <td>
+                                            <button 
+                                            <%if( orders[i].orderDetails.paymentStatus == "Delivered"){%>
+                                            class="btn-inverse-warning" 
+                                            <%}else if(orders[i].orderDetails.OrderStatus == "pending"){%>
+                                                class="btn-inverse-warning" 
+                                            <%}else if(orders[i].orderDetails.OrderStatus == "placed"){%>
+                                                class="btn-inverse-primary" 
+                                            <%}else if(orders[i].orderDetails.OrderStatus == "Shipped"){%>
+                                                class="btn-inverse-info" 
+                                            <%}else if(orders[i].orderDetails.OrderStatus == "Delivered"){%>
+                                                class="btn-inverse-success" 
+                                            <%}else if(orders[i].orderDetails.OrderStatus == "canceled"){%>
+                                                class="btn-inverse-danger" 
+                                            <%}else if(orders[i].orderDetails.OrderStatus == "OutforDelivery"){%>
+                                                class="btn-warning btn-sm" 
+                                            <%}%> 
+
+                                            ><%= orders[i].orderDetails.OrderStatus %>
+                                        </button>
+                                        </td>
+
+                                        <td>
+                                            <a href="/admin/orders/manage?orderId=<%=orders[i].orderDetails._id%>&productId=<%=orders[i].product._id%>" class="btn btn-inverse-info">Manage</a>
+                                        </td>
+                                    </tr>
+                                    <%}%>
+                                    
+                                    <!-- list -->
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+  </div>
+</div>
+
+
+<style>
+    .product-image-container {
+    width: 100px; 
+    height: 100px; 
+    overflow: hidden; /
+}
+</style>
+
+<%-include('../admin/layouts/footer.ejs') %>
+

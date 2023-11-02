@@ -43,18 +43,6 @@ const orderSchema = new mongoose.Schema({
           type: Number,
           required: true,
         },
-        // OrderStatus:{
-        //   type:String,
-        //   require:true
-        // },
-        StatusLevel:{
-          type: Number,
-          required: true
-        },
-        paymentStatus:{
-          type:String,
-          require:true
-        },
         returnOrderStatus:{
           status:{
             type:String
@@ -92,6 +80,14 @@ const orderSchema = new mongoose.Schema({
       required:true
     },
     OrderStatus:{
+      type:String,
+      require:true
+    },
+    StatusLevel:{
+      type: Number,
+      required: true
+    },
+    paymentStatus:{
       type:String,
       require:true
     },

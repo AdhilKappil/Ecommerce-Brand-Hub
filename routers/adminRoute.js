@@ -1,8 +1,8 @@
 const express = require('express'); 
 const adminController = require("../controllers/adminContoller"); 
+const orderController = require("../controllers/orderController"); 
 const multer = require('multer');
 const path = require('path');
-
 const session = require('express-session');
 const config = require('../config/confiq');
 const auth = require('../middleware/adminAuth'); 
@@ -45,41 +45,42 @@ const upload = multer({storage:storage});
 
 
 
+// ============= login and log out =============
 admin_route.get('/',auth.isLogout,adminController.loadLogin);
-
 admin_route.post('/',adminController.verifyLogin);
+admin_route.get('/logout',auth.isLogin,adminController.adminLogout)
 
+
+// =============== dashboard'=================
 admin_route.get('/dashboard',auth.isLogin,adminController.loadadHome)
 
+
+// ============== categories routes ================
 admin_route.get('/addCategories',auth.isLogin,adminController.loadAddCategories);
-
 admin_route.post('/addCategories',adminController.insertCategory);
-
 admin_route.get('/viewCategories',auth.isLogin,adminController.loadViewCategory);
-
 admin_route.get('/unlistCategory',auth.isLogin,adminController.unlistCategory);
-
 admin_route.get('/editCategory',auth.isLogin,adminController.loadEditCatogories);
-
 admin_route.post('/updateCategory',adminController.editCategory);
 
-admin_route.get('/users',auth.isLogin,adminController.userLoad);
 
+// =============== user routes ===============
+admin_route.get('/users',auth.isLogin,adminController.userLoad);
 admin_route.get('/blockUsers',auth.isLogin,adminController.blockUser);
 
+
+// ============== products routes ================
 admin_route.get('/addProduct',auth.isLogin,adminController.loadaddProducts);
-
 admin_route.post('/addProduct', upload.array('images'), adminController.addProduct);
-
 admin_route.get('/viewProduct',auth.isLogin,adminController.loadViewProducts);
-
 admin_route.get('/editProduct',auth.isLogin,adminController.loadEditProduct);
-
 admin_route.post('/editProduct',upload.array('images'),adminController.editProduct)
-
 admin_route.get('/unlistProduct',auth.isLogin,adminController.unlistProduct)
 
-admin_route.get('/logout',auth.isLogin,adminController.adminLogout)
+
+// ============== order routes ===============
+admin_route.get('/order',auth.isLogin,orderController. loadAdminOrder)
+
 
 // admin_route.get('/addBaner',auth.isLogin,adminController.loadBaner)
 

@@ -174,8 +174,6 @@ const placeOrder = async (req, res) => {
     const cartProducts = cartDetails.products.map((productItem) => ({
       productId: productItem.productId,
       quantity: productItem.quantity,
-      StatusLevel: 1,
-      paymentStatus: "pending",
       "returnOrderStatus.status":"none",
       "returnOrderStatus.reason":"none"
     }));
@@ -202,6 +200,8 @@ const placeOrder = async (req, res) => {
       orderDate:new Date(),
       trackId,
       OrderStatus: "Placed",
+      paymentStatus: "pending",
+      StatusLevel: 1,
     });
 
     
@@ -295,13 +295,66 @@ const loadOrderDetailes = async (req, res, next) => {
 
 
 
+const loadAdminOrder = async (req, res) => {
+
+  try {
+    const orders = await Order.find();
+
+    const productWiseOrdersArray = [];
+
+    for (const order of orders) {
+      for (const productInfo of order.products) {
+        const productId = productInfo.productId;
+
+        const product = await Product.findById(productId).select(
+          "productName images price"
+        );
+        const userDetails = await User.findById(order.userId).select(
+          "email"
+        );
+        // console.log(userDetails);
+        if (product) {
+          // Push the order details with product details into the array
+          productWiseOrdersArray.push({
+            user: userDetails,
+            product: product,
+            orderDetails: {
+              _id: order._id,
+              userId: order.userId,
+              shippingAddress: order.shippingAddress,
+              orderDate: order.orderDate,
+              totalAmount: productInfo.quantity * product.price,
+              OrderStatus: order.OrderStatus,
+              StatusLevel: order.StatusLevel,
+              paymentStatus: order.paymentStatus,
+              paymentMethod: order.paymentMethod,
+              quantity: productInfo.quantity,
+            },
+          });
+        }
+      }
+    }
+    // for(i=0;i<productWiseOrdersArray.length;i++){
+    // console.log(productWiseOrdersArray);
+    // }
+    res.render("order", { orders: productWiseOrdersArray });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
+
+
+
 module.exports = {
  
     loadCheckout,
     addShippingAddress,
     placeOrder,
     loadOrderPage,
-    loadOrderDetailes
+    loadOrderDetailes,
+    loadAdminOrder
     
     
 };
