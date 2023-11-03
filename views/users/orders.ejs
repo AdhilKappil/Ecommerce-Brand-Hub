@@ -31,7 +31,6 @@
                                     <th>Order Date</th>
                                     <th>Amount</th>
                                     <th>Payment</th>
-                                    <th>Status</th>
                                     <th>Expected Delivery</th>
                                     <th>Tracking Number</th>
                                     <th>Details</th>
@@ -46,7 +45,6 @@
                                     <td><%= orders[i].orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %></td>
                                     <td>₹ <%= orders[i].totalAmount %></td>
                                     <td> <%= orders[i].paymentMethod %></td>
-                                    <td><%= orders[i].OrderStatus %></td>
                                     <td><%= orders[i].expectedDelivery.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %></td>
                                     <td><%= orders[i].trackId %></td>
                                     <td>
@@ -70,7 +68,7 @@
                     You Ordered Nothing.
                   </p>
                   <a
-                    href="/product"
+                    href="/products"
                     class="btn btn-outline-primary-2 btn-minwidth-lg"
                   >
                     <span >SHOPPING</span>

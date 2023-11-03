@@ -8,12 +8,13 @@
       <div class="card">
         <div class="card-body">
           <h2 class="card-title">EDIT PRODUCTS</h2>
-          <form class="forms-sample" action="editProduct" method="post" enctype="multipart/form-data">
+          <form class="forms-sample" action="editProduct" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="exampleInputName1">Product Name</label>
                   <input type="text" class="form-control text-white" id="exampleInputName1" name="productname" placeholder="Product Name" value="<%= data.productName %>" />
+                  <p class="error-message" id="productNameError"></p>
                 </div>
                 <br>
                 <div class="form-group">
@@ -23,11 +24,13 @@
                     <option value="<%= category._id %>"><%= category.name %></option>
                     <% }); %>
                   </select>
+                  <p class="error-message" id="categoryError"></p>
                 </div>
                 <br>
                 <div class="form-group">
                   <label for="price">Price</label>
                   <input type="text" class="form-control text-white" id="inlineFormInputName1" name="price" placeholder="Price" value="<%= data.price %>" />
+                  <p class="error-message" id="priceError"></p>
                 </div>
                 <br>
               </div>
@@ -35,17 +38,20 @@
                 <div class="form-group">
                   <label for="brand">Brand</label>
                   <input type="text" class="form-control text-white" id="brand" name="brand" placeholder="Brand" value="<%= data.brand %>" />
+                  <p class="error-message" id="brandError"></p>
                 </div>
                 <br>
                 <div class="form-group">
                   <label for="size">Size</label>
                   <input type="text" class="form-control text-white" id="size" name="size" placeholder="Size" value="<%= data.size %>" />
+                  <p class="error-message" id="sizeError"></p>
                 </div>
                 <br>
                 <div class="form-group">
                   <label for="quantity">Quantity</label>
                   <div class="input-group">
                     <input type="text" class="form-control text-white" id="quantity" name="quantity" placeholder="Quantity" value="<%= data.quantity %>" />
+                    <p class="error-message" id="quantityError"></p>
                   </div>
                 </div>
               </div>
@@ -53,16 +59,15 @@
             <div class="form-group">
               <label for="description">Description</label>
               <textarea class="form-control text-white" id="exampleTextarea1" rows="4" name="description"><%= data.description %></textarea>
+              <p class="error-message" id="descriptionError"></p>
             </div>
-            <br>
-
             <div class="container-fluid">
               <label for="">File upload (Multiple Images)</label>
               <div class="row">
                 <div class="col-md-6 mb-0">
                   <div class="dynamic-image-inputs">
                     <div class="input-group">
-                      <input type="file" name="images" class="form-control" />
+                      <input type="file" name="images" class="form-control" id="imageInput" />
                       <div class="input-group-append">
                         <button class="btn btn-primary add-image-input" type="button">Add Image</button>
                       </div>
@@ -71,7 +76,7 @@
                 </div>
               </div>
             </div>
-            <br><br>
+            <div class="br-10"></div>
             <div class="form-group mt-4 container">
               <label for="deleteImages">Delete Existing Images</label>
               <div class="existing-images-container">
@@ -87,14 +92,12 @@
             <div class="input-container">
               <input type="hidden" name="id" value="<%= data._id %>" />
             </div>
-
             <div class="row mt-5">
               <div class="col-md-12 text-center">
                 <button type="submit" class="btn btn-primary mr-2">Submit</button>
                 <button class="btn btn-dark" id="cancelButton" type="button">Cancel</button>
               </div>
             </div>
-
           </form>
         </div>
       </div>
@@ -126,6 +129,10 @@
 
   .existing-images-container .existing-image {
     flex: 0 0 calc(25% - 10px); /* Set the width to 25% */
+  }
+
+  .error-message{
+    color: red;
   }
 </style>
 
@@ -160,6 +167,72 @@
       dynamicImageInputs.appendChild(inputGroup);
     });
   });
+
+
+  function validateForm() {
+  const productName = document.getElementById("exampleInputName1").value;
+  const brand = document.getElementById("brand").value;
+  const category = document.getElementById("category").value;
+  const size = document.getElementById("size").value;
+  const price = parseFloat(document.getElementById("inlineFormInputName1").value);
+  const quantity = parseInt(document.getElementById("quantity").value);
+  const description = document.getElementById("exampleTextarea1").value;
+
+  const imageInput = document.getElementById("imageInput");
+  const selectedFiles = imageInput.files;
+
+  if (productName === "") {
+    document.getElementById("productNameError").textContent = "Product Name is required.";
+    return false;
+  } else {
+    document.getElementById("productNameError").textContent = "";
+  }
+
+  if (brand === "") {
+    document.getElementById("brandError").textContent = "Brand is required.";
+    return false;
+  } else {
+    document.getElementById("brandError").textContent = "";
+  }
+
+  if (size === "") {
+    document.getElementById("sizeError").textContent = "Size is required.";
+    return false;
+  } else {
+    document.getElementById("sizeError").textContent = "";
+  }
+
+  if (price === "" || price <= 0 || isNaN(price)) {
+    document.getElementById("priceError").textContent = "Price must be a valid number greater than 0.";
+    return false;
+  } else {
+    document.getElementById("priceError").textContent = "";
+  }
+
+  if (quantity === "" || quantity < 0 || isNaN(quantity)) {
+    document.getElementById("quantityError").textContent = "Quantity must be a valid number of at least 0.";
+    return false;
+  } else {
+    document.getElementById("quantityError").textContent = "";
+  }
+
+  if (description === "") {
+    document.getElementById("descriptionError").textContent = "Description is required.";
+    return false;
+  } else {
+    document.getElementById("descriptionError").textContent = "";
+  }
+
+  if (selectedFiles.length === 0) {
+    document.getElementById("imageError").textContent = "Please select at least one image.";
+    return false;
+  } else {
+    document.getElementById("imageError").textContent = "";
+  }
+
+  return true;
+}
+
 
 
   // ========= cancel button redirecting ==========

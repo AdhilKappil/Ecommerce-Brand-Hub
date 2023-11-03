@@ -134,7 +134,7 @@ const loadViewCategory = async (req, res) => {
     res.render('viewCategories', { category: categories });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).render('error-500');
   }
 };
 
@@ -173,7 +173,7 @@ const loadEditCatogories = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
-    res.status(500).send('Internal Server Error');
+    res.status(500).render('error-500');
   }
 }
 
@@ -200,7 +200,7 @@ const userLoad =  async (req, res) => {
     res.render('users', { users: user });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).render('error-500');
    }
   };
 
@@ -242,7 +242,7 @@ const userLoad =  async (req, res) => {
       res.render('addProducts', { category: categories });
     } catch (error) {
       console.error(error);
-      res.status(500).send('Internal Server Error');
+      res.status(500).render('error-500');
     }
   };
 
@@ -283,7 +283,7 @@ const userLoad =  async (req, res) => {
 
   }catch(error){
     console.error(error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).render('error-500');
   }
 }
 
@@ -296,7 +296,7 @@ const loadViewProducts = async (req, res) => {
     res.render('viewProducts', { products: products, categories: categories }); // Pass 'products' and 'categories' to the template
   } catch (error) {
     console.error(error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).render('error-500');
   }
 }
 
@@ -319,7 +319,7 @@ const loadEditProduct = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
-    res.status(500).send('Internal Server Error');
+    res.status(500).render('error-500');
   }
 }
 
@@ -397,7 +397,7 @@ const editProduct = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).render('error-500');
   }
 };
 

@@ -4,6 +4,7 @@ const userController = require("../controllers/userController");
 const cartController = require("../controllers/cartController"); 
 const profileController = require("../controllers/profileController"); 
 const orderController = require("../controllers/orderController"); 
+const whishlistController = require("../controllers/wishlistController");
 const session = require('express-session'); 
 const config = require('../config/confiq');
 const auth = require('../middleware/userAuth'); 
@@ -85,6 +86,8 @@ user_route.get('/viewOrder',auth.isLogin,orderController.loadOrderPage);
 user_route.get('/orderDetails',auth.isLogin,orderController.loadOrderDetailes);
 
 
+// ========= whishlist routes ==========
+// user_route.post('/addWishlist',auth.isLogin,whishlistController.addWishlist);
 
 
 // ========= error  page to handile=======

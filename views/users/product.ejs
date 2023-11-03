@@ -286,11 +286,9 @@
                                     </div>
 
                                     <div class="block2-txt-child2 flex-r p-t-3">
-                                        <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img class="icon-heart1 dis-block trans-04"
-                                                src="/static/userAssets/images/icons/icon-heart-01.png" alt="ICON">
-                                            <img class="icon-heart2 dis-block trans-04 ab-t-l"
-                                                src="/static/userAssets/images/icons/icon-heart-02.png" alt="ICON">
+                                        <a href="#" class="btn-addwish-b2 dis-block pos-relative " data-product-id="<%= product._id %>">
+                                            <img class="icon-heart1 dis-block trans-04" src="/static/userAssets/images/icons/icon-heart-01.png" alt="ICON">
+                                            <img class="icon-heart2 dis-block trans-04 ab-t-l" src="/static/userAssets/images/icons/icon-heart-02.png" alt="ICON">
                                         </a>
                                     </div>
                                 </div>
@@ -352,5 +350,52 @@
                 }
             });
         </script>
+
+<!-- <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Select all wishlist icons
+        const wishlistIcons = document.querySelectorAll('.btn-addwish-b2');
+
+        // Add a click event listener to each wishlist icon
+        wishlistIcons.forEach(function(icon) {
+            icon.addEventListener('click', function(event) {
+                event.preventDefault();
+                const productId = this.getAttribute('data-product-id');
+                addToWishlist(productId);
+                console.log(productId);
+            });
+        });
+
+        function addToWishlist(productId) {
+            console.log('click');
+            // Send an AJAX request to add the product to the wishlist
+            fetch('/addWishlist?id=' + productId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId: productId }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Product added to the wishlist successfully
+                    Swal.fire('Product added to your wishlist!');
+                } else {
+                    // Handle errors or show an error message
+                    Swal.fire('Failed to add the product to your wishlist.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Show an error message to the user
+                Swal.fire('An error occurred while adding the product to your wishlist.');
+            });
+        }
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+
 
 <%-include('../users/layouts/footer.ejs') %>

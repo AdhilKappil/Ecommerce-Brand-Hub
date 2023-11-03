@@ -174,8 +174,12 @@ const placeOrder = async (req, res) => {
     const cartProducts = cartDetails.products.map((productItem) => ({
       productId: productItem.productId,
       quantity: productItem.quantity,
+      OrderStatus: "Placed",
+      StatusLevel: 1,
+      paymentStatus: "Pending",
       "returnOrderStatus.status":"none",
       "returnOrderStatus.reason":"none"
+      
     }));
 
     const total = await calculateTotalPrice(req.session.user_id);
@@ -199,9 +203,6 @@ const placeOrder = async (req, res) => {
       expectedDelivery:deliveryDate,
       orderDate:new Date(),
       trackId,
-      OrderStatus: "Placed",
-      paymentStatus: "pending",
-      StatusLevel: 1,
     });
 
     
@@ -324,9 +325,9 @@ const loadAdminOrder = async (req, res) => {
               shippingAddress: order.shippingAddress,
               orderDate: order.orderDate,
               totalAmount: productInfo.quantity * product.price,
-              OrderStatus: order.OrderStatus,
-              StatusLevel: order.StatusLevel,
-              paymentStatus: order.paymentStatus,
+              OrderStatus: productInfo.OrderStatus,
+              StatusLevel: productInfo.StatusLevel,
+              paymentStatus:productInfo.paymentStatus,
               paymentMethod: order.paymentMethod,
               quantity: productInfo.quantity,
             },
@@ -345,6 +346,50 @@ const loadAdminOrder = async (req, res) => {
 
 
 
+// ========= admin side managinge the order ==========
+const orderMangeLoad = async (req, res) => {
+  try {
+    const { orderId, productId } = req.query;
+    // console.log(orderId, productId);
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res
+        .status(404)
+        .render('error-404');
+    }
+    const productInfo = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+    const product = await Product.findById(productId).select(
+      "productName images"
+    );
+    
+    const productOrder = {
+      orderId: order._id,
+      product: product,
+      orderDetails: {
+        _id: order._id,
+        userId: order.userId,
+        shippingAddress: order.shippingAddress,
+        orderDate: order.orderDate,
+        totalAmount: order.totalAmount,
+        OrderStatus: productInfo.OrderStatus,
+        StatusLevel: productInfo.StatusLevel,
+        paymentMethod: order.paymentMethod,
+        paymentStatus: productInfo.paymentStatus,
+        quantity: productInfo.quantity,
+      },
+    };
+    // console.log(productOrder);
+    // console.log();
+    res.render("orderManagment", { product: productOrder, orderId, productId });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
 
 
 module.exports = {
@@ -354,7 +399,8 @@ module.exports = {
     placeOrder,
     loadOrderPage,
     loadOrderDetailes,
-    loadAdminOrder
+    loadAdminOrder,
+    orderMangeLoad 
     
     
 };

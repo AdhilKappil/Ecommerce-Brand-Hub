@@ -80,6 +80,7 @@ admin_route.get('/unlistProduct',auth.isLogin,adminController.unlistProduct)
 
 // ============== order routes ===============
 admin_route.get('/order',auth.isLogin,orderController. loadAdminOrder)
+admin_route.get('/order/orderManagment',auth.isLogin,orderController. orderMangeLoad )
 
 
 // admin_route.get('/addBaner',auth.isLogin,adminController.loadBaner)

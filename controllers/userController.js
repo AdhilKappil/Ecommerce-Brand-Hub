@@ -503,7 +503,7 @@ const searchProducts = async (req, res) => {
 
     } catch (error) {
       console.error(error);
-      res.status(500).send('Internal Server Error');
+      res.status(500).render('500-error');
     }
 };
 
