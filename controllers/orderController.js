@@ -229,6 +229,8 @@ const placeOrder = async (req, res) => {
 };
 
 
+
+
 // =========== rendering order page ============
 const loadOrderPage = async(req,res)=>{
 
@@ -362,7 +364,7 @@ const orderMangeLoad = async (req, res) => {
       (product) => product.productId.toString() === productId
     );
     const product = await Product.findById(productId).select(
-      "productName images"
+      "productName images price"
     );
     
     const productOrder = {
@@ -391,6 +393,108 @@ const orderMangeLoad = async (req, res) => {
 
 
 
+// ========= user cancel order ========== 
+// const cancelOrder = async (req, res) => {
+//   try {
+//     const userId = req.session.user_id;
+//     const orderId = req.params.orderId;
+//     const productId = req.params.productId;
+
+//     // Find the order by orderId and user ID
+//     const order = await Order.findOne({ _id: orderId, userId: userId });
+
+//     if (!order) {
+//       return res.status(404).json({ success: false, message: 'Order not found' });
+//     }
+
+//     let canCancel = true;
+
+//     for (const product of order.products) {
+    
+//       if(product.productId._id.toString() === productId)
+//       {
+//         console.log(product.status)
+//       if (product.status === 'Delivered' || product.status === 'Canceled') {
+//         canCancel = false;
+//         break; // Exit the loop if any product cannot be canceled
+//       }
+//     }
+//     }
+
+//     if (!canCancel) {
+//       return res.status(400).json({ success: false, message: 'Order cannot be canceled' });
+//     }
+
+//     // Set the status of the product with the specified productId to 'Canceled' within the order
+//     for (const product of order.products) {
+//       if (product.productId._id.toString() === productId) {
+//         product.status = 'Canceled';
+//          // Save the product status
+//         await Product.findByIdAndUpdate(product.productId._id, {
+//           $inc: { quantity: product.quantity },
+//         });
+//       }
+//     }
+
+//     await order.save();
+
+//     res.json({ success: true, message: 'Order has been canceled' });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ success: false, message: 'Failed to cancel the order'});
+//   }
+// };
+
+
+
+// =========== admin side order status managment ============
+const changeOrderStatus = async (req, res) => {
+  try {
+    const { status, orderId, productId } = req.body;
+    const order = await Order.findById(orderId);
+    // find status level
+
+    const statusMap = {
+      Shipped: 2,
+      OutforDelivery: 3,
+      Delivered: 4,
+    };
+
+    const selectedStatus = status;
+    const statusLevel = statusMap[selectedStatus];
+
+    console.log(statusLevel);
+    // find status levelend
+
+    console.log(order);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
+    // Find the product within the order by its ID (using .toString() for comparison)
+    const productInfo = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+    console.log(productInfo);
+    productInfo.OrderStatus = status;
+    productInfo.StatusLevel = statusLevel;
+    productInfo.updatedAt = Date.now();
+
+    const result = await order.save();
+
+    console.log(result);
+    // console.log(req.body);
+    res.redirect(
+      `/admin/order/orderManagment?orderId=${orderId}&productId=${productId}`
+    );
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
+
 
 module.exports = {
  
@@ -400,7 +504,9 @@ module.exports = {
     loadOrderPage,
     loadOrderDetailes,
     loadAdminOrder,
-    orderMangeLoad 
+    orderMangeLoad,
+    // cancelOrder,
+    changeOrderStatus
     
     
 };

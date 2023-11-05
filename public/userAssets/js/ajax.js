@@ -39,56 +39,95 @@ function addCart(id,user) {
 
 
 // ========== removing cart items ========
-function removeCartItem(user,product,qty){
-  console.log('button clicked');
-  // console.log(user,product,qty);
-  $.ajax({
-      url:'/removeCart',
-      method:'delete',
-      encoded:true,
-      data:{user,product,qty},
-      success:(response)=>{
+function removeCartItem(user, product, qty) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'This action will remove the item from your cart.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, remove it!',
+    cancelButtonText: 'No, cancel!',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      console.log('Button clicked');
+      // console.log(user, product, qty);
+      $.ajax({
+        url: '/removeCart',
+        method: 'delete',
+        encoded: true,
+        data: { user, product, qty },
+        success: (response) => {
           console.log(response);
-          if(response.remove==1){
-            Swal.fire({
-              
-              title: 'Success!',
-              text: 'item removed from cart!',
-              icon: 'success',
-              timer:2000,
-              
-             
-            }).then(() => {
-              location.reload();
-            });
-          }
-      }
-  })
-}
-
-
-// ======= deleting user address ========
-function removeAddress(id){
-  console.log(id);
-  $.ajax({
-      url: '/deleteAddress',
-      method: 'delete',
-      data: { id },
-      success: (response) => {
-          console.log(response)
           if (response.remove == 1) {
             Swal.fire({
-              
               title: 'Success!',
-              text: 'address removed!',
+              text: 'Item removed from cart!',
               icon: 'success',
-              timer:2000
-             
+              timer: 2000
             }).then(() => {
               location.reload();
             });
           }
-      }
+        }
+      });
+    } else {
+      Swal.fire({
+        title: 'Cancelled',
+        text: 'Item not removed from cart.',
+        icon: 'error',
+        timer: 2000
+      }).then(() => {
+        location.reload();
+      });
+    }
+  });
+}
+
+// ======= deleting user address ========
+function removeAddress(id) {
+  console.log(id);
+
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'You are about to remove the address.',
+    icon: 'warning',
+    showCancelButton: true, // Show cancel button
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, remove it!',
+    cancelButtonText: 'No, cancel!',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: '/deleteAddress',
+        method: 'delete',
+        data: { id },
+        success: (response) => {
+          console.log(response);
+          if (response.remove == 1) {
+            Swal.fire({
+              title: 'Success!',
+              text: 'Address removed!',
+              icon: 'success',
+              timer: 2000,
+            }).then(() => {
+              location.reload();
+            });
+          }
+        },
+      });
+    } else {
+      Swal.fire({
+        title: 'Cancelled!',
+        text: 'Address Not removed!',
+        icon: 'error',
+        timer: 2000,
+      }).then(() => {
+        location.reload();
+      });
+    }
   });
 }
 

@@ -3,13 +3,21 @@ const mongoose = require("mongoose");
 const path = require("path")
 mongoose.connect(process.env.mongoose)
 const express = require("express");
+const userRoute = require('./routers/userRoute');
+const adminRoute = require('./routers/adminRoute');
+
 
 const app = express();
 
+
+// ========== setting public folder =======
 app.use("/static", express.static(path.join(__dirname, "public")));
 
+
+// ======= setting view engine ======= 
 app.set('view engine','ejs');
 app.set('views','./views/users');
+
 
 // ========== cache contoling =========
 const disable = (req, res, next) => {
@@ -22,21 +30,19 @@ const disable = (req, res, next) => {
 
 
 //user Route
-const userRoute = require('./routers/userRoute');
 app.use('/',userRoute);
  
 // Admin Route
-const adminRoute = require('./routers/adminRoute');
 app.use('/admin',adminRoute);
     
- 
- 
  
 // ========= 404 page to handile cache =======
   app.use('*',(req,res)=>{
     res.render('404-error')
 })
 
+
+// ========= port setup ========
 app.listen(process.env.port,()=>{
     console.log("Server is running...");
 })

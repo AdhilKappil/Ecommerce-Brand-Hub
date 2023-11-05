@@ -2,15 +2,14 @@
 <%-include('../users/layouts/header.ejs') %>
 <%-include('../users/layouts/navBar.ejs') %>
 
-
 <div class="container mt-5">
   <div class="row justify-content-center m-t-100">
     <div class="col-md-8">
       <div class="card border-0 shadow">
         <div class="card-body text-center">
           <i class="bi bi-check2-circle-fill order-icon"></i>
-          <h1 class="order-title mt-4">Order Placed Successfully</h1>
-          <p class="card-text">Thank you for your order! We have received it and will process it shortly.</p>
+          <h1 class="order-title mt-4">Your Order Details</h1>
+          <!-- <p class="card-text">Thank you for your order! We have received it and will process it shortly.</p> -->
           <p class="order-id">Your tracking ID is: <strong>
               <%=order.trackId%>
             </strong></p>
@@ -31,6 +30,8 @@
                     <th scope="col">Price</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Total Price</th>
+                    <th scope="col">Action</th>
+
                   </tr>
               </thead>
               <tbody>
@@ -40,14 +41,23 @@
                     <%=products.productId.productName%>
                   </td>
                   <td class="align-middle">
-                    <%=products.productId.price%>
+                    ₹ <%=products.productId.price%>
                   </td>
                   <td class="align-middle">
                     <%=products.quantity%>
                   </td>
                   <td class="align-middle">
-                      $<%=order.totalAmount%>
+                    ₹ <%- (products.productId.price) * (products.quantity) %>
                     </td>
+
+                    <td class="align-middle action-column">
+                        <button class="btn btn-danger cancel-product mall-btn" data-product-id="<%= products.productId._id %>"> <% if (products.OrderStatus === 'Canceled') { %>
+                            Canceled
+                          <% } else { %>
+                            Cancel
+                          <% } %></button>
+                      </td>
+
                 </tr>
               </tbody>
             </table>
@@ -55,6 +65,7 @@
           <% }) %>
         </div>
       </div>
+      
       <div class="card mt-4 border-0 shadow">
         <div class="card-body">
           <h2 class="mb-4">Delivery Information</h2>
@@ -75,7 +86,31 @@
             </div>
           </div>
         </div>
+
+        <div class="col-md-9 mx-auto">
+
+          <h3 class="text-center py-4">Order Status</h3>
+       
+          <%if(order.products.OrderStatus!="canceled"){%>
+
+          <div class="progress-track">
+            <ul id="progressbar">
+              <li class="step0 active " id="step1">Order placed</li>
+              <li class="step0 text-center <%= order.products[0].StatusLevel >= 2 ? 'active' : '' %>" id="step2">Shipped</li>
+              <li class="step0 text-right <%= order.products[0].StatusLevel >= 3 ? 'active' : '' %>" id="step3">Out for Delivery</li>
+              <li class="step0 text-right <%= order.products[0].StatusLevel >= 4 ? 'active' : '' %>" id="step4">Delivered</li>
+          </ul>
+          </div>
+
+          <%}else{%>
+
+            <h3 class="text-center py-4">Order canceled</h3>
+        <%}%>
+
       </div>
+
+      </div>
+
       <div class="card mt-4 border-0 shadow">
         <div class="card-body">
           <h2 class="mb-4">Shipping Address</h2>
@@ -150,7 +185,58 @@
     max-height: 100px;
     border-radius: 8px;
   }
+  .action-column {
+  width: 100px; /* Adjust the width as needed */
+}
+
+/* Define the button size */
+.small-btn {
+ 
+
+  width: 70px; /* Adjust the width to make the button narrower */
+}
+
 </style>
+
+<!-- <script>
+  $(document).ready(function () {
+    console.log('hrllo');
+    $('.cancel-product').on('click', function () {
+      console.log('hrllo');
+      const button = $(this);
+      const productId = button.data('product-id');
+      const orderId = '<%= order._id %>'; // Retrieve the order ID
+  
+      $.ajax({
+        type: 'POST',
+        url: `/cancelOrder/${orderId}/${productId}`, // Replace with your actual route
+        success: function (data) {
+          if (data.success) {
+            // Product canceled successfully, update the UI
+            button.prop('disabled', true); // Disable the button
+            const statusCell = button.closest('tr').find('.status-cell');
+            statusCell.find('.product-status').text('Canceled'); // Update the status in the UI
+            statusCell.find('.product-status').removeClass('text-success'); // Optional: Remove success text color
+            statusCell.find('.product-status').addClass('text-danger'); // Optional: Add a different color for canceled status
+            button.text('Canceled'); // Update the button text
+            // Update other UI elements as needed
+          } else {
+            // Handle error
+            console.log(data.error);
+          }
+        },
+        error: function (err) {
+          // Handle AJAX error
+          console.error(err);
+        },
+      });
+    });
+  });
+
+  
+  
+    </script>
+   -->
 
 
 <%-include('../users/layouts/footer.ejs') %>    

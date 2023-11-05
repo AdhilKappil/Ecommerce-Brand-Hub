@@ -1,7 +1,7 @@
 <%- include('../users/layouts/header.ejs') %>
   <%- include('../users/layouts/navBar.ejs') %>
 
-
+  <link rel="stylesheet" href="/static/userAssets/css/profile.css">
 
     <main class="main">
       <div class="page-header text-center m-t-85">
@@ -274,17 +274,18 @@ function placeOrder() {
     if (contentType && contentType.includes('application/json')) {
       const responseData = await response.json();
       Swal.fire({
-        title: 'Success!',
-        text: 'Order placed successfully!...',
-        icon: 'success',
-        timer: 2000,
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading();
-        }
-      }).then(() => {
-        window.location.href = '/orderDetails';
-      });
+          title: 'Order Placed Successfully',
+          imageUrl: '/static/userAssets/images/Animation - 1698988378670.gif', 
+          imageAlt: 'Custom Image',
+          html: `
+            <p>Thank you for your purchase! Now we're preparing for the shipment!...</p>
+            <a href="/orderDetails" class="btn btn-primary">Order Details</a>
+            <a href="/products" class="btn btn-secondary">Continue Shopping</a> `,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          width: '40%', // Adjust the width value as needed
+        })
     } else {
       throw new Error('Response was not in JSON format');
     }
@@ -299,7 +300,7 @@ function placeOrder() {
   });
 }
 
-placeOrder(); // Call the function to handle the order placement
+   placeOrder(); // Call the function to handle the order placement
 
 
 </script>

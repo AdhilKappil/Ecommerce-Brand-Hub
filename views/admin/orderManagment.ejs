@@ -31,7 +31,7 @@
                                     <div class="d-flex flex-column ">
                                         <p>ORDER PLACED</p>
                                         <h6>
-                                            <%= product.orderDetails.orderDate %>
+                                            <%= product.orderDetails.orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %>
                                         </h6>
 
                                     </div>
@@ -52,7 +52,7 @@
                                     </div>
                                     <div class="col-md-7 col-12">
                                         <h4 class="card-title">
-                                            <%= product.product.product_name %>
+                                            <%= product.product.productName %>
                                         </h4>
                                         <p class="card-text">
                                         <p>Quantity : <b>
@@ -60,8 +60,8 @@
                                             </b></p><i class="fa-solid fa-file-invoice-dollar"></i> Payment
                                         Method : <%= product.orderDetails. paymentMethod %>
                                             </p>
-                                            <h5 class="card-title mb-2">₹ <%= product.orderDetails.totalAmount
-                                                    %>
+                                            <h5 class="card-title mb-2">
+                                               ₹ <%- (product.product.price) * (product.orderDetails.quantity) %>        
                                             </h5>
                                             <hr class="  " style="background:#555555">
                                             <h5 class="card-title" style="font-size: 15px;">
@@ -70,16 +70,17 @@
                                             <h6 class="card-title" style="font-size: 15px;">
                                                 <%= product.orderDetails.shippingAddress.fullName %>
                                             </h6>
-                                            <p class="card-text">
+                                            <p class="card-text">Location : 
                                                 <%=product.orderDetails.shippingAddress.city%>,
+                                                <%=product.orderDetails.shippingAddress.district%>,
                                                     <%=product.orderDetails.shippingAddress.state%>
                                             </p>
-                                            <p class="card-text">Contanct Number :
-                                                <%=product.orderDetails.shippingAddress.mobileNumber%>
+                                            <p class="card-text">Mobile :
+                                                <%=product.orderDetails.shippingAddress.mobile%>
                                             </p>
                                             <p class="card-text">Pincode :
-                                                <%=product.orderDetails.shippingAddress.pincode%>,
-                                                    <%=product.orderDetails.shippingAddress.country%>
+                                                <%=product.orderDetails.shippingAddress.pincode%>
+                                    
                                             </p>
                                             <hr class="m-0 p-0 my-3">
                                             <%if(product.orderDetails.OrderStatus!="canceled"){%>
@@ -129,7 +130,7 @@
 
 
                                     <div class="col-md-12 mx-auto d-flex justify-content-center py-3 mb-5">
-                                        <form action="/admin/orders/manage/changestatus" method="post">
+                                        <form action="/admin/order/orderManagment/changeStatus"  method="post">
                                             <select name="status" class="mb-3 form-control text-light"
                                                 style="width: 15rem; border-radius: 7px;" required>
                                                 <option value="" disabled selected>Select Status</option>

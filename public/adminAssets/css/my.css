@@ -1,6 +1,3 @@
-
-/* delivery progress bar  */
-
 :-moz-any-link:focus {
     outline: 0
   }
@@ -8,24 +5,24 @@
   #progressbar {
     margin-bottom: 3vh;
     overflow: hidden;
-    color: #000;
+    color: #fff;
     padding-left: 0;
     margin-top: 3vh
   }
   
   #progressbar li {
     list-style-type: none;
-    font-size: 0.rem;
+    font-size: .8rem;
     width: 25%;
     float: left;
     position: relative;
-    font-weight: 600;
-    color: #000
+    font-weight: 400;
+    color: #fff
   }
   
   #progressbar #step1:before {
     content: "";
-    color: #000;
+    color: #fff;
     width: 20px;
     height: 20px;
     margin-left: 0 !important
@@ -33,7 +30,7 @@
   
   #progressbar #step2:before {
     content: "";
-    color: #000;
+    color: #fff;
     width: 20px;
     height: 20px;
     margin-left: 32%
@@ -41,7 +38,7 @@
   
   #progressbar #step3:before {
     content: "";
-    color: #000;
+    color: #fff;
     width: 20px;
     height: 20px;
     margin-right: 32%
@@ -102,7 +99,7 @@
   
   #progressbar li.active:after,
   #progressbar li.active:before {
-    background: rgb(5, 228, 5);
+    background: #1cd44a
   }
   
   #three {
@@ -111,6 +108,9 @@
   
   @media (max-width:767px) {
     #three {
-      font-size:1rem
-   }
+      font-size: 1rem
+    }
+  }
+  .table-responsive {
+    overflow-x:hidden;
   }
