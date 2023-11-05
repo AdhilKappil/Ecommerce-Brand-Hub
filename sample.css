@@ -1,0 +1,23 @@
+.nav-dashboard .nav-link:before {
+    font-family: "molla";
+    content: "\f274";
+    display: block;
+    font-size: 1.5rem;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: -15px;
+    margin-top: -7.5px;
+    transition: all 0.3s;
+    opacity: 0;
+  }
+
+  .breadcrumb-item + .breadcrumb-item:before {
+    color: #999999;
+    content: "\f112";
+    font-family: "molla";
+    padding-right: 0.7rem;
+    font-size: 1.1rem;
+    vertical-align: middle;
+    margin-top: -0.1rem;
+  }

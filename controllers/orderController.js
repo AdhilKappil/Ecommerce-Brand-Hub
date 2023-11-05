@@ -231,7 +231,7 @@ const placeOrder = async (req, res) => {
 
 
 
-// =========== rendering order page ============
+// =========== rendering order history page ============
 const loadOrderPage = async(req,res)=>{
 
   try{
@@ -246,7 +246,7 @@ const loadOrderPage = async(req,res)=>{
       cartCount = cart.products.lenght
     }
 
-    const orderData = await Order.find({userId:userId}).sort({date:-1})
+    const orderData = await Order.find({userId:userId}).sort({orderDate:-1})
 
     res.render('orders',{user:userData,orders:orderData,cartCount})
 
@@ -505,7 +505,6 @@ module.exports = {
     loadOrderDetailes,
     loadAdminOrder,
     orderMangeLoad,
-    // cancelOrder,
     changeOrderStatus
     
     
