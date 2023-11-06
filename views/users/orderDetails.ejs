@@ -9,132 +9,103 @@
         <div class="card-body text-center">
           <i class="bi bi-check2-circle-fill order-icon"></i>
           <h1 class="order-title mt-4">Your Order Details</h1>
-          <!-- <p class="card-text">Thank you for your order! We have received it and will process it shortly.</p> -->
-          <p class="order-id">Your tracking ID is: <strong>
-              <%=order.trackId%>
-            </strong></p>
+          <p class="order-id">Your tracking ID is: <strong><%= order.trackId %></strong></p>
         </div>
       </div>
       <div class="card mt-4 border-0 shadow">
         <div class="card-body">
           <h2 class="mb-4">Order Details</h2>
-          <% if (order && order.products && order.products.length> 0) {
-            order.products.forEach((products) => { %>
-          <div class="table-responsive">
-            <table class="table table-bordered table-striped text-center">
-              <thead>
-               
-                  <tr>
-                    <th scope="col">Image</th>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Total Price</th>
-                    <th scope="col">Action</th>
-
-                  </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><img src="/static/adminAssets/images/products/<%=products.productId.images[0]%>" alt="Product Image"></td>
-                  <td class="align-middle">
-                    <%=products.productId.productName%>
-                  </td>
-                  <td class="align-middle">
-                    ₹ <%=products.productId.price%>
-                  </td>
-                  <td class="align-middle">
-                    <%=products.quantity%>
-                  </td>
-                  <td class="align-middle">
-                    ₹ <%- (products.productId.price) * (products.quantity) %>
-                    </td>
-
-                    <td class="align-middle action-column">
-                        <button class="btn btn-danger cancel-product mall-btn" data-product-id="<%= products.productId._id %>"> <% if (products.OrderStatus === 'Canceled') { %>
+          <% if (order && order.products && order.products.length > 0) {
+            for (let i = 0; i < order.products.length; i++) { %>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped text-center">
+                  <thead>
+                    <tr>
+                      <th scope="col">Image</th>
+                      <th scope="col">Product Name</th>
+                      <th scope="col">Price</th>
+                      <th scope="col">Quantity</th>
+                      <th scope="col">Total Price</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><img src="/static/adminAssets/images/products/<%= order.products[i].productId.images[0] %>" alt="Product Image"></td>
+                      <td class="align-middle"><%= order.products[i].productId.productName %></td>
+                      <td class="align-middle">₹ <%= order.products[i].productId.price %></td>
+                      <td class="align-middle"><%= order.products[i].quantity %></td>
+                      <td class="align-middle">₹ <%- (order.products[i].productId.price) * (order.products[i].quantity) %></td>
+                      <td class="align-middle action-column">
+                        <button class="btn btn-danger cancel-product mall-btn"  onclick="cancelOrder('<%= order._id %>','<%= order.products[i].productId._id %>')">
+                          <% if (order.products[i].OrderStatus === 'Canceled') { %>
                             Canceled
                           <% } else { %>
                             Cancel
-                          <% } %></button>
+                          <% } %>
+                        </button>
                       </td>
-
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <% }) %>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="card mt-4 border-0 shadow mb-4">
+                  <div class="card-body">
+                    <h2 class="mb-4">Delivery Information</h2>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <h5>Order Date:</h5>
+                        <p><%= order.orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %></p>
+                      </div>
+                      <div class="col-md-6">
+                        <h5>Expected Delivery:</h5>
+                        <p><%= order.expectedDelivery.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %></p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-9 mx-auto">
+                    <h3 class="text-center py-4">Order Status</h3>
+                    <% if (order.products[i].OrderStatus !== "Cancelled") { %>
+                      <div class="progress-track">
+                        <ul id="progressbar">
+                          <li class="step0 active" id="step1">Order placed</li>
+                          <li class="step0 text-center <%= order.products[i].StatusLevel >= 2 ? 'active' : '' %>" id="step2">Shipped</li>
+                          <li class="step0 text-right <%= order.products[i].StatusLevel >= 3 ? 'active' : '' %>" id="step3">Out for Delivery</li>
+                          <li class="step0 text-right text-success <%= order.products[i].StatusLevel >= 4 ? 'active' : '' %>" id="step4">Delivered</li>
+                        </ul>
+                      </div>
+                    <% } else { %>
+                        <div class="progress-track  col-12">
+                            <ul id="progressbar">
+                                <li class="step0 active " style="width: 50%; font-size: 1rem;"
+                                                                                                                                                                                                                                                                                               id="step1">
+                                    Order placed</li>
+                                <li class="step0 active text-right text-danger" style="width: 50%; font-size: 1rem;"
+                                                                                                                                                                                                                                                                                               id="step4">
+                                    Cancelled</li>
+                            </ul>
+                        </div>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+          <% } } %>
         </div>
-      </div>
-      
-      <div class="card mt-4 border-0 shadow">
-        <div class="card-body">
-          <h2 class="mb-4">Delivery Information</h2>
-          <div class="row">
-            <div class="col-md-6">
-              <h5>Order Date:</h5>
-              <p>
-                <%=order.orderDate.toLocaleDateString('en-US', { year: 'numeric' , month: 'short' ,
-                day: '2-digit' }).replace(/\//g,'-')%>
-              </p>
-            </div>
-            <div class="col-md-6">
-              <h5>Expected Delivery:</h5>
-              <p>
-                <%=order.expectedDelivery.toLocaleDateString('en-US', { year: 'numeric' , month: 'short' ,
-                day: '2-digit' }).replace(/\//g,'-')%>
-              </p>
-            </div>
+        <div class="card mt-4 border-0 shadow">
+          <div class="card-body">
+            <h2 class="mb-4">Shipping Address</h2>
+            <p><%= order.shippingAddress.fullName %></p>
+            <p>Mobile: <%= order.shippingAddress.mobile %></p>
+            <p>Location: <%= order.shippingAddress.city %>, <%= order.shippingAddress.district %>, <%= order.shippingAddress.state %></p>
+            <p>Pincode: <%= order.shippingAddress.pincode %></p>
           </div>
         </div>
-
-        <div class="col-md-9 mx-auto">
-
-          <h3 class="text-center py-4">Order Status</h3>
-       
-          <%if(order.products.OrderStatus!="canceled"){%>
-
-          <div class="progress-track">
-            <ul id="progressbar">
-              <li class="step0 active " id="step1">Order placed</li>
-              <li class="step0 text-center <%= order.products[0].StatusLevel >= 2 ? 'active' : '' %>" id="step2">Shipped</li>
-              <li class="step0 text-right <%= order.products[0].StatusLevel >= 3 ? 'active' : '' %>" id="step3">Out for Delivery</li>
-              <li class="step0 text-right <%= order.products[0].StatusLevel >= 4 ? 'active' : '' %>" id="step4">Delivered</li>
-          </ul>
-          </div>
-
-          <%}else{%>
-
-            <h3 class="text-center py-4">Order canceled</h3>
-        <%}%>
-
-      </div>
-
-      </div>
-
-      <div class="card mt-4 border-0 shadow">
-        <div class="card-body">
-          <h2 class="mb-4">Shipping Address</h2>
-          <p>
-            <%=order.shippingAddress.fullName%>
-          </p>
-          <p>
-            Mobile : <%=order.shippingAddress.mobile%>
-          </p>
-          <p>
-            Location : <%= order.shippingAddress.city %>, <%= order.shippingAddress.district %>, <%= order.shippingAddress.state %>
-          </p>
-          <p>
-            Pincode : <%=order.shippingAddress.pincode%>
-          </p>
+        <div class="text-center mt-4">
+          <a href="/products" class="btn btn-primary continue-btn mb-4"><i class="bi bi-house-door"></i> Continue Shopping</a>
         </div>
-      </div>
-      <div class="text-center mt-4">
-        <a href="/products" class="btn btn-primary continue-btn mb-4"><i class="bi bi-house-door"></i> Continue Shopping</a>
       </div>
     </div>
   </div>
 </div>
-<% } %>
 
 <style>
   body {
@@ -198,45 +169,31 @@
 
 </style>
 
-<!-- <script>
-  $(document).ready(function () {
-    console.log('hrllo');
-    $('.cancel-product').on('click', function () {
-      console.log('hrllo');
-      const button = $(this);
-      const productId = button.data('product-id');
-      const orderId = '<%= order._id %>'; // Retrieve the order ID
-  
-      $.ajax({
-        type: 'POST',
-        url: `/cancelOrder/${orderId}/${productId}`, // Replace with your actual route
-        success: function (data) {
-          if (data.success) {
-            // Product canceled successfully, update the UI
-            button.prop('disabled', true); // Disable the button
-            const statusCell = button.closest('tr').find('.status-cell');
-            statusCell.find('.product-status').text('Canceled'); // Update the status in the UI
-            statusCell.find('.product-status').removeClass('text-success'); // Optional: Remove success text color
-            statusCell.find('.product-status').addClass('text-danger'); // Optional: Add a different color for canceled status
-            button.text('Canceled'); // Update the button text
-            // Update other UI elements as needed
-          } else {
-            // Handle error
-            console.log(data.error);
-          }
-        },
-        error: function (err) {
-          // Handle AJAX error
-          console.error(err);
-        },
-      });
-    });
-  });
+<script>
+              
+      console.log(oderId);
+      console.log(productId);
 
-  
-  
-    </script>
-   -->
+            function cancelOrder(oderId, productId) {
+              console.log('clicked');
+                $.ajax({
+                    url: '/cancelOrder',
+                    method: "post",
+                    data: { oderId, productId },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.cancel == 1) {
+                            location.reload()
+                        }
+                    },
+                    error: function (error) {
+                      console.log('erroefsdf');
+                        console.error("Error:", error);
+                    }
+                });
+            }
+
+</script>
 
 
 <%-include('../users/layouts/footer.ejs') %>    

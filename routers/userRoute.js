@@ -84,7 +84,7 @@ user_route.post('/addShippingAddress',auth.isLogin,orderController.addShippingAd
 user_route.post('/placeOrder',auth.isLogin,orderController.placeOrder);
 user_route.get('/viewOrder',auth.isLogin,orderController.loadOrderPage);
 user_route.get('/orderDetails',auth.isLogin,orderController.loadOrderDetailes);
-// user_route.post('/cancelOrder/:orderId/:productId', orderController.cancelOrder);
+user_route.post('/cancelOrder',auth.isLogin,orderController.cancelOrder);
 
 
 // ========= whishlist routes ==========
@@ -93,7 +93,6 @@ user_route.get('/orderDetails',auth.isLogin,orderController.loadOrderDetailes);
 
 // ========= error  page to handile=======
 user_route.get('/error-500',userController.load500)
-// user_route.get('/*',userController.load404)
 
 
 

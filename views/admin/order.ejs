@@ -68,11 +68,11 @@
 
                                         <td>
                                             <button 
-                                            <%if( orders[i].orderDetails.paymentStatus == "pending"){%>
+                                            <%if( orders[i].orderDetails.paymentStatus == "Pending"){%>
                                             class="btn-inverse-warning" 
-                                            <%}else if(orders[i].orderDetails.paymentStatus == "success"){%>
+                                            <%}else if(orders[i].orderDetails.paymentStatus == "Success"){%>
                                                 class="btn-inverse-success" 
-                                            <%}else if(orders[i].orderDetails.paymentStatus == "failed"){%>
+                                            <%}else if(orders[i].orderDetails.paymentStatus == "Failed"){%>
                                                 class="btn-inverse-danger" 
                                             <%}%>        
                                             ><%= orders[i].orderDetails.paymentStatus %></button>
@@ -82,15 +82,15 @@
                                             <button 
                                             <%if( orders[i].orderDetails.paymentStatus == "Delivered"){%>
                                             class="btn-inverse-warning" 
-                                            <%}else if(orders[i].orderDetails.OrderStatus == "pending"){%>
+                                            <%}else if(orders[i].orderDetails.OrderStatus == "Pending"){%>
                                                 class="btn-inverse-warning" 
-                                            <%}else if(orders[i].orderDetails.OrderStatus == "placed"){%>
+                                            <%}else if(orders[i].orderDetails.OrderStatus == "Placed"){%>
                                                 class="btn-inverse-primary" 
                                             <%}else if(orders[i].orderDetails.OrderStatus == "Shipped"){%>
                                                 class="btn-inverse-info" 
                                             <%}else if(orders[i].orderDetails.OrderStatus == "Delivered"){%>
                                                 class="btn-inverse-success" 
-                                            <%}else if(orders[i].orderDetails.OrderStatus == "canceled"){%>
+                                            <%}else if(orders[i].orderDetails.OrderStatus == "Cancelled"){%>
                                                 class="btn-inverse-danger" 
                                             <%}else if(orders[i].orderDetails.OrderStatus == "OutforDelivery"){%>
                                                 class="btn-warning btn-sm" 

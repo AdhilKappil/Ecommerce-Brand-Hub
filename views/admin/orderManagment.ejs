@@ -103,7 +103,7 @@
 
                         </div>
 
-                        <%if(product.orderDetails.OrderStatus!="canceled"){%>
+                        <%if(product.orderDetails.OrderStatus!="Cancelled"){%>
                             <div class="container-fluid d-flex flex-column justify-content-center ">
 
                                 <div class="card row col-12 my-3 mx-auto p-2"
@@ -157,15 +157,15 @@
                                         style="border: 0.2px solid #494949; border-radius: 10px; ">
                                         <div class="col-md-9 mx-auto">
 
-                                            <h3 class="text-center py-4">Order canceled</h3>
+                                            <h3 class="text-center py-4">Order cancelled</h3>
 
 
                                             <div class="progress-track  col-12">
                                                 <ul id="progressbar">
                                                     <li class="step0 active " style="width: 50%;" id="step1">
                                                         Order placed</li>
-                                                    <li class="step0 active text-right" style="width: 50%; "
-                                                        id="step4">canceled</li>
+                                                    <li class="step0 active text-right text-danger" style="width: 50%; "
+                                                        id="step4">Cancelled</li>
                                                 </ul>
                                             </div>
 
@@ -207,13 +207,13 @@
                     <div class="row g-0 ">
                         <div class="col-md-3 d-flex align-items-center">
                             <img style="width: 100px; height: 100px; border-radius: 7px;"
-                                src="/products/images/<%= product.product.images.image1 %>"
+                                src="/static/adminAssets/images/products/<%= product.product.images[0]%>"
                                 class="card-img-start" alt="...">
                         </div>
                         <div class="col-md-9">
                             <div class="card-body">
                                 <h5 class="card-title">
-                                    <%= product.product.product_name %>
+                                    <%= product.product.productName %>
                                 </h5>
 
                                 </p>
@@ -242,27 +242,30 @@
     </footer>
     <!-- partial -->
 </div>
+
+
 <script>
-    function cancelOrder(oderId, productId) {
+    function cancelOrder(orderId, productId) {
+        console.log('clicked');
         $.ajax({
-            url: '/admin/orders/manage/cancel',
-            method: "post",
-            data: { oderId, productId },
-            success: function (response) {
+            url: '/admin/adminCancelOrder',
+            method: 'post',
+            data: { orderId, productId },
+            success: function(response) {
                 console.log(response);
-                if (response.cancel == 1) {
-                    location.reload()
+                if (response.cancel === 1) {
+                    location.reload();
                 }
             },
-            error: function (error) {
-                console.error("Error:", error);
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
             }
         });
     }
+    </script>
+    
 
-</script>
 
-  </div>
-</div>
+
 
 <%-include('../admin/layouts/footer.ejs') %>

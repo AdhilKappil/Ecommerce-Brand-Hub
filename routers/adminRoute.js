@@ -82,6 +82,8 @@ admin_route.get('/unlistProduct',auth.isLogin,adminController.unlistProduct)
 admin_route.get('/order',auth.isLogin,orderController. loadAdminOrder)
 admin_route.get('/order/orderManagment',auth.isLogin,orderController. orderMangeLoad )
 admin_route.post('/order/orderManagment/changeStatus',auth.isLogin,orderController. changeOrderStatus )
+admin_route.post('/adminCancelOrder', auth.isLogin, orderController.adminCancelOrder);
+
 
 
 // admin_route.get('/addBaner',auth.isLogin,adminController.loadBaner)

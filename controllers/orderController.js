@@ -231,7 +231,7 @@ const placeOrder = async (req, res) => {
 
 
 
-// =========== rendering order history page ============
+// =========== rendering order history page user side ============
 const loadOrderPage = async(req,res)=>{
 
   try{
@@ -258,7 +258,7 @@ const loadOrderPage = async(req,res)=>{
 
 
 
-// ========= rendering order details page ==========
+// ========= rendering order details page user side ==========
 const loadOrderDetailes = async (req, res, next) => {
   try {
 
@@ -298,6 +298,7 @@ const loadOrderDetailes = async (req, res, next) => {
 
 
 
+// ============ loading admin side order page ==========
 const loadAdminOrder = async (req, res) => {
 
   try {
@@ -315,7 +316,7 @@ const loadAdminOrder = async (req, res) => {
         const userDetails = await User.findById(order.userId).select(
           "email"
         );
-        // console.log(userDetails);
+        
         if (product) {
           // Push the order details with product details into the array
           productWiseOrdersArray.push({
@@ -337,9 +338,7 @@ const loadAdminOrder = async (req, res) => {
         }
       }
     }
-    // for(i=0;i<productWiseOrdersArray.length;i++){
-    // console.log(productWiseOrdersArray);
-    // }
+    
     res.render("order", { orders: productWiseOrdersArray });
   } catch (error) {
     console.log(error.message);
@@ -350,9 +349,11 @@ const loadAdminOrder = async (req, res) => {
 
 // ========= admin side managinge the order ==========
 const orderMangeLoad = async (req, res) => {
+  
   try {
+
     const { orderId, productId } = req.query;
-    // console.log(orderId, productId);
+  
     const order = await Order.findById(orderId);
 
     if (!order) {
@@ -383,8 +384,7 @@ const orderMangeLoad = async (req, res) => {
         quantity: productInfo.quantity,
       },
     };
-    // console.log(productOrder);
-    // console.log();
+  
     res.render("orderManagment", { product: productOrder, orderId, productId });
   } catch (error) {
     console.log(error.message);
@@ -394,56 +394,33 @@ const orderMangeLoad = async (req, res) => {
 
 
 // ========= user cancel order ========== 
-// const cancelOrder = async (req, res) => {
-//   try {
-//     const userId = req.session.user_id;
-//     const orderId = req.params.orderId;
-//     const productId = req.params.productId;
+const cancelOrder = async (req, res) => {
+  
+  try {
 
-//     // Find the order by orderId and user ID
-//     const order = await Order.findOne({ _id: orderId, userId: userId });
+    const { oderId, productId } = req.body;
 
-//     if (!order) {
-//       return res.status(404).json({ success: false, message: 'Order not found' });
-//     }
+    const order = await Order.findById(oderId);
 
-//     let canCancel = true;
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
 
-//     for (const product of order.products) {
-    
-//       if(product.productId._id.toString() === productId)
-//       {
-//         console.log(product.status)
-//       if (product.status === 'Delivered' || product.status === 'Canceled') {
-//         canCancel = false;
-//         break; // Exit the loop if any product cannot be canceled
-//       }
-//     }
-//     }
+    // Find the product within the order by its ID (using .toString() for comparison)
+    const productInfo = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+    console.log(productInfo);
+    productInfo.OrderStatus = "Cancelled";
+    productInfo.updatedAt = Date.now()
+    const result = await order.save();
 
-//     if (!canCancel) {
-//       return res.status(400).json({ success: false, message: 'Order cannot be canceled' });
-//     }
-
-//     // Set the status of the product with the specified productId to 'Canceled' within the order
-//     for (const product of order.products) {
-//       if (product.productId._id.toString() === productId) {
-//         product.status = 'Canceled';
-//          // Save the product status
-//         await Product.findByIdAndUpdate(product.productId._id, {
-//           $inc: { quantity: product.quantity },
-//         });
-//       }
-//     }
-
-//     await order.save();
-
-//     res.json({ success: true, message: 'Order has been canceled' });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ success: false, message: 'Failed to cancel the order'});
-//   }
-// };
+    console.log(result);
+    res.json({ cancel: 1 });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 
 
@@ -463,11 +440,6 @@ const changeOrderStatus = async (req, res) => {
     const selectedStatus = status;
     const statusLevel = statusMap[selectedStatus];
 
-    console.log(statusLevel);
-    // find status levelend
-
-    console.log(order);
-
     if (!order) {
       return res.status(404).json({ message: "Order not found." });
     }
@@ -484,7 +456,7 @@ const changeOrderStatus = async (req, res) => {
     const result = await order.save();
 
     console.log(result);
-    // console.log(req.body);
+  
     res.redirect(
       `/admin/order/orderManagment?orderId=${orderId}&productId=${productId}`
     );
@@ -492,6 +464,41 @@ const changeOrderStatus = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
+
+// ========= admin cancel order ========== 
+const adminCancelOrder = async (req, res) => {
+  try {
+    const { orderId, productId } = req.body;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
+    const productInfo = order.products.find(
+      (product) => product.productId.toString() === productId
+    );
+
+    if (productInfo) {
+      productInfo.OrderStatus = "Cancelled";
+      productInfo.updatedAt = Date.now();
+
+      await order.save();
+
+      return res.json({ cancel: 1, message: "Order successfully cancelled" });
+    } else {
+      return res.status(404).json({ message: "Product not found in the order." });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ error: "An error occurred" });
+  }
+};
+
+
 
 
 
@@ -505,7 +512,9 @@ module.exports = {
     loadOrderDetailes,
     loadAdminOrder,
     orderMangeLoad,
-    changeOrderStatus
+    changeOrderStatus,
+    cancelOrder,
+    adminCancelOrder 
     
     
 };
