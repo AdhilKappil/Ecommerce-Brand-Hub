@@ -9,8 +9,12 @@
         <div class="card-body">
           <h2 class="card-title">PRODUCTS</h2>
 
+          <form action="" method="get" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search mb-2">
+            <input type="text" name="key" class="form-control mb-1 text-light" placeholder="Search Products" id="searchInput">
+        </form>
+
           <div class="table-responsive">
-            <table class="table ">
+            <table class="table " id="user-table">
               <thead class=" text-white">
                 <tr class=" text-white">
                   <th class=" text-white">Product </th>
@@ -100,5 +104,6 @@
     padding: 20px 15px; /* Adjust the padding to increase cell height */
   }
 </style>
+   
 
 <%-include('../admin/layouts/footer.ejs') %>

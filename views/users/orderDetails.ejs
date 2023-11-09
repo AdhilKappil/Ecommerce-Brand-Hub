@@ -37,10 +37,8 @@
                       <td class="align-middle"><%= order.products[i].quantity %></td>
                       <td class="align-middle">₹ <%- (order.products[i].productId.price) * (order.products[i].quantity) %></td>
                       <td class="align-middle action-column">
-                        <button class="btn btn-danger cancel-product mall-btn"  onclick="cancelOrder('<%= order._id %>','<%= order.products[i].productId._id %>')">
-                          <% if (order.products[i].OrderStatus === 'Canceled') { %>
-                            Canceled
-                          <% } else { %>
+                        <% if (order.products[i].OrderStatus !== 'Cancelled') { %>
+                          <button class="btn btn-danger cancel-product mall-btn"  onclick="cancelOrder('<%= order._id %>','<%= order.products[i].productId._id %>')">
                             Cancel
                           <% } %>
                         </button>
@@ -170,9 +168,6 @@
 </style>
 
 <script>
-              
-      console.log(oderId);
-      console.log(productId);
 
             function cancelOrder(oderId, productId) {
               console.log('clicked');

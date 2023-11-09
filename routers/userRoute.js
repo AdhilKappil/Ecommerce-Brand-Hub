@@ -85,6 +85,7 @@ user_route.post('/placeOrder',auth.isLogin,orderController.placeOrder);
 user_route.get('/viewOrder',auth.isLogin,orderController.loadOrderPage);
 user_route.get('/orderDetails',auth.isLogin,orderController.loadOrderDetailes);
 user_route.post('/cancelOrder',auth.isLogin,orderController.cancelOrder);
+user_route.post('/verifyPayment',auth.isLogin,orderController.verifyPayment);
 
 
 // ========= whishlist routes ==========

@@ -11,14 +11,15 @@
         <div class="col-12 grid-margin">
             <div class="card">
                 <div class="card-body">
-                    <div class="mb-5 ">
+                    <div class="mb-3">
                         <ul class="navbar-nav w-100">
                             <li class="nav-item w-100">
                                 <!-- d-none -->
-                                <form action="/admin/searchUsers" method="get" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
-                                    <input type="text" name="key" class="form-control mb-1 text-light" placeholder="Search Users">
-                                    <button type="submit" class="btn-inverse-info mb-1">search</button>
+                                <form action="" method="get" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
+                                    <input type="text" name="key" class="form-control mb-1 text-light" placeholder="Search Users" id="searchInput">
+                                    <!-- <button type="submit" class="btn-inverse-info mb-1">search</button> -->
                                 </form>
+
                             </li>
                         </ul>
                     </div>
@@ -80,5 +81,36 @@
 
   </div>
 </div>
+
+
+          <!-- // ================= for serching ================ -->
+<script>
+
+    $(document).ready(function () {
+        // Listen for input changes in the search bar
+        $('#searchInput').on('input', function () {
+            const searchText = $(this).val().toLowerCase();
+
+            // Loop through each row in the table and hide/show based on search text
+            $('#user-table tbody tr').each(function () {
+                const row = $(this);
+
+                // Check if any cell in the row contains the search text
+                const found = row.find('td').toArray().some(function (cell) {
+                    const cellText = $(cell).text().toLowerCase();
+                    return cellText.includes(searchText);
+                });
+
+                // Show or hide the row accordingly
+                if (found) {
+                    row.show();
+                } else {
+                    row.hide();
+                }
+            });
+        });
+    });
+</script>
+
 
 <%-include('../admin/layouts/footer.ejs') %>

@@ -80,17 +80,15 @@
                                             </p>
                                             <p class="card-text">Pincode :
                                                 <%=product.orderDetails.shippingAddress.pincode%>
-                                    
                                             </p>
                                             <hr class="m-0 p-0 my-3">
-                                            <%if(product.orderDetails.OrderStatus!="canceled"){%>
+                                            <%if(product.orderDetails.OrderStatus!="Cancelled"){%>
                                                 <button data-bs-toggle="modal" data-bs-target="#modCancel"
                                                     class="btn btn-inverse-danger p-3">Cancel Order</button>
                                                 <%}%>
 
                                                     <div class="col-12">
                                                         <div class="col-12 text-light">
-
 
                                                         </div>
                                                     </div>

@@ -25,13 +25,14 @@
 
                     <form action="/userOtp" method="post">
                         <div class="form-group mt-3">
-                            <input type="text" class="form-control" name="otp" placeholder="Enter OTP" id="">
+                            <input type="text" class="form-control" name="otp" placeholder="Enter OTP" id="otp" required>
                         </div>
                         <br>
-                        <input type="submit" class="btn btn-primary rounded-pill" value="Verify & Proceed">
+                        <input type="submit" class="btn btn-primary" value="Verify & Proceed">
                         <p class="text-danger mt-3">Time left: <span id="timer">45</span></p>
-                        <button class="btn btn-dander" id="resendButton" onclick="resendOTP()"><a
-                                href="/resendOtp">Resend OTP</a></button>
+                        <button class="btn btn-dander" id="resendButton" onclick="resendOTP()" disabled>
+                            <a id="resendButtonLink" href="javascript:void(0);">Resend OTP</a>
+                        </button>
 
                     </form>
                     <br>
@@ -41,7 +42,11 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
+        
         let countdown = 45; // Initial countdown value in seconds
         let timerElement = document.getElementById('timer');
         let resendButton = document.getElementById('resendButton');
@@ -49,15 +54,16 @@
 
         // Function to update the countdown timer
         function updateTimer() {
-            timerElement.textContent = countdown + ' seconds';
-            countdown--;
-            resendButton.disabled = true;
-            if (countdown < 0) {
-                clearInterval(countdownInterval);
-                timerElement.textContent = '0 seconds';
-                resendButton.disabled = false;
-            }
-        }
+    timerElement.textContent = countdown + ' seconds';
+    countdown--;
+
+    if (countdown < 0) {
+        clearInterval(countdownInterval);
+        timerElement.textContent = '0 seconds';
+        document.getElementById('resendButton').removeAttribute('disabled');
+        document.getElementById('resendButtonLink').setAttribute('href', '/resendOtp');
+    }
+}
 
         // Function to resend OTP
         function resendOTP() {
@@ -75,6 +81,60 @@
 
         // Initial countdown start
         countdownInterval = setInterval(updateTimer, 1000);
+
+
+        setTimeout(function () {
+    // Your code to hide the message after a delay goes here
+    var invalidMsg = document.getElementById("invalid-msg");
+    if (invalidMsg) {
+      invalidMsg.style.display = "none";
+    }
+  }, 3000);
+
+
+
+        $(document).ready(function () {
+        $("form").submit(function (event) {
+            event.preventDefault();
+            const otp = $("#otp").val();
+
+            // Make an AJAX request to verify the OTP
+            $.ajax({
+                type: "POST",
+                url: "/userOtp",
+                data: { otp: otp },
+                success: function (data) {
+                    if (data.success) {
+                        // OTP verification was successful
+                        Swal.fire({
+                            title: 'Registered Successfully',
+                            text: 'You have successfully verified your OTP and registered.',
+                            icon: 'success',
+                            timer: 2000, 
+                            showConfirmButton: false 
+                        }).then(function () {
+                            window.location.href = '/login';
+                        });
+                    } else {
+                        // OTP verification failed
+                        Swal.fire({
+                            title: 'Error',
+                            text: data.message || 'Invalid OTP',
+                            icon: 'error',
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'An error occurred while processing your request',
+                        icon: 'error',
+                    });
+                }
+            });
+        });
+    });
+
     </script>
 
 </body>

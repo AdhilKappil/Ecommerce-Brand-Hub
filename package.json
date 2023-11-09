@@ -19,6 +19,7 @@
   "homepage": "https://github.com/AdhilKappil/eCommerce-Brand-Hub#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "crypto": "^1.0.1",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
@@ -31,6 +32,7 @@
     "nodemailer": "^6.9.5",
     "nodemon": "^3.0.1",
     "otp-generator": "^4.0.1",
-    "randomstring": "^1.3.0"
+    "randomstring": "^1.3.0",
+    "razorpay": "^2.9.2"
   }
 }

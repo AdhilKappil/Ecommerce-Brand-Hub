@@ -216,11 +216,12 @@ const insertUser = async (req, res)=>{
             });
 
             const result = await user.save()
-            res.redirect("/login")
-        }
-        else{
-            res.render('userOtp',{message:"invalid OTP or OTP expired"});
-        }
+
+           res.json({success:true})
+      
+    } else {
+      res.json({success:false, message:"Invalid OTP"})
+    }
     } catch (error) {
         console.log(error.message);
     }
@@ -559,7 +560,6 @@ module.exports = {
     loadProductDetails,
     userLogout,
     searchProducts,
-    // load404,
     load500
     
 };
