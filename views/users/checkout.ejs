@@ -2,7 +2,7 @@
   <%- include('../users/layouts/navBar.ejs') %>
 
 
-  <link rel="stylesheet" href="/static/userAssets/css/profile.css">
+    <link rel="stylesheet" href="/static/userAssets/css/profile.css">
 
 
     <main class="main">
@@ -137,17 +137,17 @@
 
                   <div class="d-flex align-items-center">
                     <div class="mr-2">
-                      <input required type="radio" id="payment" name="payment" value="onlinePayment" checked />
+                      <input required type="radio" id="payment" name="payment" value="Online Payment" checked />
                     </div>
                     <a href="" class="d-block text-dark" for="pay2">Online Payment</a>
                   </div>
 
-                  <!-- <div class="d-flex align-items-center">
+                  <div class="d-flex align-items-center">
                     <div class="mr-2">
-                      <input required type="radio" id="wallet" name="payment" value="wallet" />
+                      <input required type="radio" id="wallet" name="payment" value="Wallet" />
                     </div>
                     <a href="" class="d-block text-dark" for="pay3">Wallet</a>
-                  </div> -->
+                  </div>
 
                   <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
                     <span class="btn-text">Place Order</span>
@@ -227,9 +227,9 @@
     <!-- model end -->
 
 
-      <!-- ============= razorpay =========== -->
+    <!-- ============= razorpay =========== -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-     <!-- // ================ swal ============= -->
+    <!-- // ================ swal ============= -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
@@ -253,141 +253,153 @@
 
 
 
-<script>
+    <script>
 
-function placeOrder() {
-  const placeOrderBtn = document.querySelector('.btn-order');
-  placeOrderBtn.addEventListener('click', async function (event) {
-    event.preventDefault();
+      function placeOrder() {
+        const placeOrderBtn = document.querySelector('.btn-order');
+        placeOrderBtn.addEventListener('click', async function (event) {
+          event.preventDefault();
 
-    try {
-  const addressId = document.querySelector('input[name="address"]:checked').value;
-  const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+          try {
+            const addressId = document.querySelector('input[name="address"]:checked').value;
+            const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+            // ======= for wallet balnce and amount comparing =======
+            const totelAmount = document.getElementById("total1").innerHTML
 
-  const data = {
-    address: addressId,
-    payment: paymentMethod
-  };
+            const data = {
+              address: addressId,
+              payment: paymentMethod,
+              amount:totelAmount
+            };
 
-  const response = await fetch('/placeOrder', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data)
-  });
+            const response = await fetch('/placeOrder', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data)
+            });
 
-  console.log(response);
+            console.log(response);
 
-  if (response.ok) {
-    const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
-      const responseData = await response.json();
-      Swal.fire({
-          title: 'Order Placed Successfully',
-          imageUrl: '/static/userAssets/images/Animation - 1698988378670.gif', 
-          imageAlt: 'Custom Image',
-          html: `
-            <p>Thank you for your purchase! Now we're preparing for the shipment!...</p>
-            <a href="/orderDetails" class="btn btn-primary">Order Details</a>
-            <a href="/products" class="btn btn-secondary">Continue Shopping</a> `,
-          didOpen: () => {
-            Swal.showLoading();
-          },
-          width: '40%', // Adjust the width value as needed
-        })
-    } else {
-      throw new Error('Response was not in JSON format');
-    }
-  } else{
-    const responseData = await response.json();
-    razorPayment(responseData.order); 
+            if (response.status===200) {
+              const contentType = response.headers.get('content-type');
+              if (contentType && contentType.includes('application/json')) {
+                const responseData = await response.json();
+                Swal.fire({
+                  title: 'Order Placed Successfully',
+                  imageUrl: '/static/userAssets/images/Animation - 1698988378670.gif',
+                  imageAlt: 'Custom Image',
+                  html: `
+                  <p>Thank you for your purchase! Now we're preparing for the shipment!...</p>
+                  <a href="/orderDetails" class="btn btn-primary">Order Details</a>
+                  <a href="/products" class="btn btn-secondary">Continue Shopping</a> `,
+                  didOpen: () => {
+                    Swal.showLoading();
+                  },
+                  width: '40%', // Adjust the width value as needed
+                })
 
-  }
-} catch (error) {
-  console.error('There was an error:', error);
-  Swal.fire('An error occurred while placing the order');
-}
-  });
-}
+              } else {
+                throw new Error('Response was not in JSON format');
+              }
 
-   placeOrder(); // Call the function to handle the order placement
+            } else if (response.status===201) {
+              // Display SweetAlert for insufficient wallet balance
+              Swal.fire({
+                icon: 'error',
+                title: 'Insufficient Wallet Balance',
+                text: 'Your wallet balance is insufficient. Please choose a different payment method or recharge your wallet.',
+              });
+            } else {
+              const responseData = await response.json();
+              razorPayment(responseData.order);
 
-
-
-   function razorPayment(order) {
-    
-    var options = {
-      key: '<%=process.env.razorpaykey_id%>', // Enter the Key ID generated from the Dashboard
-      amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-      currency: "INR",
-      name: "Brand hub", //your business name
-      description: "Test Transaction",
-      image: "/user/images/icons/",
-      order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-      handler: function (response) {
-      verifyPayment(response, order);
-     },
-      prefill: { 
-        //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number        
-        name: "Adhil Ali",  //your customer's name
-        email: "adhil.ali@example.com",
-        contact: "9000090000" //Provide the customer's phone number for better conversion rates
-      },
-      notes: {
-        address: "Razorpay Corporate Office",
-      },
-      theme: {
-        color: "#3399cc"
-      },
-    };
-
-    var rzp1 = new Razorpay(options);
-    rzp1.open();
-  }
-
-
-
-  function verifyPayment(payment, order) {
-  
-  const amount2 = document.getElementById("total1").innerHTML;
-  $.ajax({
-    url: "/verifyPayment",
-    method: "post",
-    data: {
-      payment: payment,
-      amount2: amount2,
-      order: order,
-    },
-    success: (response) => {
-      if (response.razorpaySuccess == true) {
-        Swal.fire({
-          title: 'Order Placed Successfully',
-          imageUrl: '/static/userAssets/images/Animation - 1698988378670.gif',
-          imageAlt: 'Custom Image',
-          html: `
-            <p>Thank you for your purchase! Now we're preparing for the shipment!...</p>
-            <a href="/orderDetails" class="btn btn-primary">Order Details</a>
-            <a href="/products" class="btn btn-secondary">Continue Shopping</a> `,
-          didOpen: () => {
-            Swal.showLoading();
-          },
-          width: '40%',
-        });
-      } else {
-        swal.fire({
-          positon: "center",
-          icon: "error",
-          title: "Payment failed",
-          showConfirmButton: false,
-          timer: 1500,
+            }
+          } catch (error) {
+            console.error('There was an error:', error);
+            Swal.fire('An error occurred while placing the order');
+          }
         });
       }
-    }
-  });
-}
+
+      placeOrder(); // Call the function to handle the order placement
 
 
-  </script>
+
+      function razorPayment(order) {
+
+        var options = {
+          key: '<%=process.env.razorpaykey_id%>', // Enter the Key ID generated from the Dashboard
+          amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          currency: "INR",
+          name: "Brand hub", //your business name
+          description: "Test Transaction",
+          image: "/user/images/icons/",
+          order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+          handler: function (response) {
+            verifyPayment(response, order);
+          },
+          prefill: {
+            //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number        
+            name: "Adhil Ali",  //your customer's name
+            email: "adhil.ali@example.com",
+            contact: "9000090000" //Provide the customer's phone number for better conversion rates
+          },
+          notes: {
+            address: "Razorpay Corporate Office",
+          },
+          theme: {
+            color: "#3399cc"
+          },
+        };
+
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+      }
+
+
+
+      function verifyPayment(payment, order) {
+
+        const amount2 = document.getElementById("total1").innerHTML;
+        $.ajax({
+          url: "/verifyPayment",
+          method: "post",
+          data: {
+            payment: payment,
+            amount2: amount2,
+            order: order,
+          },
+          success: (response) => {
+            if (response.razorpaySuccess == true) {
+              Swal.fire({
+                title: 'Order Placed Successfully',
+                imageUrl: '/static/userAssets/images/Animation - 1698988378670.gif',
+                imageAlt: 'Custom Image',
+                html: `
+            <p>Thank you for your purchase! Now we're preparing for the shipment!...</p>
+            <a href="/orderDetails" class="btn btn-primary">Order Details</a>
+            <a href="/products" class="btn btn-secondary">Continue Shopping</a> `,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+                width: '40%',
+              });
+            } else {
+              swal.fire({
+                positon: "center",
+                icon: "error",
+                title: "Payment failed",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+            }
+          }
+        });
+      }
+
+
+    </script>
 
     <%-include('../users/layouts/footer.ejs') %>

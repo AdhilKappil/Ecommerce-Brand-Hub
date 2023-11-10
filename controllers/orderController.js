@@ -144,11 +144,13 @@ const generateUniqueTrackId = async () => {
 // =========== place order ===========
 const placeOrder = async (req, res) => {
   try {
+    const userId = req.session.user_id
     const addressId = req.body.address;
     const paymentType = req.body.payment;
-    const cartDetails = await Cart.findOne({ user: req.session.user_id });
+    const totalAmount = parseInt(req.body.amount);
+    const cartDetails = await Cart.findOne({ user: userId  });
 
-    const userAddrs = await Address.findOne({ userId: req.session.user_id });
+    const userAddrs = await Address.findOne({ userId: userId  });
     const shipAddress = userAddrs.address.find((address) => {
       return address._id.toString() === addressId.toString();
     });
@@ -157,19 +159,25 @@ const placeOrder = async (req, res) => {
       return res.status(400).json({ error: "Address not found" });
     }
 
+    const user = await User.findById(req.session.user_id );
+
+    if (paymentType === 'Wallet' && user.wallet < totalAmount) {
+      return res.status(201).json({});
+    }
+
     const { fullName, mobile, state, district, city, pincode } = shipAddress;
 
     const cartProducts = cartDetails.products.map((productItem) => ({
       productId: productItem.productId,
       quantity: productItem.quantity,
-      OrderStatus: "Placed",
+      OrderStatus: "Pending",
       StatusLevel: 1,
       paymentStatus: "Pending",
       "returnOrderStatus.status": "none",
       "returnOrderStatus.reason": "none",
     }));
 
-    const total = await calculateTotalPrice(req.session.user_id);
+    const total = await calculateTotalPrice(userId );
 
     const today = new Date();
     const deliveryDate = new Date(today);
@@ -197,10 +205,52 @@ const placeOrder = async (req, res) => {
 
     console.log(paymentType);
 
-    if (paymentType === "COD") {
+    if (paymentType === "COD" || paymentType === 'Wallet') {
+      console.log('here');
       for (const item of cartDetails.products) {
         const productId = item.productId._id;
         const quantity = parseInt(item.quantity, 10);
+
+        if( paymentType === 'Wallet'){
+          console.log('enterd wallet');
+          let changeOrderStatus = await Order.updateOne(
+            { _id: placeorder._id },
+            {
+              $set: {
+                'products.$[].paymentStatus': 'Success' ,"products.$[].OrderStatus": "Placed"
+              },
+            }
+          );
+          const walletHistory = {
+            transactionDate: new Date(),
+            transactionDetails: 'Product Purchased',
+            transactionType: 'Debit',
+            transactionAmount: totalAmount,
+             currentBalance: !isNaN(userId.wallet) ? userId.wallet + amount : totalAmount
+           }
+            await User.findByIdAndUpdate(
+                {_id: userId },
+                {
+                    $inc:{
+                        wallet: -totalAmount
+                    },
+                    $push:{
+                        walletHistory
+                    }
+                }
+            );
+
+         }else{
+          console.log('enterd cod');
+          let changeOrderStatus = await Order.updateOne(
+            { _id: placeorder._id },
+            {
+              $set: {
+                "products.$[].OrderStatus": "Placed",
+              },
+            }
+          );
+        }
 
         await Product.findByIdAndUpdate(
           { _id: productId },
@@ -214,7 +264,7 @@ const placeOrder = async (req, res) => {
 
       await Cart.findOneAndDelete({ userid: req.body.user_id });
 
-    } else if (paymentType === "onlinePayment") {
+    } else if (paymentType === "Online Payment") {
 
       var options = {
         amount: total * 100,
@@ -263,7 +313,7 @@ const verifyPayment = async (req, res) => {
       }
       await Order.findByIdAndUpdate(
         { _id: details.order.receipt },
-        { $set: { 'products.$[].paymentStatus': 'Success'}}
+        { $set: { 'products.$[].paymentStatus': 'Success' ,"products.$[].OrderStatus": "Placed"}}
       );
 
       await Order.findByIdAndUpdate(
@@ -442,6 +492,7 @@ const orderMangeLoad = async (req, res) => {
 const cancelOrder = async (req, res) => {
   try {
     const { oderId, productId } = req.body;
+    const userId = req.session.user_id
 
     const order = await Order.findById(oderId);
 
@@ -453,7 +504,7 @@ const cancelOrder = async (req, res) => {
     const productInfo = order.products.find(
       (product) => product.productId.toString() === productId
     );
-    console.log(productInfo);
+    
     productInfo.OrderStatus = "Cancelled";
     productInfo.updatedAt = Date.now();
     const result = await order.save();
@@ -465,7 +516,30 @@ const cancelOrder = async (req, res) => {
       }
     );
 
-    console.log(result);
+    // ========== adding money to wallet =========
+    if(productInfo.paymentStatus==='Success'){
+      const totalAmount = order.totalAmount
+      const walletHistory = {
+        transactionDate: new Date(),
+        transactionDetails: 'Refund',
+        transactionType: 'Credit',
+        transactionAmount: totalAmount,
+         currentBalance: !isNaN(userId.wallet) ? userId.wallet + amount : totalAmount
+       }
+        await User.findByIdAndUpdate(
+            {_id: userId },
+            {
+                $inc:{
+                    wallet: totalAmount
+                },
+                $push:{
+                    walletHistory
+                }
+            }
+        );
+
+    }
+
     res.json({ cancel: 1 });
   } catch (error) {
     console.log(error.message);
@@ -505,8 +579,6 @@ const changeOrderStatus = async (req, res) => {
 
     const result = await order.save();
 
-    console.log(result);
-
     res.redirect(
       `/admin/order/orderManagment?orderId=${orderId}&productId=${productId}`
     );
@@ -521,6 +593,7 @@ const changeOrderStatus = async (req, res) => {
 const adminCancelOrder = async (req, res) => {
   try {
     const { orderId, productId } = req.body;
+    const userId = req.session.user_id
 
     const order = await Order.findById(orderId);
 
@@ -544,6 +617,30 @@ const adminCancelOrder = async (req, res) => {
           $inc: { quantity: productInfo.quantity },
         }
       );
+
+      // ========== adding money to wallet =========
+      if(productInfo.paymentStatus==='Success'){
+        const totalAmount = order.totalAmount
+        const walletHistory = {
+          transactionDate: new Date(),
+          transactionDetails: 'Refund',
+          transactionType: 'Credit',
+          transactionAmount: totalAmount,
+           currentBalance: !isNaN(userId.wallet) ? userId.wallet + amount : totalAmount
+         }
+          await User.findByIdAndUpdate(
+              {_id: userId },
+              {
+                  $inc:{
+                      wallet: totalAmount
+                  },
+                  $push:{
+                      walletHistory
+                  }
+              }
+          );
+  
+      }
 
       return res.json({ cancel: 1, message: "Order successfully cancelled" });
     } else {

@@ -159,7 +159,7 @@ const verifyOtp = async (req, res) => {
             lowerCaseAlphabets: false 
         });
         const otpcurTime = Date.now()/1000
-        const otpExpiry = otpcurTime + 45
+        const otpExpiry = otpcurTime + 60
 
         const userCheck = await User.findOne({email:req.body.email})
         if(userCheck)
@@ -245,7 +245,7 @@ const resendOtp = async (req,res)=>{
                 lowerCaseAlphabets: false 
             });
                 req.session.otp.code = newDigit;
-                const newExpiry = currentTime + 45;
+                const newExpiry = currentTime + 60;
                 req.session.otp.expiry = newExpiry;
                 sendVerificationEmail(req.session.email, req.session.otp.code);
                 res.render("userOtp",{message:"OTP has been send to your emaiil"});

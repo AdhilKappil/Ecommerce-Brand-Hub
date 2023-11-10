@@ -61,27 +61,11 @@ function removeCartItem(user, product, qty) {
         success: (response) => {
           console.log(response);
           if (response.remove == 1) {
-            Swal.fire({
-              title: 'Success!',
-              text: 'Item removed from cart!',
-              icon: 'success',
-              timer: 2000
-            }).then(() => {
               location.reload();
-            });
           }
         }
       });
-    } else {
-      Swal.fire({
-        title: 'Cancelled',
-        text: 'Item not removed from cart.',
-        icon: 'error',
-        timer: 2000
-      }).then(() => {
-        location.reload();
-      });
-    }
+    } 
   });
 }
 

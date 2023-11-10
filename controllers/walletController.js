@@ -18,7 +18,6 @@ const loadWallet = async(req,res)=>{
     try{
     const user = req.session.user_id
     const userData = await User.findOne({_id:user})
-    console.log("userData id :",userData);
 
     res.render('wallet',{user,userData})
 
@@ -29,11 +28,9 @@ const loadWallet = async(req,res)=>{
 
 
 
-
+// ============ adding money to wallet =========
 const addMoneyToWallet = async(req,res)=>{
   try{
-
-    console.log("entered add money to wallet");
      
     const {amount} = req.body
     const  id = crypto.randomBytes(8).toString('hex')
@@ -46,7 +43,7 @@ const addMoneyToWallet = async(req,res)=>{
 
 
   instance.orders.create(options, (err, order) => {
-    console.log("oreder is :",order);
+  
     if(err){
         res.json({status: false})
     }else{
@@ -54,8 +51,6 @@ const addMoneyToWallet = async(req,res)=>{
     }
 
 })
-
-
 
   }catch(error){
     console.log(error);
@@ -68,9 +63,6 @@ const addMoneyToWallet = async(req,res)=>{
 // verifying and adding wallet deatailes to DB
 const verifyWalletPayment = async(req,res)=>{
   try{
-
-    console.log("entered into post verify wallet payment");
-
 
     const userId = req.session.user_id
 
@@ -103,7 +95,7 @@ const verifyWalletPayment = async(req,res)=>{
                   }
               }
           );
-          console.log('udddd')
+          
           res.json({status: true})
       }else{
           res.json({status: false})
@@ -114,6 +106,7 @@ const verifyWalletPayment = async(req,res)=>{
     console.log(error);
   }
 }
+
 
 
 

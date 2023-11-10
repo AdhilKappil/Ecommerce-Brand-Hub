@@ -29,7 +29,7 @@
                         </div>
                         <br>
                         <input type="submit" class="btn btn-primary" value="Verify & Proceed">
-                        <p class="text-danger mt-3">Time left: <span id="timer">45</span></p>
+                        <p class="text-danger mt-3">Time left: <span id="timer">60</span></p>
                         <button class="btn btn-dander" id="resendButton" onclick="resendOTP()" disabled>
                             <a id="resendButtonLink" href="javascript:void(0);">Resend OTP</a>
                         </button>
@@ -47,7 +47,7 @@
 
     <script>
         
-        let countdown = 45; // Initial countdown value in seconds
+        let countdown = 60; // Initial countdown value in seconds
         let timerElement = document.getElementById('timer');
         let resendButton = document.getElementById('resendButton');
         let countdownInterval;
@@ -71,7 +71,7 @@
             // For example, you can make an API call to send a new OTP
 
             // Reset the timer
-            countdown = 45;
+            countdown = 60;
             timerElement.textContent = countdown + ' seconds';
             resendButton.disabled = true;
 
