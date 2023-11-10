@@ -5,6 +5,7 @@ const cartController = require("../controllers/cartController");
 const profileController = require("../controllers/profileController"); 
 const orderController = require("../controllers/orderController"); 
 const whishlistController = require("../controllers/wishlistController");
+const walletController = require("../controllers/walletController");
 const session = require('express-session'); 
 const config = require('../config/confiq');
 const auth = require('../middleware/userAuth'); 
@@ -86,6 +87,12 @@ user_route.get('/viewOrder',auth.isLogin,orderController.loadOrderPage);
 user_route.get('/orderDetails',auth.isLogin,orderController.loadOrderDetailes);
 user_route.post('/cancelOrder',auth.isLogin,orderController.cancelOrder);
 user_route.post('/verifyPayment',auth.isLogin,orderController.verifyPayment);
+
+
+// wallet routes
+user_route.get('/wallet',auth.isLogin,walletController.loadWallet);
+user_route.post('/addMoneyToWallet',auth.isLogin,walletController.addMoneyToWallet);
+user_route.post('/verifyWalletpayment',auth.isLogin,walletController.verifyWalletPayment);
 
 
 // ========= whishlist routes ==========

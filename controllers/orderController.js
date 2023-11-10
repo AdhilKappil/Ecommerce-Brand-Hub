@@ -211,7 +211,9 @@ const placeOrder = async (req, res) => {
       }
       // res.json({ success: true });
       res.status(200) .json({ placeorder, message: "Order placed successfully" });
+
       await Cart.findOneAndDelete({ userid: req.body.user_id });
+
     } else if (paymentType === "onlinePayment") {
 
       var options = {
@@ -271,7 +273,7 @@ const verifyPayment = async (req, res) => {
       await Cart.deleteOne({ user: req.session.user_id });
       const orderid = details.order.receipt;
 
-      res.json({ codsuccess: true, orderid });
+      res.json({ razorpaySuccess: true, orderid });
     } else {
       await Order.findByIdAndRemove({ _id: details.order.receipt });
       res.json({ success: false });
@@ -304,6 +306,8 @@ const loadOrderPage = async (req, res) => {
     console.log(error);
   }
 };
+
+
 
 // ========= rendering order details page user side ==========
 const loadOrderDetailes = async (req, res, next) => {
@@ -343,6 +347,8 @@ const loadOrderDetailes = async (req, res, next) => {
     next(err);
   }
 };
+
+
 
 // ============ loading admin side order page ==========
 const loadAdminOrder = async (req, res) => {
@@ -388,6 +394,8 @@ const loadAdminOrder = async (req, res) => {
   }
 };
 
+
+
 // ========= admin side managinge the order ==========
 const orderMangeLoad = async (req, res) => {
   try {
@@ -428,6 +436,8 @@ const orderMangeLoad = async (req, res) => {
   }
 };
 
+
+
 // ========= user cancel order ==========
 const cancelOrder = async (req, res) => {
   try {
@@ -461,6 +471,8 @@ const cancelOrder = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
 
 // =========== admin side order status managment ============
 const changeOrderStatus = async (req, res) => {
@@ -503,6 +515,8 @@ const changeOrderStatus = async (req, res) => {
   }
 };
 
+
+
 // ========= admin cancel order ==========
 const adminCancelOrder = async (req, res) => {
   try {
@@ -542,6 +556,9 @@ const adminCancelOrder = async (req, res) => {
     return res.status(500).json({ error: "An error occurred" });
   }
 };
+
+
+
 
 module.exports = {
   loadCheckout,

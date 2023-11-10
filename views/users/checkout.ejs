@@ -301,7 +301,7 @@ function placeOrder() {
     }
   } else{
     const responseData = await response.json();
-    razorPayment(responseData.order);
+    razorPayment(responseData.order); 
 
   }
 } catch (error) {
@@ -330,8 +330,8 @@ function placeOrder() {
      },
       prefill: { 
         //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number        
-        name: "Gaurav Kumar",  //your customer's name
-        email: "gaurav.kumar@example.com",
+        name: "Adhil Ali",  //your customer's name
+        email: "adhil.ali@example.com",
         contact: "9000090000" //Provide the customer's phone number for better conversion rates
       },
       notes: {
@@ -360,7 +360,7 @@ function placeOrder() {
       order: order,
     },
     success: (response) => {
-      if (response.codsuccess == true) {
+      if (response.razorpaySuccess == true) {
         Swal.fire({
           title: 'Order Placed Successfully',
           imageUrl: '/static/userAssets/images/Animation - 1698988378670.gif',
