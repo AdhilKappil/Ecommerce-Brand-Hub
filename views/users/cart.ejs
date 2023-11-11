@@ -1,222 +1,246 @@
 <%-include('../users/layouts/header.ejs') %>
-<%-include('../users/layouts/navBar.ejs') %>
+	<%-include('../users/layouts/navBar.ejs') %>
 
 
-	<!-- breadcrumb -->
-	<div class="container">
-		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg m-t-90">
-			<a href="/home" class="stext-109 cl8 hov-cl1 trans-04">
-				Home
-				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
-			</a>
+		<!-- breadcrumb -->
+		<div class="container">
+			<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg m-t-90">
+				<a href="/home" class="stext-109 cl8 hov-cl1 trans-04">
+					Home
+					<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+				</a>
 
-			<span class="stext-109 cl4">
-				Shoping Cart
-			</span>
+				<span class="stext-109 cl4">
+					Shoping Cart
+				</span>
+			</div>
 		</div>
-	</div>
-		
 
-	<!-- Shoping Cart -->
-	<form class="bg0 p-t-75 p-b-85">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
-					<div class="m-l-25 m-r--38 m-lr-0-xl">
-						<div class="wrap-table-shopping-cart">
-							<table class="table-shopping-cart">
-							  <% if (total != 0) { %>
-								<tr class="table_head">
-								  <th class="column-1">Product</th>
-								  <th class="column-2"></th>
-								  <th class="column-3">Price</th>
-								  <th class="column-4">Quantity</th>
-								  <th class="column-5">Total</th>
-								  <th class="column-6">Actions</th>
-								</tr>
-						  
-								<% for (i = 0; i < cartItems.products.length; i++) { %>
-								  <tr class="table_row">
-									<td class="column-1">
-									  <div class="how-itemcart1">
-										<img src="/static/adminAssets/images/products/<%= cartItems.products[i].productId.images[0] %>" alt="IMG">
-									  </div>
-									</td>
-									<td class="column-2"><%= cartItems.products[i].productId.productName %></td>
-									<td class="column-3 mt-7 product-price"><%= cartItems.products[i].productId.price %></td>
-									<td class="column-4">
-									  <div class="wrap-num-product flex-w m-l-auto m-r-0">
-										<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m js-btn-minus">
-										  <i class="fs-16 zmdi zmdi-minus"></i>
-										</div>
-										<input class="mtext-104 cl3 txt-center num-product quantity-input" type="number" name="num-product1" data-product-id="<%= cartItems.products[i].productId._id %>" value="<%= cartItems.products[i].quantity %>">
-										<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m js-btn-plus">
-										  <i class="fs-16 zmdi zmdi-plus"></i>
-										</div>
-									  </div>
-									</td>
-									<td class="column-5 total-price"><%- (cartItems.products[i].productId.price) * (cartItems.products[i].quantity) %></td>
-									<td class="column-6">
-										<button type="button" class="btn btn btn-outline-primary-2" onclick="removeCartItem('<%= user._id %>',
+
+		<!-- Shoping Cart -->
+		<form class="bg0 p-t-75 p-b-85">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+						<div class="m-l-25 m-r--38 m-lr-0-xl">
+							<div class="wrap-table-shopping-cart">
+								<table class="table-shopping-cart">
+									<% if (total !=0) { %>
+										<tr class="table_head">
+											<th class="column-1">Product</th>
+											<th class="column-2"></th>
+											<th class="column-3">Price</th>
+											<th class="column-4">Quantity</th>
+											<th class="column-5">Total</th>
+											<th class="column-6">Actions</th>
+										</tr>
+
+										<% for (i=0; i < cartItems.products.length; i++) { %>
+											<tr class="table_row">
+												<td class="column-1">
+													<div class="how-itemcart1">
+														<img src="/static/adminAssets/images/products/<%= cartItems.products[i].productId.images[0] %>"
+															alt="IMG">
+													</div>
+												</td>
+												<td class="column-2">
+													<%= cartItems.products[i].productId.productName %>
+												</td>
+												<td class="column-3 mt-7 product-price">
+													<%= cartItems.products[i].productId.price %>
+												</td>
+												<td class="column-4">
+													<div class="wrap-num-product flex-w m-l-auto m-r-0">
+														<div
+															class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m js-btn-minus">
+															<i class="fs-16 zmdi zmdi-minus"></i>
+														</div>
+														<input
+															class="mtext-104 cl3 txt-center num-product quantity-input"
+															type="number" name="num-product1"
+															data-product-id="<%= cartItems.products[i].productId._id %>"
+															value="<%= cartItems.products[i].quantity %>">
+														<div
+															class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m js-btn-plus">
+															<i class="fs-16 zmdi zmdi-plus"></i>
+														</div>
+													</div>
+												</td>
+												<td class="column-5 total-price"><%-
+														(cartItems.products[i].productId.price) *
+														(cartItems.products[i].quantity) %></td>
+												<td class="column-6">
+													<button type="button" class="btn btn btn-outline-primary-2" onclick="removeCartItem('<%= user._id %>',
 										'<%= cartItems.products[i].productId._id %>','<%= cartItems.products[i].quantity %>')">Remove</button>
-									</td>
-								  </tr>
-								<% } %>
-						  
-							  <% } else { %>
-								<tr>
-								  <td class="price-col w-100 text-center text-black" colspan="6">
-									<h2 class="icon-shopping-cart text-black"></h2>Your Cart is Empty
-								  </td>
-								</tr>
-							  <% } %>
-							</table>
-						  </div>
+												</td>
+											</tr>
+											<% } %>
 
-					</div>
-				</div>
-
-				<div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
-					<div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
-						<h4 class="mtext-109 cl2 p-b-30">
-							Cart Totals
-						</h4>
-
-						
-						<div class="flex-w flex-t p-t-27 p-b-33">
-							<div class="size-208">
-								<span class="mtext-101 cl2">
-									Total:
-								</span>
+												<% } else { %>
+													<tr>
+														<td class="price-col w-100 text-center text-black" colspan="6">
+															<h2 class="icon-shopping-cart text-black"></h2>Your Cart is
+															Empty
+														</td>
+													</tr>
+													<% } %>
+								</table>
 							</div>
 
-							<div class="size-209 p-t-1">
-								<span class="mtext-110 cl2 subtotal">
-									₹ <%= total%>
-								</span>
-							</div>
 						</div>
-						<a href="/checkout" class="btn  btn-order btn-block btn btn-outline-primary-2">PROCEED TO CHECKOUT</a>
+					</div>
 
+					<div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+						<div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
+							<h4 class="mtext-109 cl2 p-b-30">
+								Cart Totals
+							</h4>
+
+
+							<div class="flex-w flex-t p-t-27 p-b-33">
+								<div class="size-208">
+									<span class="mtext-101 cl2">
+										Total:
+									</span>
+								</div>
+
+								<div class="size-209 p-t-1">
+									<span class="mtext-110 cl2 subtotal">
+										₹ <%= total%>
+									</span>
+								</div>
+							</div>
+							<a href="/checkout" class="btn  btn-order btn-block btn btn-outline-primary-2">PROCEED TO
+								CHECKOUT</a>
+
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</form>
+		</form>
 
 
-	<!-- // ================ quantity managmenet =================== -->
-	<script>
+		<!-- // ================ quantity managmenet =================== -->
+		<script>
 
-		document.addEventListener("DOMContentLoaded", function () {
-		const quantityInputs = document.querySelectorAll(".quantity-input");
-		const totalPriceElements = document.querySelectorAll(".total-price");
-		const productPrices = Array.from(document.querySelectorAll(".product-price"))
-								  .map(price => parseFloat(price.textContent))
-								  .filter(price => !isNaN(price)); // Filter out NaN values
-								  console.log(productPrices);
-	
-		const subtotalElement = document.querySelector(".subtotal");
-	   
-	
-		quantityInputs.forEach((input, index) => {
-			const minusButton = input.parentElement.querySelector(".js-btn-minus");
-			const plusButton = input.parentElement.querySelector(".js-btn-plus");
-			const productID = input.getAttribute('data-product-id');  
-			console.log(productID);
-	
-			function updateMinusButtonStatus() {
-				const quantity = parseInt(input.value, 10);
-				if (quantity === 1) {
-					minusButton.disabled = true;
-				} else {
-					minusButton.disabled = false;
-				}
-			}
-	
-			minusButton.addEventListener("click", function () {
-				const quantity = parseInt(input.value, 10);
-	
-				if (quantity >= 1) {
-				  quantitys = quantity - 1;
-				  
-				   handleQuantityUpdate(productID, quantity, index);
-					const totalPrice = quantity * productPrices[index];
-					totalPriceElements[index].textContent = ` ${totalPrice.toFixed(2)}`;
-					updateSubtotal();
-					updateMinusButtonStatus();
-					
-				}
-			});
-	
-			plusButton.addEventListener("click", function () {
-				const quantity = parseInt(input.value, 10);
-				quantitys = quantity;
+			document.addEventListener("DOMContentLoaded", function () {
 				
-				handleQuantityUpdate(productID, quantitys, index);
-	
-				const totalPrice = quantitys * productPrices[index];
-				totalPriceElements[index].textContent = ` ${totalPrice.toFixed(2)}`;
-				updateSubtotal();
-				updateMinusButtonStatus();
-				
-			});
-		});
-	
-		async function handleQuantityUpdate(productID, quantitys, index) {
-		try {
-			const response = await fetch('/updateCart', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ productID: productID, quantity: quantitys })
-			});
-		   
-			const data = await response.json();
-	
-			// Check if the response contains valid data
-			if (data && data.products && data.products.length > 0) {
-				const updatedItem = data.products[0];
-				const productPrice = parseFloat(updatedItem.productID.price);
-				const quantity = parseInt(updatedItem.quantity, 10);
-	
-				// Check if both quantity and product price are valid numbers
-				if (!isNaN(productPrice) && !isNaN(quantity)) {
-					const totalPrice = quantity * productPrice;
-	
-					// Update the total price in the UI
-					totalPriceElements[index].textContent = ` ${totalPrice.toFixed(2)}`;
-				} else {
-					console.error('Invalid quantity or product price:', updatedItem);
+				const quantityInputs = document.querySelectorAll(".quantity-input");
+				const totalPriceElements = document.querySelectorAll(".total-price");
+				const productPrices = Array.from(document.querySelectorAll(".product-price"))
+					.map((price) => parseFloat(price.textContent))
+					.filter((price) => !isNaN(price)); // Filter out NaN values
+				const subtotalElement = document.querySelector(".subtotal");
+
+				quantityInputs.forEach((input, index) => {
+					const minusButton = input.parentElement.querySelector(".js-btn-minus");
+					const plusButton = input.parentElement.querySelector(".js-btn-plus");
+					const productID = input.getAttribute("data-product-id");
+
+					minusButton.addEventListener("click", function () {
+						console.log('clicked');
+						updateQuantity(input, index, productID);
+						updateSubtotal();
+
+					});
+
+					plusButton.addEventListener("click", function () {
+						updateQuantity(input, index, productID);
+						updateSubtotal();
+
+					});
+				});
+
+				async function updateQuantity(input, index, productID) {
+					const quantity = parseInt(input.value, 10);
+					const newQuantity = quantity;
+
+					try {
+						console.log('taking stock');
+						const maxStockResponse = await fetch(`/get-max-stock/${productID}`);
+						console.log('stock', maxStockResponse);
+						const maxStockData = await maxStockResponse.json();
+						console.log(maxStockData);
+
+						if (newQuantity < 1) {
+							showError("Quantity cannot be less than 1.");
+							input.value = 1;
+						} else if (newQuantity > 10) {
+							showError("Cannot order more than 10 items at a time!");
+							input.value = 10;
+						} else if (newQuantity > maxStockData.maxStock) {
+							showError(`Cannot order more than ${maxStockData.maxStock} items for this product!`);
+							input.value = maxStockData.maxStock;
+						} else {
+							input.value = newQuantity;
+							await handleQuantityUpdate(productID, newQuantity, index);
+							// Update the UI directly without reloading the page
+							const totalPrice = newQuantity * productPrices[index];
+							totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
+							updateSubtotal();
+						}
+					} catch (error) {
+						console.error("Error updating cart quantity:", error);
+					}
 				}
-			} else {
-				console.error('Invalid response data:', data);
-			}
-	
-			// Update the subtotal and other UI elements
-			updateSubtotal();
-		} catch (error) {
-			console.error('Error updating cart quantity:', error);
-		}
-	}
-	
-		function updateSubtotal() {
-			const totalPrices = Array.from(totalPriceElements)
-								 .map(total => parseFloat(total.textContent.replace(" ", "")))
-								 .reduce((acc, val) => acc + val, 0);
-			subtotalElement.textContent = ` ${totalPrices.toFixed(2)}`;
-		}
-	
-	   
-	
-	});
-	
-	
-	</script>	
 
-	<!-- // ================ swal ============= -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	
+				async function handleQuantityUpdate(productID, quantity, index) {
+					try {
+						const response = await fetch("/updateCart", {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({ productID: productID, quantity: quantity }),
+						});
 
-<%-include('../users/layouts/footer.ejs') %>
+						const data = await response.json();
+
+						if (data && data.items && data.items.length > 0) {
+							const updatedItem = data.items[0];
+							const productPrice = parseFloat(updatedItem.product.price);
+							const quantity = parseInt(updatedItem.quantity, 10);
+
+							if (!isNaN(productPrice) && !isNaN(quantity)) {
+								const totalPrice = quantity * productPrice;
+								totalPriceElements[index].textContent = `₹ ${totalPrice.toFixed(2)}`;
+							} else {
+								console.error("Invalid product price or quantity:", updatedItem);
+							}
+						} else {
+							console.error("Invalid response data:", data);
+						}
+
+						updateSubtotal();
+					} catch (error) {
+						console.error("Error updating cart quantity:", error);
+					}
+				}
+
+
+				function updateSubtotal() {
+					const totalPrices = Array.from(totalPriceElements)
+						.map((total) => parseFloat(total.textContent.replace("₹ ", "")))
+						.reduce((acc, val) => acc + val, 0);
+					subtotalElement.textContent = `₹ ${totalPrices.toFixed(2)}`;
+				}
+
+				function showError(message) {
+					Swal.fire({
+						title: "Oops",
+						text: message,
+						icon: "error",
+						timer: 2000,
+					});
+				}
+			});
+
+
+
+		</script>
+
+		<!-- // ================ swal ============= -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+		<%-include('../users/layouts/footer.ejs') %>

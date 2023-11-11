@@ -7,7 +7,7 @@ const session = require('express-session');
 const config = require('../config/confiq');
 const auth = require('../middleware/adminAuth'); 
 
-
+const fileUploadMiddleware = require('../middleware/fileUpload');
 
 
 const admin_route = express();
@@ -30,19 +30,6 @@ admin_route.use(express.urlencoded({ extended: true }));
 
 
 admin_route.use(express.static('public'))
-
-const storage = multer.diskStorage({
-  destination:function(req,file,cb){
-    cb(null,path.join(__dirname,'../public/adminAssets/images/products'));
-  },
-  filename:function(req,file,cb) {
-    const name = Date.now()+'-'+file.originalname;
-    cb(null,name)
-  }
-})
-
-const upload = multer({storage:storage});
-
 
 
 // ============= login and log out =============
@@ -71,10 +58,10 @@ admin_route.get('/blockUsers',auth.isLogin,adminController.blockUser);
 
 // ============== products routes ================
 admin_route.get('/addProduct',auth.isLogin,adminController.loadaddProducts);
-admin_route.post('/addProduct', upload.array('images'), adminController.addProduct);
+admin_route.post('/addProduct',fileUploadMiddleware.upload.array('images'), adminController.addProduct);
 admin_route.get('/viewProduct',auth.isLogin,adminController.loadViewProducts);
 admin_route.get('/editProduct',auth.isLogin,adminController.loadEditProduct);
-admin_route.post('/editProduct',upload.array('images'),adminController.editProduct)
+admin_route.post('/editProduct',fileUploadMiddleware.upload.array('images'),adminController.editProduct)
 admin_route.get('/unlistProduct',auth.isLogin,adminController.unlistProduct)
 
 

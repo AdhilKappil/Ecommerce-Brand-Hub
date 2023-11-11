@@ -5,32 +5,19 @@
         <div class="bg0 m-t-100 p-b-140">
             <div class="container">
                 <div class="flex-w flex-sb-m p-b-52 mt-5">
+                    
                     <div class="flex-w flex-l-m filter-tope-group m-tb-10 mt-5 custom-margin">
-                        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
+                        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 filter-button category-*">
                             All Products
                         </button>
-
-                        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
-                            Shirts
-                        </button>
-
-                        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
-                            T-Shirts
-                        </button>
-
-                        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".bag">
-                            Pants
-                        </button>
-
-                        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".shoes">
-                            Shoes
-                        </button>
-
-                        <!-- <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".watches">
-                    Watches
-                </button> -->
-
+                    
+                        <% catData.forEach(function(cat) { %>
+                            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 filter-button" data-filter=".category-<%= cat.name %>">
+                                <%= cat.name %>
+                            </button>
+                        <% }); %>
                     </div>
+                    
 
                     <div class="flex-w flex-c-m m-tb-10">
                         <div
@@ -54,8 +41,9 @@
                             <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
                                 <i class="zmdi zmdi-search"></i>
                             </button>
-        
-                            <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Search">
+
+                            <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product"
+                                placeholder="Search">
                         </div>
                     </div>
 
@@ -256,7 +244,7 @@
 
                 <div class="row isotope-grid">
                     <% product.forEach((product)=>{ %>
-                        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+                        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item <%= product.category.name %>">
                             <!-- Block2 -->
                             <div class="block2">
                                 <div class="block2-pic hov-img0">
@@ -286,9 +274,12 @@
                                     </div>
 
                                     <div class="block2-txt-child2 flex-r p-t-3">
-                                        <a href="#" class="btn-addwish-b2 dis-block pos-relative " data-product-id="<%= product._id %>">
-                                            <img class="icon-heart1 dis-block trans-04" src="/static/userAssets/images/icons/icon-heart-01.png" alt="ICON">
-                                            <img class="icon-heart2 dis-block trans-04 ab-t-l" src="/static/userAssets/images/icons/icon-heart-02.png" alt="ICON">
+                                        <a href="#" class="btn-addwish-b2 dis-block pos-relative "
+                                            data-product-id="<%= product._id %>">
+                                            <img class="icon-heart1 dis-block trans-04"
+                                                src="/static/userAssets/images/icons/icon-heart-01.png" alt="ICON">
+                                            <img class="icon-heart2 dis-block trans-04 ab-t-l"
+                                                src="/static/userAssets/images/icons/icon-heart-02.png" alt="ICON">
                                         </a>
                                     </div>
                                 </div>
@@ -351,7 +342,40 @@
             });
         </script>
 
-<!-- <script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterButtons = document.querySelectorAll(".filter-button");
+        const productItems = document.querySelectorAll(".isotope-item");
+
+        filterButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                const category = button.getAttribute("data-filter");
+                console.log('Button clicked for category:', category);
+
+                // Toggle the 'filter-link-active' class
+                filterButtons.forEach(function (btn) {
+                    btn.classList.remove('filter-link-active');
+                });
+                button.classList.add('filter-link-active');
+
+                productItems.forEach(function (item) {
+                    item.style.display = "none";
+
+                    if (category === ".category-*" || item.classList.contains(category.slice(1))) {
+                        item.style.display = "block";
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+
+
+
+
+        <!-- <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Select all wishlist icons
         const wishlistIcons = document.querySelectorAll('.btn-addwish-b2');
@@ -398,4 +422,4 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
 
 
-<%-include('../users/layouts/footer.ejs') %>
+        <%-include('../users/layouts/footer.ejs') %>

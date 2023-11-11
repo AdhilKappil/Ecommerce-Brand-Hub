@@ -182,11 +182,29 @@ const updateCart = async (req, res) => {
 
 
 
+// ===== getting the product quantity ======
+const getMaxStock = async (req, res) => {
+  try {
+    const productID = req.params.id;
+
+      const product = await Product.findById(productID);
+      const maxStock = product.quantity;
+      res.json({ maxStock });
+  } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Internal Server Error");
+  }
+};
+
+
+
+
 module.exports = {
 
     loadCart,
     addToCart,
     removeCart,
-    updateCart
+    updateCart,
+    getMaxStock
 
 }    
