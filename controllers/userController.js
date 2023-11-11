@@ -44,8 +44,11 @@ const loginLoad = async(req,res)=>{
 // ======== rendering home page ========
 const loadHome = async(req,res)=>{
 
-    try {
-        res.render('home',{user:req.session.user_id}); 
+    try {       
+        const categoryDetails = await Category.find({});
+        const products = await Product.find({status:true})
+        res.render('home',{user:req.session.user_id,catData:categoryDetails,
+            product:products}); 
 
     } catch (error) {
         console.log(error.message); 
@@ -495,7 +498,7 @@ const searchProducts = async (req, res) => {
   
       res.render('product', {
     product: products,
-    category: categories,
+    catData: categories,
     currentPage: page,
     totalPages: totalPages,
     pages: Array.from({ length: totalPages }, (_, i) => i + 1),
