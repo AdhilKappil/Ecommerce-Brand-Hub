@@ -56,18 +56,21 @@ function removeCartItem(user, product, qty) {
       $.ajax({
         url: '/removeCart',
         method: 'delete',
-        encoded: true,
-        data: { user, product, qty },
+        data: { user, product, qty }, // Removed the "encoded: true" part
         success: (response) => {
           console.log(response);
           if (response.remove == 1) {
-              location.reload();
+            $('#remove-' + product).remove();
+            const tableLength = $('.table_row').length;
+            if(  tableLength === 0)
+            location.reload();
           }
-        }
+        },
       });
-    } 
+    }
   });
 }
+
 
 // ======= deleting user address ========
 function removeAddress(id) {

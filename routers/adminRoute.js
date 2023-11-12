@@ -1,6 +1,7 @@
 const express = require('express'); 
 const adminController = require("../controllers/adminContoller"); 
 const orderController = require("../controllers/orderController"); 
+const salesController = require("../controllers/reportController"); 
 const multer = require('multer');
 const path = require('path');
 const session = require('express-session');
@@ -73,10 +74,10 @@ admin_route.post('/adminCancelOrder', auth.isLogin, orderController.adminCancelO
 admin_route.post('/verifyPayment', auth.isLogin, orderController.verifyPayment);
 
 
+// ============= sales roport routes =========
+admin_route.post('/report/genarate',auth.isLogin,adminController.genarateSalesReports)
+admin_route.get('/salesReport',auth.isLogin,salesController.salesReportPageLoad )
 // admin_route.get('/addBaner',auth.isLogin,adminController.loadBaner)
-
-
-
 
 
 

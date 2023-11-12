@@ -36,7 +36,7 @@
 										</tr>
 
 										<% for (i=0; i < cartItems.products.length; i++) { %>
-											<tr class="table_row">
+											<tr class="table_row" id="remove-<%= cartItems.products[i].productId._id%>">
 												<td class="column-1">
 													<div class="how-itemcart1">
 														<img src="/static/adminAssets/images/products/<%= cartItems.products[i].productId.images[0] %>"

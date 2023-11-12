@@ -87,16 +87,17 @@ const loadadHome = async(req,res)=>{
     const countOfWallet = await Order.countDocuments({
       paymentMethod: "Wallet",
     });
-    const countOfOnlineAndWallet =countOfWallet + countOfOnline
 
-    const paymentChart = { countOfCod, countOfOnlineAndWallet };
-    console.log('chart',paymentChart);
+
+
+    const paymentChart = { countOfCod, countOfOnline, countOfWallet};
+    // console.log('chart',paymentChart);
     const orders = await recentOrder();
     const stock = await getTotalStockNumber();
     // console.log("orders",orders);
     // console.log('stock',stock);
     const result = await createSalesReport("year")
-    // console.log('result',result);
+    console.log('result',result);
     const report = {
       stock,
       sales: result.productProfits.length,
@@ -191,6 +192,31 @@ const getTotalStockNumber = async () => {
 
 
 
+// ========= genarating sales report ==========
+const genarateSalesReports = async (req, res) => {
+  try {
+    const date = Date.now();    
+    // const report = await generateReport(req.body.data);
+    const result = await createSalesReport(req.body.data)
+    const report = {
+        reportDate: date,
+        totalSalesAmount: result.totalSales,
+        totalOrders: result.productProfits.length,
+      };
+      // console.log(report);
+
+    // const fileName = `salesReport-${date}.xlsx`; // Provide the desired file name
+
+    // const exel = await generateExcelReport(reportData,fileName);
+    res.status(200).json({report});
+    // res.json(report,exel);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
+
 // ========== creating sales report ==========
 const createSalesReport = async (interval) => {
   try {
@@ -255,7 +281,7 @@ const createSalesReport = async (interval) => {
           };
         }
         const productPrice = product.price;
-        const productCost = productPrice * 0.3;
+        const productCost = productPrice * 0.5;
         const productProfit = (productPrice - productCost) * quantity;
         transformedProductProfits[productId].profit += productProfit;
       }
@@ -745,6 +771,7 @@ module.exports = {
     unlistProduct,
     adminLogout,
     load404,
-    load500
+    load500,
+    genarateSalesReports
     // loadBaner
 }

@@ -100,11 +100,12 @@
           <div class="card-body">
             <h4 class="card-title">Transaction History</h4>
             <input value="<%=paymentChart.countOfCod%>" id="cod" hidden> <input value="<%=paymentChart.countOfOnline%>" id="online" hidden>
+            <input value="<%=paymentChart.countOfWallet%>" id="wallet" hidden>
             <canvas id="TransactionChart" style="width:100%;max-width:600px;  "></canvas>
 
             <% if (paymentHistory && paymentHistory.length > 0) { %>
               <% for (let i = paymentHistory.length - 1; i >= 0; i--) { %>
-                  <% const dateObject = paymentHistory[i].transactionDate; %>
+                  <% const dateObject = paymentHistory[i].orderDate; %>
                   <% if (dateObject) { %>
                       <!-- Assuming dateObject is a JavaScript Date object containing your date -->
                       <% 
@@ -192,42 +193,49 @@
   </div>
 </div>
 
+
+<!-- ==========// chart cdn =========== -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
     
-  function onpageLoad(){
+    // ========== chart script ========
+    function onpageLoad() {
+    let codValue = document.getElementById("cod").value;
+    let onlineValue = document.getElementById("online").value;
+    let walletValue = document.getElementById("wallet").value;
 
-    let codValue = document.getElementById("cod").value
-    let onlineValue = document.getElementById("online").value
+    var xValues = ["Cash on delivery", "Online Payment", "Wallet"];
+    var yValues = [parseInt(codValue), parseInt(onlineValue), parseInt(walletValue)];
+    var barColors = [
+        "#ffab00",
+        "#00d25b",
+        "#3366cc"  
+    ];
 
-  var xValues = ["Cash on delivery", "Online Payment"];
-  var yValues = [codValue, onlineValue];
-  var barColors = [
-    "#ffab00",
-    "#00d25b"
-  ];
-
-  new Chart("TransactionChart", {
-    type: "doughnut",
-    data: {
-      labels: xValues,
-      datasets: [{
-        backgroundColor: barColors,
-        data: yValues
-      }]
-    },
-    options: {
-      legend: {
-        labels: {
-          fontColor: "#fff" // Set label text color to red
+    new Chart("TransactionChart", {
+        type: "doughnut",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {
+            legend: {
+                labels: {
+                    fontColor: "#fff"
+                }
+            }
         }
-      }
-    }
-
-  });
+    });
 }
-window.onload =onpageLoad()
+
+window.onload = onpageLoad;
 
 
+// ========= day, weekly ,yearly report =========
 function reportMake(data){
   let yearly = document.getElementById("year")
   let weekly = document.getElementById("weekly")

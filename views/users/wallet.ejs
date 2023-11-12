@@ -41,9 +41,10 @@
                               
                         </div>
                         <form id="wallet-form" action="" method="" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
-                            <input type="text" name="key" class="form-control mb-1 text-dark" style="width: 70%;" placeholder="Enter Amount" id="amount" required>
+                            <input type="text" name="key" class="form-control mb-1 text-dark" style="width: 70%;" placeholder="Enter Amount" id="amount" >
                             <button type="submit" class="btn btn-outline-primary-2" style="height: 40px;">Add Money</button>
                         </form>
+                        <div id="error-message" class="text-danger"></div>
                     </div>
                 </div>
 
@@ -103,20 +104,36 @@
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-<script>
+ <script>
+    
 
-const err = document.getElementById('err')
-document.getElementById('wallet-form').addEventListener('submit',(e) =>{
-    e.preventDefault()
+    const err = document.getElementById('error-message'); // Update the error message element
 
-    const amount = document.getElementById('amount').value.trim()
+document.getElementById('wallet-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const amount = document.getElementById('amount').value.trim();
     console.log('clicked');
-    if( !amount ) {
-        e.preventDefault()
+
+    // Clear previous error messages
+    err.innerHTML = '';
+
+    if (!amount) {
+        e.preventDefault();
+        err.innerHTML = 'Amount should not be empty!';
+        setTimeout(() => {
+            err.innerHTML = ''; // Clear the error message after 3 seconds (3000 milliseconds)
+        }, 2500); // 3 seconds in milliseconds
+        return; // Stop further execution
     }
-    if( amount <= 0 ) {
-        e.preventDefault()
-        err.innerHTML = 'Amount cannot be negative!'
+
+    if (isNaN(amount) || parseFloat(amount) <= 0) {
+        e.preventDefault();
+        err.innerHTML = 'Please enter a valid amount!';
+        setTimeout(() => {
+            err.innerHTML = ''; // Clear the error message after 3 seconds (3000 milliseconds)
+        }, 2500); // 3 seconds in milliseconds
+        return; // Stop further execution
     }
 
     $.ajax({
@@ -124,18 +141,16 @@ document.getElementById('wallet-form').addEventListener('submit',(e) =>{
         method: 'post',
         data: { amount },
         success: (res) => {
-            if(res.status){
+            if (res.status) {
                 console.log('opening razorpay');
-                razorpayPayment(res.payment)
-            }else{
+                razorpayPayment(res.payment);
+            } else {
                 console.log('status false redirecting to walletHistory');
                 location.reload();
             }
         }
     });
-
 });
-
 
 function razorpayPayment(order) {
     console.log('razorpay fuction');
@@ -186,6 +201,7 @@ function razorpayPayment(order) {
                 }
             })
         }
+        
 </script>
 
 <%-include('../users/layouts/footer.ejs') %> 
