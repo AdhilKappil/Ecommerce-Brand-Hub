@@ -4,6 +4,7 @@ const Product = require("../models/product");
 const User = require("../models/users");
 const Address = require("../models/userAddress");
 const Order = require("../models/order");
+const Analytics = require("../models/analytic");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 
@@ -569,7 +570,6 @@ const changeOrderStatus = async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: "Order not found." });
     }
-
     // Find the product within the order by its ID (using .toString() for comparison)
     const productInfo = order.products.find(
       (product) => product.productId.toString() === productId
@@ -579,11 +579,85 @@ const changeOrderStatus = async (req, res) => {
     productInfo.StatusLevel = statusLevel;
     productInfo.updatedAt = Date.now();
 
+    if(status==="Delivered")
+    productInfo. paymentStatus ="Success";
+
     const result = await order.save();
+
+    if(status==="Delivered"){
+
+      let analaticResult = await CreateOrderAnalatic();
+      console.log('RETURN RESULT',analaticResult);
+    }
+
 
     res.redirect(
       `/admin/order/orderManagment?orderId=${orderId}&productId=${productId}`
     );
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
+             
+// ======== order analatical creation =========
+const CreateOrderAnalatic = async () => {
+ 
+  try {
+
+    const orderDataData = await Order.aggregate([
+      {
+        $match: { "products.OrderStatus": "Delivered" }
+      },
+      {
+        $unwind: "$products"
+      },
+      {
+        $match: { "products.OrderStatus": "Delivered" }
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'products.productId',
+          foreignField: '_id',
+          as: 'populatedProduct'
+        }
+      },
+      {
+        $unwind: '$populatedProduct'
+      },
+      {
+        $group: {
+          _id: '$populatedProduct._id',
+          productName: { $first: '$populatedProduct.productName' },
+          totalSalesAmount: { $sum: { $multiply: [{$toDouble: '$populatedProduct.price'}, '$products.quantity'] } }
+        }
+      }
+    ]);
+
+    // Calculate total sales amount from the aggregated data
+    const totalSalesAmount = orderDataData.reduce((total, result) => total + result.totalSalesAmount, 0);
+
+    // Calculate total orders from the aggregated data
+    const totalOrders = orderDataData.length;
+
+    // Save the calculated values to the OrderAnalytics model
+    let orderAnalytics = await Analytics.findOne();
+
+    if (!orderAnalytics) {
+      orderAnalytics = new Analytics({
+        totalSalesAmount,
+        totalOrders,
+      });
+    } else {
+      orderAnalytics.totalSalesAmount = totalSalesAmount * 0.2;
+      orderAnalytics.totalOrders = totalOrders;
+    }
+
+    let result = await orderAnalytics.save();
+    
+    return result;
   } catch (error) {
     console.log(error.message);
   }

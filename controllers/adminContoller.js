@@ -69,12 +69,38 @@ const verifyLogin = async(req,res) => {
 const loadadHome = async(req,res)=>{
 
   try {
-      res.render('dashboard'); 
 
+    let users = await User.find({});;
+    console.log(users);
+    const TransactionHistory = await PaymentDB.find();
+    const countOfCod = await PaymentDB.countDocuments({
+      paymentMethod: "Cash on Delivery",
+    });
+    const countOfOnline = await PaymentDB.countDocuments({
+      paymentMethod: "Online",
+    });
+    const paymentChart = { countOfCod, countOfOnline };
+    // console.log(TransactionHistory);
+    const orders = await recentOrder();
+    const stock = await getTotalStockNumber();
+    const result = await createSalesReport("year")
+    const report = {
+      stock,
+      sales: result.productProfits.length,
+      amount: result.totalSales,
+    };
+    
+    res.render("dashbord", {
+      users: users,
+      paymentHistory: TransactionHistory,
+      orders,
+      paymentChart,
+      report,
+    });
   } catch (error) {
-      console.log(error.message); 
+    console.log(error.message);
   }
-}
+};
   
   
 //====== loading add catogory page =======
