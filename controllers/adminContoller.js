@@ -3,9 +3,12 @@ const admin = require('../models/admin');
 const User = require('../models/users');
 const category = require('../models/category');
 const product = require('../models/product');
+const productDb = require('../models/product')
+const Order = require("../models/order");
 const bcrypt = require("bcrypt");
 const path = require('path')
 const fs = require("fs")
+const { ObjectId}=require('mongodb')
 
 
 // ======== pasword security =========
@@ -49,7 +52,7 @@ const verifyLogin = async(req,res) => {
   
         if(passwordMatch){
             req.session.admin_id=adminData._id              
-            res.render('dashboard');
+            res.redirect('/admin/dashboard');
         
           }else{
             res.render('adminLogin',{message:"Email or password is incorrect" });
@@ -71,26 +74,38 @@ const loadadHome = async(req,res)=>{
   try {
 
     let users = await User.find({});;
-    console.log(users);
-    const TransactionHistory = await PaymentDB.find();
-    const countOfCod = await PaymentDB.countDocuments({
-      paymentMethod: "Cash on Delivery",
+    // console.log(users);
+    const TransactionHistory = await Order.find();
+    // console.log('history',TransactionHistory);
+    const countOfCod = await Order.countDocuments({
+      paymentMethod: "COD",
     });
-    const countOfOnline = await PaymentDB.countDocuments({
-      paymentMethod: "Online",
+  
+    const countOfOnline = await Order.countDocuments({
+      paymentMethod: "Online Payment",
     });
-    const paymentChart = { countOfCod, countOfOnline };
-    // console.log(TransactionHistory);
+    const countOfWallet = await Order.countDocuments({
+      paymentMethod: "Wallet",
+    });
+    const countOfOnlineAndWallet =countOfWallet + countOfOnline
+
+    const paymentChart = { countOfCod, countOfOnlineAndWallet };
+    console.log('chart',paymentChart);
     const orders = await recentOrder();
     const stock = await getTotalStockNumber();
+    // console.log("orders",orders);
+    // console.log('stock',stock);
     const result = await createSalesReport("year")
+    // console.log('result',result);
     const report = {
       stock,
       sales: result.productProfits.length,
       amount: result.totalSales,
     };
+
+    // console.log("report",report);
     
-    res.render("dashbord", {
+    res.render("dashboard", {
       users: users,
       paymentHistory: TransactionHistory,
       orders,
@@ -101,7 +116,208 @@ const loadadHome = async(req,res)=>{
     console.log(error.message);
   }
 };
-  
+
+
+
+// ======= fiding recent order =========
+const recentOrder = async () => {
+  try {
+    const orders = await Order.find();
+    // console.log('my orders',orders);
+
+    const productWiseOrdersArray = [];
+
+    for (const order of orders) {
+      for (const productInfo of order.products) {
+        const productId = productInfo.productId;
+        // console.log("id",productId );
+
+       const product = await productDb.findById(productId).select(
+          "productName images price"
+        );
+        // console.log("produc",product);
+        const userDetails = await User.findById(order.userId).select(
+          "email"
+        );
+        // console.log("user",userDetails);
+        if (product) {
+          // Push the order details with product details into the array
+          orderDate = await formatDate(order.orderDate);
+          productWiseOrdersArray.push({
+            user: userDetails,
+            product: product,
+            orderDetails: {
+              _id: order._id,
+              userId: order.userId,
+              shippingAddress: order.shippingAddress,
+              orderDate: orderDate,
+              totalAmount: productInfo.quantity * product.price,
+              OrderStatus: productInfo.OrderStatus,
+              StatusLevel: productInfo.StatusLevel,
+              paymentMethod: order.paymentMethod,
+              paymentStatus: productInfo.paymentStatus,
+              quantity: productInfo.quantity,
+            },
+          });
+        }  
+      }
+    }
+
+    // for(i=0;i<productWiseOrdersArray.length;i++){
+    return productWiseOrdersArray;
+  } catch (error) {}
+};
+
+
+
+//======== findimng totel Stock number
+const getTotalStockNumber = async () => {
+  try {
+    const result = await product.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalStock: { $sum: "$quantity" },
+        },
+      },
+    ]);
+    const totalStock = result.length > 0 ? result[0].totalStock : 0;
+    // console.log("totelstock",totalStock);
+    return totalStock;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+
+// ========== creating sales report ==========
+const createSalesReport = async (interval) => {
+  try {
+    let startDate, endDate;
+
+    if (interval === "day") {
+      const today = new Date();
+      startDate = new Date(today);
+      startDate.setHours(0, 0, 0, 0); // Start of the day
+      endDate = new Date(today);
+      endDate.setHours(23, 59, 59, 999); // End of the day
+    } else {
+      startDate = getStartDate(interval);
+      endDate = getEndDate(interval);
+    }
+
+    // findig order date in between start date and end date
+    const orders = await Order.find({
+      orderDate: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
+
+    const transformedTotalStockSold = {};
+    const transformedProductProfits = {};
+
+    const getProductDetails = async (productId) => {
+      return await product.findById(productId);
+    };
+
+    for (const order of orders) {
+      for (const productInfo of order.products) {
+        const productId = productInfo.productId;
+        const quantity = productInfo.quantity;
+
+        const product = await getProductDetails(productId);
+        const productName = product.productName;
+        const image = product.images[0];
+        // const shape = product.frame_shape;
+        const price = product.price;
+
+        if (!transformedTotalStockSold[productId]) {
+          transformedTotalStockSold[productId] = {
+            id: productId,
+            name: productName,
+            quantity: 0,
+            image: image,
+            // shape: shape,
+          };
+        }
+        transformedTotalStockSold[productId].quantity += quantity;
+
+        if (!transformedProductProfits[productId]) {
+          transformedProductProfits[productId] = {
+            id: productId,
+            name: productName,
+            profit: 0,
+            image: image,
+            // shape: shape,
+            price: price,
+          };
+        }
+        const productPrice = product.price;
+        const productCost = productPrice * 0.3;
+        const productProfit = (productPrice - productCost) * quantity;
+        transformedProductProfits[productId].profit += productProfit;
+      }
+    }
+
+    const totalStockSoldArray = Object.values(transformedTotalStockSold);
+    const productProfitsArray = Object.values(transformedProductProfits);
+
+    const totalSales = productProfitsArray.reduce(
+      (total, product) => total + product.profit,
+      0
+    );
+
+    const salesReport = {
+      totalSales,
+      totalStockSold: totalStockSoldArray,
+      productProfits: productProfitsArray,
+    };
+
+    return salesReport;
+  } catch (error) {
+    console.error("Error generating the sales report:", error.message);
+  }
+};
+
+
+
+// ======== This Function used to formmate date from new Date() function ====
+function formatDate(date) {
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  return date.toLocaleDateString("en-US", options);
+}
+
+
+
+// ===== setting start date and end date ========
+const getStartDate = (interval) => {
+  const start = new Date();
+  if (interval === "week") {
+    start.setDate(start.getDate() - start.getDay()); // Start of the week
+  } else if (interval === "year") {
+    start.setMonth(0, 1); // Start of the year
+  }
+  return start;
+};
+
+const getEndDate = (interval) => {
+  const end = new Date();
+  if (interval === "week") {
+    end.setDate(end.getDate() - end.getDay() + 6); // End of the week
+  } else if (interval === "year") {
+    end.setMonth(11, 31); // End of the year
+  }
+  return end;
+};
+
+
   
 //====== loading add catogory page =======
 const loadAddCategories = async(req,res)=>{
