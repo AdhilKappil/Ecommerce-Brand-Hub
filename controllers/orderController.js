@@ -220,7 +220,7 @@ const placeOrder = async (req, res) => {
         const quantity = parseInt(item.quantity, 10);
 
         if( paymentType === 'Wallet'){
-          // console.log('enterd wallet');
+         
           let changeOrderStatus = await Order.updateOne(
             { _id: placeorder._id },
             {
@@ -706,6 +706,7 @@ const CreateOrderAnalatic = async () => {
 
 // ========= admin cancel order ==========
 const adminCancelOrder = async (req, res) => {
+  console.log('hi');
   try {
     const { orderId, productId } = req.body;
     const userId = req.session.user_id

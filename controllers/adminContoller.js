@@ -99,9 +99,9 @@ const loadadHome = async(req,res)=>{
     const result = await createSalesReport("year")
     // console.log('result',result);
     const report = {
-      stock,
-      sales: result.productProfits.length,
-      amount: result.totalSales,
+      totalSalesAmount:result.totalSalesAmount,
+      sales: result.totalProductsSold,
+      amount: result.profit,
     };
 
     // console.log("report",report);
@@ -165,7 +165,7 @@ const recentOrder = async () => {
     }
 
     // for(i=0;i<productWiseOrdersArray.length;i++){
-    return productWiseOrdersArray;
+    return productWiseOrdersArray.slice(0,10);
   } catch (error) {}
 };
 
@@ -233,73 +233,64 @@ const createSalesReport = async (interval) => {
       endDate = getEndDate(interval);
     }
 
-    // findig order date in between start date and end date
-    const orders = await Order.find({
-      orderDate: {
-        $gte: startDate,
-        $lte: endDate,
+
+
+    const orderDataData = await Order.aggregate([
+      {
+        $match: {
+          orderDate: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
       },
-    });
+      {
+        $unwind: "$products",
+      },
+      {
+        $match: { "products.paymentStatus": "Success" },
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'products.productId',
+          foreignField: '_id',
+          as: 'populatedProduct',
+        },
+      },
+      {
+        $unwind: '$populatedProduct',
+      },
+      {
+        $group: {
+          _id: '$populatedProduct._id',
+          productName: { $first: '$populatedProduct.productName' },
+          totalSalesAmount: {
+            $sum: { $multiply: [{$toDouble: '$populatedProduct.price'}, '$products.quantity'] },
+          },
+          totalProductsSold: { $sum: '$products.quantity' },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalSalesAmount: { $sum: '$totalSalesAmount' },
+          totalProductsSold: { $sum: '$totalProductsSold' },
+        },
+      },
+    ]);
+    
+    // Extracting totals directly from the first result, as it's now a single document
+    const { totalSalesAmount, totalProductsSold } = orderDataData[0];
 
-    const transformedTotalStockSold = {};
-    const transformedProductProfits = {};
+    const profit =Math.floor(totalSalesAmount*0.3) 
 
-    const getProductDetails = async (productId) => {
-      return await product.findById(productId);
-    };
+const salesReport = {
+  profit,
+  totalSalesAmount,
+  totalProductsSold
+};
 
-    for (const order of orders) {
-      for (const productInfo of order.products) {
-        const productId = productInfo.productId;
-        const quantity = productInfo.quantity;
-
-        const product = await getProductDetails(productId);
-        const productName = product.productName;
-        const image = product.images[0];
-        // const shape = product.frame_shape;
-        const price = product.price;
-
-        if (!transformedTotalStockSold[productId]) {
-          transformedTotalStockSold[productId] = {
-            id: productId,
-            name: productName,
-            quantity: 0,
-            image: image,
-            // shape: shape,
-          };
-        }
-        transformedTotalStockSold[productId].quantity += quantity;
-
-        if (!transformedProductProfits[productId]) {
-          transformedProductProfits[productId] = {
-            id: productId,
-            name: productName,
-            profit: 0,
-            image: image,
-            // shape: shape,
-            price: price,
-          };
-        }
-        const productPrice = product.price;
-        const productCost = productPrice * 0.5;
-        const productProfit = (productPrice - productCost) * quantity;
-        transformedProductProfits[productId].profit += productProfit;
-      }
-    }
-
-    const totalStockSoldArray = Object.values(transformedTotalStockSold);
-    const productProfitsArray = Object.values(transformedProductProfits);
-
-    const totalSales = productProfitsArray.reduce(
-      (total, product) => total + product.profit,
-      0
-    );
-
-    const salesReport = {
-      totalSales,
-      totalStockSold: totalStockSoldArray,
-      productProfits: productProfitsArray,
-    };
 
     return salesReport;
   } catch (error) {
