@@ -57,14 +57,14 @@ const addMoneyToWallet = async(req,res)=>{
   }
 
 }
-
+  
 
 
 // verifying and adding wallet deatailes to DB
 const verifyWalletPayment = async(req,res)=>{
   try{
 
-    const userId = req.session.user_id
+    const userId = req.session.user_id 
 
     const details = req.body;
     const amount = parseInt(details.order.amount)/100

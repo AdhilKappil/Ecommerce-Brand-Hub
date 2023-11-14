@@ -162,6 +162,13 @@ const placeOrder = async (req, res) => {
 
     const user = await User.findById(req.session.user_id );
 
+    // cheking the product stock
+    const productQuantity = await  checkProductQuantities (userId);
+    if (productQuantity === false){
+      return res.status(202).send({})
+    }
+    
+    // chekking the wallet balance 
     if (paymentType === 'Wallet' && user.wallet < totalAmount) {
       return res.status(201).json({});
     }
@@ -204,16 +211,16 @@ const placeOrder = async (req, res) => {
     const placeorder = await order.save();
     const orderId = placeorder._id;
 
-    console.log(paymentType);
+    // console.log(paymentType);
 
     if (paymentType === "COD" || paymentType === 'Wallet') {
-      console.log('here');
+      // console.log('here');
       for (const item of cartDetails.products) {
         const productId = item.productId._id;
         const quantity = parseInt(item.quantity, 10);
 
         if( paymentType === 'Wallet'){
-          console.log('enterd wallet');
+          // console.log('enterd wallet');
           let changeOrderStatus = await Order.updateOne(
             { _id: placeorder._id },
             {
@@ -242,7 +249,7 @@ const placeOrder = async (req, res) => {
             );
 
          }else{
-          console.log('enterd cod');
+          // console.log('enterd cod');
           let changeOrderStatus = await Order.updateOne(
             { _id: placeorder._id },
             {
@@ -286,6 +293,27 @@ const placeOrder = async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 };
+
+
+
+// ========= Function to Checkout product Stock Check =========
+const checkProductQuantities = async (userId) => {
+
+  const cart = await Cart.findOne({ user: userId }).populate(
+    "products.productId"
+  );
+
+  for (const item of cart.products) {
+    const productId = item.productId._id;
+    const product = await Product.findById(productId);
+
+    if (!product || item.quantity > product.quantity) {
+      return false;
+    }
+  }
+  return true;
+};
+
 
 
 
@@ -493,8 +521,10 @@ const orderMangeLoad = async (req, res) => {
 
 // ========= user cancel order ==========
 const cancelOrder = async (req, res) => {
+  
   try {
-    const { oderId, productId } = req.body;
+    const  oderId = req.body.orderId;
+    const  productId = req.body.productId;
     const userId = req.session.user_id
 
     const order = await Order.findById(oderId);
@@ -507,6 +537,11 @@ const cancelOrder = async (req, res) => {
     const productInfo = order.products.find(
       (product) => product.productId.toString() === productId
     );
+
+    const productDetails = await Product.findById(productInfo.productId);
+
+    const totalAmount = productInfo.quantity* productDetails.price
+
     
     productInfo.OrderStatus = "Cancelled";
     productInfo.updatedAt = Date.now();
@@ -521,7 +556,6 @@ const cancelOrder = async (req, res) => {
 
     // ========== adding money to wallet =========
     if(productInfo.paymentStatus==='Success'){
-      const totalAmount = order.totalAmount
       const walletHistory = {
         transactionDate: new Date(),
         transactionDetails: 'Refund',
@@ -541,6 +575,11 @@ const cancelOrder = async (req, res) => {
             }
         );
 
+    }
+
+    if(productInfo.paymentStatus==='Success'){
+      productInfo.paymentStatus= "Refund";
+      const result = await order.save();
     }
 
     res.json({ cancel: 1 });
@@ -574,7 +613,7 @@ const changeOrderStatus = async (req, res) => {
     const productInfo = order.products.find(
       (product) => product.productId.toString() === productId
     );
-    console.log(productInfo);
+    // console.log(productInfo);
     productInfo.OrderStatus = status;
     productInfo.StatusLevel = statusLevel;
     productInfo.updatedAt = Date.now();
@@ -587,7 +626,7 @@ const changeOrderStatus = async (req, res) => {
     if(status==="Delivered"){
 
       let analaticResult = await CreateOrderAnalatic();
-      console.log('RETURN RESULT',analaticResult);
+      // console.log('RETURN RESULT',analaticResult);
     }
 
 
@@ -681,6 +720,10 @@ const adminCancelOrder = async (req, res) => {
       (product) => product.productId.toString() === productId
     );
 
+    const productDetails = await Product.findById(productInfo.productId);
+
+    const totalAmount = productInfo.quantity* productDetails.price
+
     if (productInfo) {
       productInfo.OrderStatus = "Cancelled";
       productInfo.updatedAt = Date.now();
@@ -696,7 +739,6 @@ const adminCancelOrder = async (req, res) => {
 
       // ========== adding money to wallet =========
       if(productInfo.paymentStatus==='Success'){
-        const totalAmount = order.totalAmount
         const walletHistory = {
           transactionDate: new Date(),
           transactionDetails: 'Refund',
@@ -716,6 +758,11 @@ const adminCancelOrder = async (req, res) => {
               }
           );
   
+      }
+
+      if(productInfo.paymentStatus==='Success'){
+        productInfo.paymentStatus= "Refund";
+        const result = await order.save();
       }
 
       return res.json({ cancel: 1, message: "Order successfully cancelled" });

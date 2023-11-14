@@ -82,7 +82,7 @@
                                                 <%=product.orderDetails.shippingAddress.pincode%>
                                             </p>
                                             <hr class="m-0 p-0 my-3">
-                                            <%if(product.orderDetails.OrderStatus!="Cancelled"){%>
+                                            <%if(product.orderDetails.OrderStatus!="Cancelled" && product.orderDetails.OrderStatus!="Delivered"){%>
                                                 <button data-bs-toggle="modal" data-bs-target="#modCancel"
                                                     class="btn btn-inverse-danger p-3">Cancel Order</button>
                                                 <%}%>

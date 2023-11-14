@@ -6,6 +6,7 @@ const profileController = require("../controllers/profileController");
 const orderController = require("../controllers/orderController"); 
 const whishlistController = require("../controllers/wishlistController");
 const walletController = require("../controllers/walletController");
+const cartLength = require("../middleware/cartMiddleware");
 const session = require('express-session'); 
 const config = require('../config/confiq');
 const auth = require('../middleware/userAuth'); 
@@ -20,7 +21,7 @@ user_route.use(
       saveUninitialized:true,
   })
   );
-
+  user_route.use(cartLength)
 
 user_route.set('view engine','ejs');
 user_route.set('views','./views/users');

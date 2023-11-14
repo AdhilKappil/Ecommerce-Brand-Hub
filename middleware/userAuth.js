@@ -2,7 +2,7 @@
 const isLogin = async (req, res, next) => {
     try {
         if (req.session.user_id) {
-            return next(); // Proceed to the next middleware or route
+             next(); // Proceed to the next middleware or route
         } else {
             res.redirect('/login');
         }
@@ -17,7 +17,7 @@ const isLogout = async (req, res, next) => {
         if (req.session.user_id) {
             res.redirect('/');
         } else {
-            return next(); // Proceed to the next middleware or route
+             next(); // Proceed to the next middleware or route
         }
     } catch (error) {
         console.log(error.message);

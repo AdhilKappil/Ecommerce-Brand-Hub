@@ -97,7 +97,7 @@ const loadadHome = async(req,res)=>{
     // console.log("orders",orders);
     // console.log('stock',stock);
     const result = await createSalesReport("year")
-    console.log('result',result);
+    // console.log('result',result);
     const report = {
       stock,
       sales: result.productProfits.length,

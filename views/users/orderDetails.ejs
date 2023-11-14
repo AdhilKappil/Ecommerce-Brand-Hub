@@ -37,11 +37,12 @@
                       <td class="align-middle"><%= order.products[i].quantity %></td>
                       <td class="align-middle">₹ <%- (order.products[i].productId.price) * (order.products[i].quantity) %></td>
                       <td class="align-middle action-column">
-                        <% if (order.products[i].OrderStatus !== 'Cancelled') { %>
-                          <button class="btn btn-danger cancel-product mall-btn"  onclick="cancelOrder('<%= order._id %>','<%= order.products[i].productId._id %>')">
+                        <% if (order.products[i].OrderStatus !== 'Cancelled' && order.products[i].OrderStatus !== 'Delivered') { %>
+                          <button class="btn btn-danger cancel-product mall-btn" 
+                                  onclick="confirmCancelOrder('<%= order._id %>','<%= order.products[i].productId._id %>')">
                             Cancel
-                          <% } %>
-                        </button>
+                          </button>
+                        <% } %>
                       </td>
                     </tr>
                   </tbody>
@@ -167,28 +168,46 @@
 
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-
-            function cancelOrder(oderId, productId) {
-              console.log('clicked');
-                $.ajax({
-                    url: '/cancelOrder',
-                    method: "post",
-                    data: { oderId, productId },
-                    success: function (response) {
-                        console.log(response);
-                        if (response.cancel == 1) {
-                            location.reload()
-                        }
-                    },
-                    error: function (error) {
-                      console.log('erroefsdf');
-                        console.error("Error:", error);
-                    }
-                });
-            }
-
+  function confirmCancelOrder(orderId, productId) {
+    console.log(productId);
+    console.log(orderId);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You are about to cancel this order!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, cancel it!',
+      cancelButtonText: 'No, keep it'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log('oder',orderId);
+        console.log('produ',productId);
+        $.ajax({
+    url: '/cancelOrder',
+    method: 'POST', // Use 'POST' instead of 'post'
+    data: { orderId, productId },
+    dataType: 'json', // Specify the expected data type
+    success: function (response) {
+        console.log(response);
+        if (response.cancel === 1) {
+            location.reload();
+        }
+    },
+    error: function (error) {
+        console.error('Error:', error);
+    }
+});
+      } else {
+        // If the user clicks "No, keep it", you can add additional logic or leave it empty
+        console.log('User clicked No');
+      }
+    });
+  }
 </script>
-
 
 <%-include('../users/layouts/footer.ejs') %>    

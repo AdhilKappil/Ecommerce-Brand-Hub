@@ -236,10 +236,10 @@ const insertUser = async (req, res)=>{
 const resendOtp = async (req,res)=>{
     try{
         const currentTime = Date.now()/1000;
-        console.log("current",currentTime)
+        // console.log("current",currentTime)
         if (req.session.otp.expiry != null) {
         if(currentTime > req.session.otp.expiry){
-            console.log("expire",req.session.otp.expiry);
+            // console.log("expire",req.session.otp.expiry);
             const newDigit = otpGenerator.generate(6, { 
                 digits: true,
                 alphabets: false, 
@@ -446,7 +446,7 @@ const loadProductDetails = async(req,res)=>{
       res.render('productDetails',{product:products,user:req.session.user_id})
   
     }catch(error){
-      console.log(error);
+      res.status(404).render('404-error')
     }
   }
 

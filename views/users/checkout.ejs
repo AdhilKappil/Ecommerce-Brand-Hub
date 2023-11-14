@@ -98,6 +98,8 @@
                             <a>
                               <%= value.productId.productName %> (Set: <%= value.quantity %>)
                             </a>
+                            <input id="quantity" type="hidden" value="<%= value.quantity %>">
+                            <input id="productID" type="hidden" value="<%= value.productId %>">
                           </td>
                           <td>
                             <%= (value.productId.price) * (value.quantity) %>
@@ -265,11 +267,17 @@
             const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
             // ======= for wallet balnce and amount comparing =======
             const totelAmount = document.getElementById("total1").innerHTML
+            // const totelQuantity = document.getElementById("quantity").value
+            // const orderProductId = document.getElementById("productID").value
+
+            // console.log(orderProductId);
 
             const data = {
               address: addressId,
               payment: paymentMethod,
-              amount:totelAmount
+              amount:totelAmount,
+              // orderQuantity:totelQuantity,
+              // productID:orderProductId
             };
 
             const response = await fetch('/placeOrder', {
@@ -311,7 +319,14 @@
                 title: 'Insufficient Wallet Balance',
                 text: 'Your wallet balance is insufficient. Please choose a different payment method or recharge your wallet.',
               });
-            } else {
+            } else if (response.status===202){
+              Swal.fire({
+                icon: 'error',
+                title: 'Stock exeed',
+                text: 'product stock is less than your order quantity',
+              });
+            }
+            else {
               const responseData = await response.json();
               razorPayment(responseData.order);
 

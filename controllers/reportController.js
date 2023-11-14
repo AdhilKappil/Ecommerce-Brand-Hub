@@ -15,7 +15,7 @@ const salesReportPageLoad = async (req, res) => {
         start = req.query.start;
         end = new Date(req.query.end); // Convert to Date
         end.setDate(end.getDate() + 1); // Add one day to the end date
-        console.log(end);
+        // console.log(end);
       } else {
         today = new Date();
         start = new Date(today);
@@ -29,7 +29,7 @@ const salesReportPageLoad = async (req, res) => {
         createSalesReport(start, end),
         getMostSellingProducts(),
       ]);
-      console.log("Debugger ====:"+sales,SoldProducts);
+      // console.log("Debugger ====:"+sales,SoldProducts);
       if(sales === 0 ||SoldProducts==0 ){
         res.render("salesReport", {
           // week: WeeklySales,
@@ -37,7 +37,7 @@ const salesReportPageLoad = async (req, res) => {
           sales:0,
         });
       }
-      console.log(SoldProducts);
+      // console.log(SoldProducts);
       res.render("salesReport", {
         // week: WeeklySales,
         Mproducts: SoldProducts,
@@ -164,7 +164,7 @@ const createSalesReport = async (startDate, endDate) => {
       if(!mostSellingProducts){
         return 0
       }
-      console.log(mostSellingProducts[0].productData);
+      // console.log(mostSellingProducts[0].productData);
       return mostSellingProducts;
     } catch (error) {
       console.error("Error fetching most selling products:", error);
