@@ -36,32 +36,14 @@
                         <canvas id="barChart" style="height:230px"></canvas>
                         <div style="display: none;">
                             <% if (Mproducts !== 0) { %>
-                                <% if (Mproducts[0]) { %>
-                                    <input id="product1" value="<%= Mproducts[0].productData[0].productName %>">
-                                    <input id="product12" value="<%= Mproducts[0].count %>">
-                                <% } %>
-                                <% if (Mproducts[1]) { %>
-                                    <input id="product2" value="<%= Mproducts[1].productData[0].productName %>">
-                                    <input id="product22" value="<%= Mproducts[1].count %>">
-                                <% } %>
-                                <% if (Mproducts[2]) { %>
-                                    <input id="product3" value="<%= Mproducts[2].productData[0].productName %>">
-                                    <input id="product32" value="<%= Mproducts[2].count %>">
-                                <% } %>
-                                <% if (Mproducts[3]) { %>
-                                    <input id="product4" value="<%= Mproducts[3].productData[0].productName %>">
-                                    <input id="product42" value="<%= Mproducts[3].count %>">
-                                <% } %>
-                                <% if (Mproducts[4]) { %>
-                                    <input id="product5" value="<%= Mproducts[4].productData[0].productName %>">
-                                    <input id="product52" value="<%= Mproducts[4].count %>">
-                                <% } %>
-                                <% if (Mproducts[5]) { %>
-                                    <input id="product6" value="<%= Mproducts[5].productData[0].productName %>">
-                                    <input id="product62" value="<%= Mproducts[5].count %>">
+                                <% for (let i = 0; i < Mproducts.length; i++) { %>
+                                    <% const product = Mproducts[i].productData[0]; %>
+                                    <input id="product<%= i + 1 %>" value="<%= product ? product.productName : '' %>">
+                                    <input id="product<%= i + 1 %>2" value="<%= Mproducts[i].count %>">
                                 <% } %>
                             <% } %>
                         </div>
+                        
 
                     </div>
                 </div>
@@ -74,7 +56,7 @@
                     <h3>Total Profit :<%= sales.totalSales %></h3>
                 </div>
                 <div class=" col-3 d-flex flex-row ">
-                    <form class="d-flex flex-row" action="/admin/sales-report" method="get">
+                    <form class="d-flex flex-row" action="/admin/salesReport" method="get">
                         <h2 class="mdi mdi-calendar-clock"></h2>
                         <input type="text" autocomplete="off" id="start-date" class="form-control text-light m-1 " name="start" placeholder="From" required>
                         <input type="text" autocomplete="off" id="end-date" class="form-control text-light m-1 " name="end" placeholder="To" required>
@@ -112,7 +94,7 @@
                     <div class="card-body">
                         <div class="d-flex flex-row justify-content-between">
                             <h4 class="card-title mb-1">product wise profitability analysis</h4>
-                            <div class="dropdown mt-2">
+                            <div class="dropdown mt-2 text-right">
                                 <button type="button" class="btn btn-inverse-info dropdown-toggle" id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="mdi mdi-download"></i>
                                 </button>
@@ -122,6 +104,7 @@
                                     <a class="dropdown-item text-white" id="pdfDownload">PDF File</a>
                                 </div>
                             </div>
+                            
                         </div>
                         <div class="row">
                             <div class="table-responsive card">
@@ -160,11 +143,135 @@
                 </div>
             </div>
         </div>
+        
+        
+        <div class="row ">
+            
+            <div class="col-12 grid-margin">
+                <div class=" col-3 d-flex flex-row ">
+                    <form class="d-flex flex-row" action="/admin/salesReport" method="get">
+                        <h2 class="mdi mdi-calendar-clock"></h2>
+                        <input type="text" autocomplete="off" id="start-date" class="form-control text-light m-1 " name="start" placeholder="From" required>
+                        <input type="text" autocomplete="off" id="end-date" class="form-control text-light m-1 " name="end" placeholder="To" required>
+                        <button type="submit" class="btn btn-inverse-primary m-2">Filter</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <div class="dropdown mt-2 text-right">
+                        <button type="button" class="btn btn-inverse-info dropdown-toggle" id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="mdi mdi-download"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton9">
+                            <h6 class="dropdown-header">Download Report</h6>
+                            <a class="dropdown-item text-white" id="excelDownload">Excel file</a>
+                            <a class="dropdown-item text-white" id="pdfDownload">PDF File</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div >
+                            <ul class="navbar-nav w-100">
+                                <li class="nav-item w-100">
+                                    
+                                </li>
+                            </ul>
+                        </div>
+                        <h4 class="card-title">All Orders</h4>
+    
+                        <form action="" method="get" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
+                            <input type="text" name="key" class="form-control mb-1 text-light" placeholder="Search Users" id="searchInput">
+                            <!-- <button type="submit" class="btn-inverse-info mb-1">search</button> -->
+                        </form>
+    
+                        <div class="table-responsive">
+                            <table class="table" id="user-table">
+                                <thead>
+                                    <tr>
+
+                                        <th> No </th>
+                                        <th> Product </th>
+                                        <th> Order Id </th>
+                                        <th> User </th>
+                                        <th> Order Date</th>
+                                        <th> Quantity</th>
+                                        <th> Price</th>
+                                        <th> Pyament Status</th>
+                                        <th> Order Status</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <% let k = 1 %>
+                                    <%for(i=orders.length-1;i>=0;i--){%>          
+                                        <tr>
+                                            <td><%= k %></td>
+                                            <td>
+                        
+                                                <span>
+                                                    <%= orders[i].product.productName %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <%= orders[i].orderDetails.trackId %>
+                                            </td>
+                                            <td>
+                                                <%= orders[i].user.email %>
+                                            </td>
+                                            <td>
+                                                <span style="font-weight: 100;" class="pl-2 ">
+                                                    <%= orders[i].orderDetails.orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %>
+                                                </span>
+    
+                                            </td>
+    
+                                            <td>
+                                                <%= orders[i].orderDetails.quantity %>
+                                            </td>
+                                            <td>
+                                                ₹<%= orders[i].orderDetails.totalAmount %>
+                                            </td>
+    
+                                            <td>
+                                                <%if( orders[i].orderDetails.paymentStatus == "Pending"){%>
+                                                <%}else if(orders[i].orderDetails.paymentStatus == "Success"){%>
+                                               <%}else if(orders[i].orderDetails.paymentStatus == "Failed"){%>
+                                                <%}%>        
+                                                <%= orders[i].orderDetails.paymentStatus %>
+                                            </td>
+
+                                            <td>
+    
+                                                <%if( orders[i].orderDetails.paymentStatus == "Delivered"){%>
+                                                <%}else if(orders[i].orderDetails.OrderStatus == "Pending"){%>
+                                                <%}else if(orders[i].orderDetails.OrderStatus == "Placed"){%>
+                                                <%}else if(orders[i].orderDetails.OrderStatus == "Shipped"){%>
+                                                <%}else if(orders[i].orderDetails.OrderStatus == "Delivered"){%>
+                                                <%}else if(orders[i].orderDetails.OrderStatus == "Cancelled"){%> 
+                                                <%}else if(orders[i].orderDetails.OrderStatus == "OutforDelivery"){%>
+                                                <%}%>
+                                                <%= orders[i].orderDetails.OrderStatus %>
+
+                                                <% k++ %>
+                                            </td>
+                                          
+                                        <%}%>
+                                        
+                                        <!-- list -->
+    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="/static/adminAssets/vendors/chart.js/Chart.min.js"></script>
+
 
 <script>
     function SoledProduct(){
@@ -256,98 +363,81 @@
 
 <script>
 
-        const product1 = document.getElementById("product1").value
-        const product12 = document.getElementById("product12").value
 
-        const product2 = document.getElementById("product2").value
-        const product22 = document.getElementById("product22").value
+ document.addEventListener("DOMContentLoaded", function () {
+    const getSoldProductData = () => {
+        const productData = [];
+        for (let i = 1; i <= 5; i++) {
+            const productName = document.getElementById(`product${i}`).value;
+            const productCount = document.getElementById(`product${i}2`).value;
+            productData.push({ name: productName, count: productCount });
+        }
+        return productData;
+    };
 
-        const product3 = document.getElementById("product3").value
-        const product32 = document.getElementById("product32").value
+    const soldProducts = getSoldProductData();
 
-        const product4 = document.getElementById("product4").value
-        const product42 = document.getElementById("product42").value
+    // Log the data to check if it's correct
+    console.log("Sold Products:", soldProducts);
 
-        const product5 = document.getElementById("product4").value
-        const product52 = document.getElementById("product42").value
+    // Use the soldProducts data to update your chart
+    var data = {
+        labels: soldProducts.map(product => product.name),
+        datasets: [{
+            label: 'Sold',
+            data: soldProducts.map(product => product.count),
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)'
+            ],
+            borderWidth: 1,
+            fill: false
+        }]
+    };
 
-        const product6 = document.getElementById("product5").value
-        const product62 = document.getElementById("product52").value
-
-        const product7 = document.getElementById("product6").value
-        const product72 = document.getElementById("product62").value
-
-        var data = {
-            labels: [product4, product2, product6, product1, product5, product3],
-            datasets: [{
-                label: 'Sold',
-                data: [product42, product22, product62, product12, product52, product32,],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1,
-                fill: false
-            }]
-        };
-
-        var options = {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    },
-                    gridLines: {
-                        color: "rgba(204, 204, 204,0.1)"
-                    }
-                }],
-                xAxes: [{
-                    gridLines: {
-                        color: "rgba(204, 204, 204,0.1)"
-                    }
-                }]
-            },
-            legend: {
-                display: false
-            },
-            elements: {
-                point: {
-                    radius: 0
+    var options = {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                },
+                gridLines: {
+                    color: "rgba(204, 204, 204,0.1)"
                 }
+            }],
+            xAxes: [{
+                gridLines: {
+                    color: "rgba(204, 204, 204,0.1)"
+                }
+            }]
+        },
+        legend: {
+            display: false
+        },
+        elements: {
+            point: {
+                radius: 0
             }
-        };
+        }
+    };
 
-
-
-
-        // var areaChartCanvas = document.getElementById("areaChart").getContext("2d");
-        // var areaChart = new Chart(areaChartCanvas, {
-        //     type: 'line',
-        //     data: areaData,
-        //     options: areaOptions
-        // });
-
-
-        var barChartCanvas = $("#barChart").get(0).getContext("2d");
-        // This will get the first returned node in the jQuery collection.
-        var barChart = new Chart(barChartCanvas, {
-            type: 'bar',
-            data: data,
-            options: options
-        });
-
+    var barChartCanvas = $("#barChart").get(0).getContext("2d");
+    var barChart = new Chart(barChartCanvas, {
+        type: 'bar',
+        data: data,
+        options: options
+    });
+});
 
 
         // fileDownloadPathsettings();

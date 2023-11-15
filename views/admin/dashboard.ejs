@@ -62,7 +62,7 @@
                   <h2 class="mb-0" id="totalSale"><%= report.sales %></h2>
                   <!-- <p class="text-success ml-2 mb-0 font-weight-medium">+8.3%</p> -->
                 </div>
-                <h3 class="mt-3">₹ <%= report.totalSalesAmount %></h3>
+                <h3 class="mt-3" id="totalAmount">₹ <%= report.totalSalesAmount %></h3>
               </div>
               <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
                 <i class="icon-lg mdi mdi-chart-areaspline text-danger ml-auto"></i>
@@ -241,6 +241,7 @@ function reportMake(data){
   let weekly = document.getElementById("weekly")
   let daily = document.getElementById("daily")
   let totalSale = document.getElementById("totalSale")
+  let totalAmount = document.getElementById("totalAmount")
   let revenue = document.getElementById("revenue")
   let reportTime = document.getElementById("reportTime")
   // let downloadBtn = document.getElementById("downloadBtn")
@@ -251,7 +252,8 @@ function reportMake(data){
     success: function(response){
       response.auth==0 ? window.location.href="/admin":
       console.log(response);
-      revenue.innerHTML="₹"+response.report.totalSalesAmount
+      revenue.innerHTML="₹"+response.report.totalProfit
+      totalAmount.innerHTML="₹"+response.report.totalSalesAmount
       totalSale.innerHTML=response.report.totalOrders 
       reportTime.innerHTML =  "Report generated on :"+formatDate(response.report.reportDate)
       // downloadBtn.setAttribute("href",`/admin/reports/${response.fileName}`);

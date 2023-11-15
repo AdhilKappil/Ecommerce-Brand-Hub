@@ -77,10 +77,12 @@ admin_route.post('/verifyPayment', auth.isLogin, orderController.verifyPayment);
 // ============= sales roport routes =========
 admin_route.post('/report/genarate',auth.isLogin,adminController.genarateSalesReports)
 admin_route.get('/salesReport',auth.isLogin,salesController.salesReportPageLoad )
+admin_route.post('/sales-report/portfolio',auth.isLogin,salesController.portfolioFiltering )
+admin_route.get('/sales-report/export-report',auth.isLogin,salesController.generateExcelReports)
+admin_route.get('/sales-report/export-PDF-report',auth.isLogin,salesController.generatePDFReports)
+
 
 // admin_route.get('/addBaner',auth.isLogin,adminController.loadBaner)
-
-
 
 
 

@@ -93,7 +93,7 @@ const loadadHome = async(req,res)=>{
     const paymentChart = { countOfCod, countOfOnline, countOfWallet};
     // console.log('chart',paymentChart);
     const orders = await recentOrder();
-    const stock = await getTotalStockNumber();
+    // const stock = await getTotalStockNumber();
     // console.log("orders",orders);
     // console.log('stock',stock);
     const result = await createSalesReport("year")
@@ -164,7 +164,7 @@ const recentOrder = async () => {
       }
     }
 
-    // for(i=0;i<productWiseOrdersArray.length;i++){
+    
     return productWiseOrdersArray.slice(0,10);
   } catch (error) {}
 };
@@ -172,23 +172,23 @@ const recentOrder = async () => {
 
 
 //======== findimng totel Stock number
-const getTotalStockNumber = async () => {
-  try {
-    const result = await product.aggregate([
-      {
-        $group: {
-          _id: null,
-          totalStock: { $sum: "$quantity" },
-        },
-      },
-    ]);
-    const totalStock = result.length > 0 ? result[0].totalStock : 0;
-    // console.log("totelstock",totalStock);
-    return totalStock;
-  } catch (error) {
-    console.log(error.message);
-  }
-}
+// const getTotalStockNumber = async () => {
+//   try {
+//     const result = await product.aggregate([
+//       {
+//         $group: {
+//           _id: null,
+//           totalStock: { $sum: "$quantity" },
+//         },
+//       },
+//     ]);
+//     const totalStock = result.length > 0 ? result[0].totalStock : 0;
+//     // console.log("totelstock",totalStock);
+//     return totalStock;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 
 
@@ -200,8 +200,9 @@ const genarateSalesReports = async (req, res) => {
     const result = await createSalesReport(req.body.data)
     const report = {
         reportDate: date,
-        totalSalesAmount: result.totalSales,
-        totalOrders: result.productProfits.length,
+        totalSalesAmount: result.totalSalesAmount,
+        totalOrders: result.totalProductsSold,
+        totalProfit:result.profit
       };
       // console.log(report);
 
