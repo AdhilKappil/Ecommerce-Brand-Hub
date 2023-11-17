@@ -94,6 +94,19 @@ const orderSchema = new mongoose.Schema({
     paymentId: {
       type: String
     },
+
+    coupon: {
+      code: {
+        type: String,
+      },
+      discountTotal: {
+        type: Number,
+      },
+      minimumSpend: {
+        type: Number,
+      },
+     
+    },
     
   });
 

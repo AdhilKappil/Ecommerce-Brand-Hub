@@ -58,15 +58,10 @@
                                                                     </div>
                                                                 </td>
                                                                 <td class="action">
-                                                                    <a class="btn btn-danger action-button"
-                                                                        onclick="deletecoupon('<%= coupon._id %>')">
-                                                                        Delete
-                                                                    </a>
-                                                                    <a class="btn btn-primary action-button"
-                                                                        href="/admin/editCoupon?id=<%= coupon._id %>">
-                                                                        Edit
-                                                                    </a>
+                                                                    <a class="btn btn-danger action-button" onclick="deleteCoupon('<%= coupon._id %>')">Delete</a>
+                                                                    <a class="btn btn-primary action-button" href="/admin/editCoupon?id=<%= coupon._id %>">Edit</a>
                                                                 </td>
+                                                                
                                                             </tr>
                                                             <% }) %>
                                                     </tbody>
@@ -84,32 +79,45 @@
                 </div>
             </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+           
+            <!-- // ================ swal ============= -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
             <script>
-                function deletecoupon(id) {
-
-                    $.ajax({
-                        url: '/admin/deleteCoupon',
-                        method: 'delete',
-                        data: {
-                            id
-                        },
-                        success: (response) => {
-                            if (response.success) {
-                                $('#reloadDiv').load('/admin/coupon #reloadDiv')
-                            } else {
-                                Swal.fire({
-                                    title: "Error",
-                                    icon: 'error',
-                                    text: response.message,
-                                    timer: 2000
-                                })
-                            }
+                function deleteCoupon(id) {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You won\'t be able to revert this!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: '/admin/deleteCoupon',
+                                method: 'delete',
+                                data: {
+                                    id
+                                },
+                                success: (response) => {
+                                    if (response.success) {
+                                        $('#reloadDiv').load('/admin/coupon #reloadDiv');
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Error',
+                                            icon: 'error',
+                                            text: response.message,
+                                            timer: 2000
+                                        });
+                                    }
+                                }
+                            });
                         }
-                    })
+                    });
                 }
             </script>
-
 
 <%-include('../admin/layouts/footer.ejs') %>

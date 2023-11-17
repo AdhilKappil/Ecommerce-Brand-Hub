@@ -168,6 +168,23 @@ const placeOrder = async (req, res) => {
     if (productQuantity === false){
       return res.status(202).send({})
     }
+
+    let discountTotal = 0;
+    let appliedCoupon = null;
+
+    if (req.session.coupon) {
+      
+      discountTotal = req.session.coupon.discountTotal;
+      appliedCoupon = {
+        code: req.session.coupon.code,
+        discountTotal: req.session.coupon.discountTotal,
+        minimumSpend: req.session.coupon.minimumSpend,
+        discountPercentage:req.session.coupon.discountPercentage
+      };
+    }
+
+    let total = await calculateTotalPrice(userId );
+        total = total- discountTotal;
     
     // chekking the wallet balance 
     if (paymentType === 'Wallet' && user.wallet < totalAmount) {
@@ -186,7 +203,6 @@ const placeOrder = async (req, res) => {
       "returnOrderStatus.reason": "none",
     }));
 
-    const total = await calculateTotalPrice(userId );
 
     const today = new Date();
     const deliveryDate = new Date(today);
@@ -546,6 +562,7 @@ const cancelOrder = async (req, res) => {
     
     productInfo.OrderStatus = "Cancelled";
     productInfo.updatedAt = Date.now();
+    order.totalAmount =  order.totalAmount-totalAmount
     const result = await order.save();
 
     await Product.findByIdAndUpdate(
@@ -707,7 +724,7 @@ const CreateOrderAnalatic = async () => {
 
 // ========= admin cancel order ==========
 const adminCancelOrder = async (req, res) => {
-  console.log('hi');
+  
   try {
     const { orderId, productId } = req.body;
 
@@ -734,6 +751,7 @@ const adminCancelOrder = async (req, res) => {
     if (productInfo) {
       productInfo.OrderStatus = "Cancelled";
       productInfo.updatedAt = Date.now();
+      order.totalAmount =  order.totalAmount-totalAmount
 
       await order.save();
 

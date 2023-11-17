@@ -6,6 +6,7 @@ const profileController = require("../controllers/profileController");
 const orderController = require("../controllers/orderController"); 
 const whishlistController = require("../controllers/wishlistController");
 const walletController = require("../controllers/walletController");
+const couponController = require("../controllers/couponController"); 
 const cartLength = require("../middleware/cartMiddleware");
 const session = require('express-session'); 
 const config = require('../config/confiq');
@@ -91,10 +92,15 @@ user_route.post('/cancelOrder',auth.isLogin,orderController.cancelOrder);
 user_route.post('/verifyPayment',auth.isLogin,orderController.verifyPayment);
 
 
-// wallet routes
+// ========= wallet routes ==========
 user_route.get('/wallet',auth.isLogin,walletController.loadWallet);
 user_route.post('/addMoneyToWallet',auth.isLogin,walletController.addMoneyToWallet);
 user_route.post('/verifyWalletpayment',auth.isLogin,walletController.verifyWalletPayment);
+
+
+// ========= coupon routes ==========
+user_route.post('/applyCoupon',auth.isLogin,couponController.couponCheck);
+user_route.post('/removeCoupon',auth.isLogin,couponController.removeCoupon);
 
 
 // ========= whishlist routes ==========

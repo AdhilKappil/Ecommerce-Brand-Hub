@@ -83,7 +83,7 @@ const sendVerificationEmail = async (email, otp) => {
             },
         });
 
-        const mailOptions = {
+        const mailOptions = {   
             from: 'adhilaliotheruse@gmail.com',
             to: email,
             subject: 'Verify Your Email',
