@@ -7,6 +7,7 @@ const Order = require("../models/order");
 const Analytics = require("../models/analytic");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
+const { findById } = require("../models/admin");
 
 // =========== razorpay instance ===========
 var instance = new Razorpay({
@@ -709,9 +710,14 @@ const adminCancelOrder = async (req, res) => {
   console.log('hi');
   try {
     const { orderId, productId } = req.body;
-    const userId = req.session.user_id
 
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate(
+      "userId"
+    );
+
+    const userId =order.userId._id
+
+    console.log(userId);
 
     if (!order) {
       return res.status(404).json({ message: "Order not found." });
@@ -740,6 +746,7 @@ const adminCancelOrder = async (req, res) => {
 
       // ========== adding money to wallet =========
       if(productInfo.paymentStatus==='Success'){
+        
         const walletHistory = {
           transactionDate: new Date(),
           transactionDetails: 'Refund',
@@ -762,6 +769,7 @@ const adminCancelOrder = async (req, res) => {
       }
 
       if(productInfo.paymentStatus==='Success'){
+        
         productInfo.paymentStatus= "Refund";
         const result = await order.save();
       }

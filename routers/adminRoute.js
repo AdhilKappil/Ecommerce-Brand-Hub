@@ -2,6 +2,7 @@ const express = require('express');
 const adminController = require("../controllers/adminContoller"); 
 const orderController = require("../controllers/orderController"); 
 const salesController = require("../controllers/reportController"); 
+const couponController = require("../controllers/couponController"); 
 const multer = require('multer');
 const path = require('path');
 const session = require('express-session');
@@ -80,6 +81,15 @@ admin_route.get('/salesReport',auth.isLogin,salesController.salesReportPageLoad 
 admin_route.post('/sales-report/portfolio',auth.isLogin,salesController.portfolioFiltering )
 admin_route.get('/sales-report/export-report',auth.isLogin,salesController.generateExcelReports)
 admin_route.get('/sales-report/export-PDF-report',auth.isLogin,salesController.generatePDFReports)
+
+
+// ================ coupon related routes ================
+admin_route.get('/addCoupon',auth.isLogin,couponController.loadaddCoupon)
+admin_route.post('/addCoupon',auth.isLogin,couponController.addCoupon)
+admin_route.get('/coupon',auth.isLogin,couponController.loadCoupon)
+admin_route.get('/editCoupon',auth.isLogin,couponController.loadEditCoupon)
+admin_route.post('/editCoupon',auth.isLogin,couponController.editCoupon)
+admin_route.delete('/deleteCoupon',auth.isLogin,couponController.deleteCoupon)
 
 
 // admin_route.get('/addBaner',auth.isLogin,adminController.loadBaner)

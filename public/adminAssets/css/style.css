@@ -21133,7 +21133,13 @@ div.tagsinput {
   -webkit-flex-grow: 1;
   flex-grow: 1; }
 
-
+  .table thead th, .jsgrid .jsgrid-table thead th {
+    border-top: 0;
+    border-bottom-width: 1px;
+    font-weight: 500;
+    color: #fff;
+}
+  
 
 
 /*# sourceMappingURL=maps/style.css.map */

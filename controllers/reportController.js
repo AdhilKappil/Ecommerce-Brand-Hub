@@ -148,6 +148,11 @@ const createSalesReport = async (startDate, endDate) => {
         $unwind: "$products",
       },
       {
+        $match: {
+          "products.OrderStatus": { $ne: "Cancelled" } // Use "OrderStatus" instead of "orderStatus"
+        }
+      },
+      {
         $group: {
           _id: "$products.productId",
           count: { $sum: "$products.quantity" },

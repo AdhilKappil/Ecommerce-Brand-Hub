@@ -1,0 +1,138 @@
+
+<%-include('../admin/layouts/header.ejs') %>
+<%-include('../admin/layouts/sideBar.ejs') %>
+<%-include('../admin/layouts/navBar.ejs') %>
+
+<div class="main-panel">
+  <div class="content-wrapper">
+    <div class="row">
+      <div class="col-12 grid-margin">
+        <div class="card">
+          <div class="card-body">
+            <div class="container">
+              <h2 class="mb-4">Create Coupon</h2>
+
+                       <%  if(typeof message !== 'undefined'){
+                            %>  <h5 id="invalid-msg" class=" text-danger text-center"><%- message %></h5> <%
+                         } 
+                        %>
+
+              <form action="/admin/addCoupon" method="POST" id="couponForm" >
+                <div class="form-group mt-5">
+                  <label for="code">Code:</label>
+                  <input type="text" class="form-control text-white" id="code" name="code" >
+                  <div class="error-message" style="color: red;" id="codeError"></div>
+                </div>
+                <div class="form-group mt-4">
+                  <label for="discountPercentage">Discount Percentage:</label>
+                  <div class="input-group">
+                    <input type="number" class="form-control text-white" id="discountPercentage" name="discountPercentage" >
+                    <div class="input-group-append">
+                      <span class="input-group-text">%</span>
+                    </div>
+                  </div>
+                  <div class="error-message" style="color: red;" id="discountError"></div>
+                </div>
+                <div class="form-group mt-4">
+                  <label for="minimumSpend">Minimum Spend:</label>
+                  <input type="number" class="form-control text-white" id="minimumSpend" name="minimumSpend" >
+                  <div class="error-message" style="color: red;" id="minimumSpendError"></div>
+                </div>
+                <div class="form-group mt-4">
+                  <label for="startDate">Start Date:</label>
+                  <input type="date" class="form-control text-white" id="startDate" name="startDate" >
+                  <div class="error-message" style="color: red;" id="startDateError"></div>
+                </div>
+                <div class="form-group mt-4">
+                  <label for="expiryDate">Expiry Date:</label>
+                  <input type="date" class="form-control text-white" id="expiryDate" name="expiryDate" >
+                  <div class="error-message" style="color: red;" id="expiryDateError"></div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary mt-2 ">
+                      <i class="fas fa-save"></i> Save Coupon
+                    </button>
+                    <!-- Add a cancel button to go back or reset the form -->
+                    <a href="/admin/dashboard" class="btn btn-danger mt-2">
+                      <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Font Awesome icons JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+
+<script>
+  const couponForm = document.getElementById('couponForm');
+
+  couponForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (validateForm()) {
+      this.submit();
+    }
+  });
+
+  function validateForm() {
+    const codeInput = document.getElementById('code');
+    const discountInput = document.getElementById('discountPercentage');
+    const minimumSpendInput = document.getElementById('minimumSpend');
+    const startDateInput = document.getElementById('startDate');
+    const expiryDateInput = document.getElementById('expiryDate');
+
+    const codeError = document.getElementById('codeError');
+    const discountError = document.getElementById('discountError');
+    const minimumSpendError = document.getElementById('minimumSpendError');
+    const startDateError = document.getElementById('startDateError');
+    const expiryDateError = document.getElementById('expiryDateError');
+
+    codeError.textContent = '';
+    discountError.textContent = '';
+    minimumSpendError.textContent = '';
+    startDateError.textContent = '';
+    expiryDateError.textContent = '';
+
+    let isValid = true;
+
+    if (codeInput.value.trim() === '') {
+      codeError.textContent = 'Coupon Code is required';
+      isValid = false;
+    }
+
+    if (discountInput.value === '' || discountInput.value < 10 || discountInput.value > 80) {
+      discountError.textContent = 'Discount Percentage must be between 10 and 80';
+      isValid = false;
+    }
+
+    if (minimumSpendInput.value === '' || minimumSpendInput.value < 0) {
+      minimumSpendError.textContent = 'Minimum Spend must be a non-negative number';
+      isValid = false;
+    }
+
+    if (startDateInput.value.trim() === '') {
+      startDateError.textContent = 'Start Date is required';
+      isValid = false;
+    }
+
+    if (expiryDateInput.value.trim() === '') {
+      expiryDateError.textContent = 'Expiry Date is required';
+      isValid = false;
+    }
+
+    return isValid;
+  }
+</script>
+
+
+
+
+<%-include('../admin/layouts/footer.ejs') %>
