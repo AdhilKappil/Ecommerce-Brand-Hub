@@ -4,6 +4,7 @@ const Product = require("../models/product");
 const User = require("../models/users");
 const Address = require("../models/userAddress");
 const Order = require("../models/order");
+const Coupon = require("../models/coupon");
 const Analytics = require("../models/analytic");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
@@ -173,6 +174,8 @@ const placeOrder = async (req, res) => {
     let appliedCoupon = null;
 
     if (req.session.coupon) {
+
+      console.log('hriiiii');
       
       discountTotal = req.session.coupon.discountTotal;
       appliedCoupon = {
@@ -181,6 +184,7 @@ const placeOrder = async (req, res) => {
         minimumSpend: req.session.coupon.minimumSpend,
         discountPercentage:req.session.coupon.discountPercentage
       };
+      req.session.coupon = null;
     }
 
     let total = await calculateTotalPrice(userId );
@@ -223,6 +227,7 @@ const placeOrder = async (req, res) => {
       expectedDelivery: deliveryDate,
       orderDate: new Date(),
       trackId,
+      coupon: appliedCoupon,
     });
 
     const placeorder = await order.save();
@@ -537,74 +542,160 @@ const orderMangeLoad = async (req, res) => {
 
 
 // ========= user cancel order ==========
-const cancelOrder = async (req, res) => {
+// const cancelOrder = async (req, res) => {
   
-  try {
-    const  oderId = req.body.orderId;
-    const  productId = req.body.productId;
-    const userId = req.session.user_id
+//   try {
+//     const  oderId = req.body.orderId;
+//     const  productId = req.body.productId;
+//     const userId = req.session.user_id
 
-    const order = await Order.findById(oderId);
+//     const order = await Order.findById(oderId);
+
+//     if (!order) {
+//       return res.status(404).json({ message: "Order not found." });
+//     }
+
+//     // Find the product within the order by its ID (using .toString() for comparison)
+//     const productInfo = order.products.find(
+//       (product) => product.productId.toString() === productId
+//     );
+
+//     const productDetails = await Product.findById(productInfo.productId);
+
+//     const totalAmount = productInfo.quantity* productDetails.price
+
+    
+//     productInfo.OrderStatus = "Cancelled";
+//     productInfo.updatedAt = Date.now();
+//     order.totalAmount -=  totalAmount
+//     const result = await order.save();
+
+//     await Product.findByIdAndUpdate(
+//       { _id: productId },
+//       {
+//         $inc: { quantity: productInfo.quantity },
+//       }
+//     );
+
+//     // ========== adding money to wallet =========
+//     if(productInfo.paymentStatus==='Success'){
+//       const walletHistory = {
+//         transactionDate: new Date(),
+//         transactionDetails: 'Refund',
+//         transactionType: 'Credit',
+//         transactionAmount: totalAmount,
+//          currentBalance: !isNaN(userId.wallet) ? userId.wallet + amount : totalAmount
+//        }
+//         await User.findByIdAndUpdate(
+//             {_id: userId },
+//             {
+//                 $inc:{
+//                     wallet: totalAmount
+//                 },
+//                 $push:{
+//                     walletHistory
+//                 }
+//             }
+//         );
+
+//     }
+
+//     if(productInfo.paymentStatus==='Success'){
+//       productInfo.paymentStatus= "Refund";
+//       const result = await order.save();
+//     }
+
+//     res.json({ cancel: 1 });
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
+
+const cancelOrder = async (req, res) => {
+  try {
+    const orderId = req.body.orderId;
+    const productId = req.body.productId;
+    const userId = req.session.user_id;
+
+    const order = await Order.findById(orderId);
 
     if (!order) {
       return res.status(404).json({ message: "Order not found." });
     }
 
-    // Find the product within the order by its ID (using .toString() for comparison)
     const productInfo = order.products.find(
       (product) => product.productId.toString() === productId
     );
 
     const productDetails = await Product.findById(productInfo.productId);
+    let totalAmount = productInfo.quantity * productDetails.price;
 
-    const totalAmount = productInfo.quantity* productDetails.price
+    let couponRefundAmount = 0;
+    let cartTotal = order.totalAmount;
 
-    
+    if (order.coupon.code) {
+      const couponData = await Coupon.findOne({ code: order.coupon.code });
+      let totalWithoutCoupon = order.coupon.discountTotal + cartTotal;
+
+      if (couponData && Math.abs(totalWithoutCoupon - totalAmount) < couponData.minimumSpend) {
+        totalWithoutCoupon = await order.products.reduce(async (totalPromise, product) => {
+          const total = await totalPromise;
+          if (product.productId._id.toString() !== productId && product.OrderStatus !== 'Cancelled') {
+            const productDetailsWithoutCancelled = await Product.findById(product.productId);
+            return total + productDetailsWithoutCancelled.price * product.quantity;
+          }
+          return total;
+        }, Promise.resolve(0));
+
+        totalAmount = cartTotal - totalWithoutCoupon;
+      } else {
+        const couponRefundPercentage = couponData.discountPercentage || 0;
+        couponRefundAmount = (couponRefundPercentage / 100) * totalAmount;
+        totalAmount -= couponRefundAmount;
+        console.log("s2", totalAmount);
+        
+      }
+    }
+
     productInfo.OrderStatus = "Cancelled";
     productInfo.updatedAt = Date.now();
-    order.totalAmount =  order.totalAmount-totalAmount
-    const result = await order.save();
-
-    await Product.findByIdAndUpdate(
-      { _id: productId },
-      {
-        $inc: { quantity: productInfo.quantity },
-      }
-    );
+    // order.totalAmount -= totalAmount;
+    
+    // Update product and order information
+    await Promise.all([
+      order.save(),
+      Product.findByIdAndUpdate({ _id: productId }, { $inc: { quantity: productInfo.quantity } }),
+    ]);
 
     // ========== adding money to wallet =========
-    if(productInfo.paymentStatus==='Success'){
+    if (productInfo.paymentStatus === 'Success') {
       const walletHistory = {
         transactionDate: new Date(),
         transactionDetails: 'Refund',
         transactionType: 'Credit',
         transactionAmount: totalAmount,
-         currentBalance: !isNaN(userId.wallet) ? userId.wallet + amount : totalAmount
-       }
-        await User.findByIdAndUpdate(
-            {_id: userId },
-            {
-                $inc:{
-                    wallet: totalAmount
-                },
-                $push:{
-                    walletHistory
-                }
-            }
-        );
+        currentBalance: !isNaN(userId.wallet) ? userId.wallet + totalAmount : totalAmount,
+      };
 
-    }
-
-    if(productInfo.paymentStatus==='Success'){
-      productInfo.paymentStatus= "Refund";
-      const result = await order.save();
+      await User.findByIdAndUpdate(
+        { _id: userId },
+        {
+          $inc: { wallet: totalAmount },
+          $push: { walletHistory },
+        }
+      );
+      
+      productInfo.paymentStatus = "Refund";
+      await order.save();
     }
 
     res.json({ cancel: 1 });
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error." });
   }
 };
+
 
 
 
@@ -751,7 +842,7 @@ const adminCancelOrder = async (req, res) => {
     if (productInfo) {
       productInfo.OrderStatus = "Cancelled";
       productInfo.updatedAt = Date.now();
-      order.totalAmount =  order.totalAmount-totalAmount
+      // order.totalAmount -= totalAmount
 
       await order.save();
 
