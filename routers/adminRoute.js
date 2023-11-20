@@ -3,6 +3,7 @@ const adminController = require("../controllers/adminContoller");
 const orderController = require("../controllers/orderController"); 
 const salesController = require("../controllers/reportController"); 
 const couponController = require("../controllers/couponController"); 
+const offerController = require("../controllers/offerController"); 
 const multer = require('multer');
 const path = require('path');
 const session = require('express-session');
@@ -92,11 +93,19 @@ admin_route.post('/editCoupon',auth.isLogin,couponController.editCoupon)
 admin_route.delete('/deleteCoupon',auth.isLogin,couponController.deleteCoupon)
 
 
+// ======= offer routes =========
+admin_route.get('/addOffer',auth.isLogin,offerController.loadAddOffer)
+admin_route.post('/addOffer',auth.isLogin,offerController.addOffer)
+admin_route.get('/offer',auth.isLogin,offerController.loadOffers)
+admin_route.get('/editOffer/:id',auth.isLogin,offerController.loadEditOffer)
+admin_route.post('/editOffer',auth.isLogin,offerController.editOffer)
+
+
 // admin_route.get('/addBaner',auth.isLogin,adminController.loadBaner)
 
 
 
-// ========= error  page to handile=======
+// ========= error  page to handile =======
 admin_route.get('/error-500',adminController.load500)
 admin_route.get('/*',adminController.load404)
 

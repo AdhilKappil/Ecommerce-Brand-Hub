@@ -1,0 +1,125 @@
+<%-include('../admin/layouts/header.ejs') %>
+<%-include('../admin/layouts/sideBar.ejs') %>
+<%-include('../admin/layouts/navBar.ejs') %>
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+
+<% var now = Date.now() %>
+
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        
+ <!-- ======================== Table ========================= -->
+ <div class=" row   mt-3">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">      
+        
+        
+      <h3 class="card-title">Offers</h3>
+                <div class="table-responsive mt-5">
+                    <table id="table1" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th> Offer Name </th>
+                            <th> Starting date </th>
+                            <th> Expiry date </th>
+                            <th> percentage </th>
+                            <th> Edit</th>
+                            <th> Status </th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                           <% if( offers && offers.length > 0 ){ %>
+                            <% for ( let offer of offers ) { %>
+                                
+                                <% if( offer.startingDate < now && offer.expiryDate > now && offer.status ) { var active = "Active" } else if( offer.startingDate > now && offer.status ) { var active = "Upcoming"} else if( offer.expiryDate < now && offer.status ) { var active = "Expired"} %>
+
+                                <tr>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= offer.name %></span>
+                                    </td>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= offer.startingDate.toLocaleDateString('en-US', { year: 'numeric' ,
+                                            month: 'short' , day: '2-digit' }).replace(/\//g,'-') %></span>
+                                    </td>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%=  offer.expiryDate.toLocaleDateString('en-US', { year: 'numeric' ,
+                                            month: 'short' , day: '2-digit' }).replace(/\//g,'-')  %></span>
+                                    </td>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= offer.discount %></span>
+                                    </td>
+                                    
+                                    <td>
+                                        <a href="/admin/editOffer/<%= offer._id %>"><button type="button" class="btn btn-dark btn-icon-text">Edit<i class="mdi mdi-file-check btn-icon-append"></i>
+                                        </button></a>
+                                    </td>
+
+                                    <td>
+                                        <% if( offer.status ){ %>
+                                            <span id="active-<%= offer._id%>" class="<% if( active === 'Active' ) {%>text-success<% } else if ( active === 'Upcoming' ) {%>text-primary<% } else {%>text-warning<% } %>"><%= active %></span>                           
+                                        <% } else { %>
+                                            <span class="text-danger">Cancelled</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <% if( (active === "Active" || active === "Upcoming") && offer.status ) { %>
+                                            <div id="cancel-<%= offer._id %>" style="cursor: pointer;" class="badge"><a class="badge badge-outline-danger" onclick="cancelOffer('<%= offer._id %>')">Cancel</a></div>        
+                                        <% } %>                            
+                                    </td>
+                                </tr>
+                            <% } %>
+                           <% } %>
+                        
+                        
+                    </tbody>
+                    </table>
+                    <div class="text-center"><a class="badge badge-outline-primary" href="/admin/addOffer">Add offer</a></div>
+                </div>
+            
+
+              </div>
+            </div>
+            </div>
+</div>
+</div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    new DataTable('#table1');
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    async function cancelOffer(offerId) {
+        const cancelbtn = document.getElementById(`cancel-${offerId}`);
+        const spanbtn = document.getElementById(`active-${offerId}`);
+        const cancelmsg = document.getElementById(`cancelspn-${offerId}`);
+        try {
+            const response = await axios.patch('/admin/cancelOffer', { offerId });
+            console.log(response);
+            if (response.data.cancelled) {
+                console.log();
+                cancelbtn.style.display = 'none';
+                spanbtn.className = '';
+                spanbtn.innerHTML = 'Cancelled';
+                spanbtn.style.color = '#dc3545';
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+</script>
+
+
+<%-include('../admin/layouts/footer.ejs') %>

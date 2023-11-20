@@ -1,0 +1,108 @@
+
+<%-include('../admin/layouts/header.ejs') %>
+<%-include('../admin/layouts/sideBar.ejs') %>
+<%-include('../admin/layouts/navBar.ejs') %>
+
+<div class="main-panel">
+  <div class="content-wrapper">
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Add Offer</h3>
+
+          <form id="offer-form" action="/admin/addOffer" method="POST">
+            <div class="form-group mt-5">
+              <label>Offer name</label>
+              <input type="text" class="form-control text-white" id="offer-name" name="name" placeholder="Offer name">
+            </div>
+            <p id="errorName"  style="color: red;"></p>
+
+            <div class="form-group mt-4">
+              <label>Starting date</label>
+              <input type="date" class="form-control" id="Starting-date" name="startingDate" placeholder="Starting date">
+            </div>
+            <p id="errorStartingDate" style="color: red;"></p>
+
+            <div class="form-group mt-4">
+              <label>Expiry date</label>
+              <input type="date" class="form-control" id="expiry-date" name="expiryDate" placeholder="Expiry date">
+            </div>
+            <p id="errorExpiryDate" style="color: red;"></p>
+
+            <div class="form-group mt-4">
+              <label>Discount</label>
+              <input type="number" class="form-control text-white" id="percentage" name="percentage" placeholder="Percentage">
+            </div>
+            <p id="errorPercentage" style="color: red;"></p>
+
+            <div class="text-center mt-4">
+              <button type="submit" class="btn btn-primary mr-2">Submit</button>
+              <a href="/admin/offer"><button type="button" class="btn btn-danger mr-2">Cancel</button></a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const formOffer = document.getElementById('offer-form');
+  formOffer.addEventListener('submit', (event) => {
+    const errorName = document.getElementById('errorName');
+    const errorStartingDate = document.getElementById('errorStartingDate');
+    const errorExpiryDate = document.getElementById('errorExpiryDate');
+    const errorPercentage = document.getElementById('errorPercentage');
+
+    const name = document.getElementById('offer-name').value.trim();
+    const startingDate = document.getElementById('Starting-date').value.trim();
+    const expiryDate = document.getElementById('expiry-date').value.trim();
+    const percentage = document.getElementById('percentage').value.trim();
+
+    errorName.innerHTML = "";
+    errorStartingDate.innerHTML = "";
+    errorExpiryDate.innerHTML = "";
+    errorPercentage.innerHTML = "";
+
+    errorName.style.display = 'none';
+    errorStartingDate.style.display = 'none';
+    errorExpiryDate.style.display = 'none';
+    errorPercentage.style.display = 'none';
+
+    const now = new Date();
+
+    if (!name || !startingDate || !expiryDate || !percentage) {
+      event.preventDefault();
+      errorName.innerHTML = "All fields should be filled";
+      errorName.style.display = 'block';
+    }
+
+    if (name.length < 5) {
+      event.preventDefault();
+      errorName.innerHTML = "Name should contain at least 4 letters";
+      errorName.style.display = 'block';
+    }
+
+    const pattern = /^[a-zA-Z0-9]+$/;
+    if (!pattern.test(name)) {
+      event.preventDefault();
+      errorName.innerHTML = "Name should not contain symbols or spaces";
+      errorName.style.display = 'block';
+    }
+
+    if (startingDate > expiryDate || expiryDate < now) {
+      event.preventDefault();
+      errorStartingDate.innerHTML = "Enter a valid date";
+      errorStartingDate.style.display = 'block';
+    }
+
+    if (percentage > 100 || percentage < 0) {
+      event.preventDefault();
+      errorPercentage.innerHTML = "Percentage cannot be greater than 100 or less than zero";
+      errorPercentage.style.display = 'block';
+    }
+  });
+</script>
+
+
+<%-include('../admin/layouts/footer.ejs') %>
