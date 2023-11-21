@@ -105,12 +105,32 @@ const editOffer = async ( req, res ) => {
 
 
 
+// ========= offer calceling ==========
+const cancelOffer = async ( req, res ) => {
+    try {
+        const  { offerId } = req.body
+        await Offer.updateOne({ _id : offerId }, {
+            $set : {
+                status : false
+            }
+        })
+        res.json({ cancelled : true})
+    } catch (error) {
+        res.json({cancelled: false,message:'Cant cancel some errors'})
+        res.redirect('/error-500')
+
+    }
+}
+
+
+
 
 module.exports = {
     loadAddOffer,
     addOffer,
     loadOffers,
     loadEditOffer,
-    editOffer
+    editOffer,
+    cancelOffer
 
   };

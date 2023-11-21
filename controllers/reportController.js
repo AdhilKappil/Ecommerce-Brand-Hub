@@ -33,7 +33,7 @@ const salesReportPageLoad = async (req, res) => {
         getMostSellingProducts(),
       ]);
 
-      const allOrders = await getorders ()
+      const allOrders = await getorders (start, end)
 
       // console.log("Debugger",allOrders);
 
@@ -188,11 +188,18 @@ const createSalesReport = async (startDate, endDate) => {
   
 
 
-
-  const getorders = async () => {
+// ========== all orders =========
+  const getorders = async (startDate, endDate) => {
     try {
-      const orders = await OrderDB.find();
-  
+      // const orders = await OrderDB.find();
+
+      const orders = await OrderDB.find({
+        orderDate: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      });
+
       const productWiseOrdersArray = [];
   
       for (const order of orders) {
@@ -200,7 +207,7 @@ const createSalesReport = async (startDate, endDate) => {
           const productId = productInfo.productId;
   
           const product = await ProductDB.findById(productId).select(
-            "productName images price"
+            "productName  price"
           );
           const userDetails = await User.findById(order.userId).select("email");
   
@@ -397,13 +404,75 @@ const generateYearlySalesCount = async () => {
 
 
 
-// ======== genarating sales excel report ========
-const generateExcelReports = async (req, res) => {
+// // ======== genarating sales excel report ========
+// const generateExcelReports = async (req, res) => {
+//   try {
+//     const { end, start } = req.query;
+
+//     // Create a sales report or fetch it from your data source
+//     const sales = await createSalesReport(start, end);
+
+//     // Create a new Excel workbook and worksheet
+//     const workbook = new ExcelJS.Workbook();
+//     const worksheet = workbook.addWorksheet("Sales Report");
+
+//     // Define the columns for the worksheet
+//     worksheet.columns = [
+//       { header: "Product Name", key: "productName", width: 25 },
+//       { header: "Frame Shape", key: "shape", width: 25 },
+//       { header: "Price", key: "price", width: 15 },
+//       { header: "Profit", key: "profit", width: 15 },
+//     ];
+
+//     // Add data to the worksheet
+//     sales.productProfits.forEach((product) => {
+//       worksheet.addRow({
+//         productName: product.name,
+//         shape: product.shape, // You should replace this with the actual shape data
+//         price: product.price,
+//         profit: product.profit,
+//       });
+//     });
+
+//     // Add the 'Total Sales' value in the footer
+//     worksheet.addRow({
+//       productName: "Total Sales:",
+//       shape: "",
+//       price: "",
+//       profit: sales.totalSales, // Add the totalSales value here
+//     });
+
+//     // Stream the Excel file to the client as a response
+//     res.setHeader(
+//       "Content-Type",
+//       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+//     );
+//     res.setHeader(
+//       "Content-Disposition",
+//       "attachment; filename=sales_report.xlsx"
+//     );
+
+//     workbook.xlsx.write(res).then(() => {
+//       res.end();
+//     });
+//   } catch (error) {
+//     console.error(error.message);
+//     res.status(500).send("Error generating the Excel report");
+//   }
+// };
+
+
+
+
+
+// ======== genarating sales excel report of all orders ========
+const generateExcelReportsOfAllOrders = async (req, res) => {
+  console.log();
   try {
     const { end, start } = req.query;
 
     // Create a sales report or fetch it from your data source
-    const sales = await createSalesReport(start, end);
+    const sales = await getorders(start, end);
 
     // Create a new Excel workbook and worksheet
     const workbook = new ExcelJS.Workbook();
@@ -412,30 +481,32 @@ const generateExcelReports = async (req, res) => {
     // Define the columns for the worksheet
     worksheet.columns = [
       { header: "Product Name", key: "productName", width: 25 },
-      { header: "Frame Shape", key: "shape", width: 25 },
-      { header: "Price", key: "price", width: 15 },
-      { header: "Profit", key: "profit", width: 15 },
+      { header: "Order Id", key: "OrderId", width: 15 },
+      { header: "User", key: "User", width: 25 },
+      { header: "Order Date", key: "OrderDate", width: 15 },
+      { header: "Quantity", key: "Quantity", width: 15 },
+      { header: "Price", key: "Price", width: 15 },
+      { header: "Pyament Status", key: "PyamentStatus", width: 15 },
+      { header: "Order Status", key: "OrderStatus", width: 15 },
     ];
 
+
     // Add data to the worksheet
-    sales.productProfits.forEach((product) => {
+    sales.forEach((orders) => {
       worksheet.addRow({
-        productName: product.name,
-        shape: product.shape, // You should replace this with the actual shape data
-        price: product.price,
-        profit: product.profit,
+        productName: orders.product.productName,
+        OrderId:orders.orderDetails.trackId, // You should replace this with the actual shape data
+        User: orders.user.email,
+        OrderDate: orders.orderDetails.orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') ,
+        Quantity:orders.orderDetails.quantity,
+        Price:orders.orderDetails.totalAmount,
+        PyamentStatus:orders.orderDetails.paymentStatus,
+        OrderStatus:orders.orderDetails.OrderStatus
+
       });
     });
 
-    // Add the 'Total Sales' value in the footer
-    worksheet.addRow({
-      productName: "Total Sales:",
-      shape: "",
-      price: "",
-      profit: sales.totalSales, // Add the totalSales value here
-    });
 
-    // Stream the Excel file to the client as a response
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -457,7 +528,7 @@ const generateExcelReports = async (req, res) => {
 
 
 // ======== genarating pdf report ========
-const generatePDFReports = async (req, res) => {
+const generatePDFReportsOfProfit = async (req, res) => {
   try {
     const { start, end } = req.query;
     console.log(start, end);
@@ -484,7 +555,7 @@ const generatePDFReports = async (req, res) => {
 
 
 
-// ======  pdf creating ==========
+// pdf creating
 const generatePDFReport = async (sales) => {
   try {
     const browser = await puppeteer.launch();
@@ -495,7 +566,6 @@ const generatePDFReport = async (sales) => {
         (product) => `
       <tr>
         <td>${product.name}</td>
-        <td>Frame Shape</td>
         <td>${product.price}</td>
         <td>${product.profit}</td>
       </tr>`
@@ -505,7 +575,6 @@ const generatePDFReport = async (sales) => {
     const totalSalesRow = `
       <tr>
         <td>Total Sales:</td>
-        <td></td>
         <td></td>
         <td>${sales.totalSales}</td>
       </tr>`;
@@ -532,7 +601,6 @@ const generatePDFReport = async (sales) => {
       <table>
         <tr>
           <th>Product Name</th>
-          <th>Frame Shape</th>
           <th>Price</th>
           <th>Profit</th>
         </tr>
@@ -557,11 +625,118 @@ const generatePDFReport = async (sales) => {
 
 
 
+
+
+
+
+// // ======== genarating pdf report ========
+// const generatePDFReports = async (req, res) => {
+//   try {
+//     const { start, end } = req.query;
+//     console.log(start, end);
+//     const sales = await getorders(start, end);
+//     // console.log(sales);
+//     // Call the generatePDFReport function to generate the PDF
+//     await generatePDFReport(sales);
+
+//     // Send the generated PDF as a response
+//     res.setHeader("Content-Type", "application/pdf");
+//     res.setHeader(
+//       "Content-Disposition",
+//       "attachment; filename=sales_report.pdf"
+//     );
+
+//     // Send the PDF file
+//     res.sendFile("sales_report.pdf", { root: "./" }); // Adjust the root directory as needed
+//   } catch (error) {
+//     console.error(error.message);
+//     res.status(500).send("Error generating the PDF report");
+//   }
+// };
+
+
+
+
+// // ======  pdf creating ==========
+// const generatePDFReport = async (sales) => {
+//   try {
+//     const browser = await puppeteer.launch();
+//     const page = await browser.newPage();
+
+//     const salesRows = sales
+//       .map(
+//         (orders) => `
+//       <tr>
+//         <td>${ orders.product.productName}</td>
+//         <td>${orders.orderDetails.trackId}</td>
+//         <td>${orders.user.email}</td>
+//         <td>${ orders.orderDetails.orderDate}</td>
+//         <td>${orders.orderDetails.quantity}</td>
+//         <td>${orderDetails.totalAmount}</td>
+//         <td>${orders.orderDetails.paymentStatus}</td>
+//         <td>${orders.orderDetails.OrderStatus}</td>
+//       </tr>`
+//       )
+//       .join("");
+
+   
+
+//     const htmlContent = `
+//       <style>
+//         h1 {
+//           text-align: center;
+//         }
+//         table {
+//           width: 100%;
+//           border-collapse: collapse;
+//         }
+//         th, td {
+//           border: 1px solid #ddd;
+//           padding: 8px;
+//           text-align: left;
+//         }
+//         th {
+//           background-color: #f2f2f2;
+//         }
+//       </style>
+//       <h1>Sales Report</h1>
+//       <table>
+//         <tr>
+//           <th>Product Name</th>
+//           <th>Order Id</th>
+//           <th>User</th>
+//           <th>Order Date</th>
+//           <th>Quantity</th>
+//           <th>Price</th>
+//           <th>Pyament Status</th>
+//           <th>Order Status</th>
+//         </tr>
+//         ${salesRows}
+        
+//       </table>
+//     `;
+
+//     await page.setContent(htmlContent);
+//     await page.pdf({
+//       path: "sales_report.pdf",
+//       format: "A4",
+//       printBackground: true,
+//     });
+
+//     await browser.close();
+//   } catch (error) {
+//     console.error(error.message);
+//   }
+// };
+
+
+
+
  module.exports = {
     salesReportPageLoad,
     portfolioFiltering,
-    generateExcelReports,
-    generatePDFReports
+    generatePDFReportsOfProfit,
+    generateExcelReportsOfAllOrders
     
   };
 

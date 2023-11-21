@@ -80,8 +80,9 @@ admin_route.post('/verifyPayment', auth.isLogin, orderController.verifyPayment);
 admin_route.post('/report/genarate',auth.isLogin,adminController.genarateSalesReports)
 admin_route.get('/salesReport',auth.isLogin,salesController.salesReportPageLoad )
 admin_route.post('/sales-report/portfolio',auth.isLogin,salesController.portfolioFiltering )
-admin_route.get('/sales-report/export-report',auth.isLogin,salesController.generateExcelReports)
-admin_route.get('/sales-report/export-PDF-report',auth.isLogin,salesController.generatePDFReports)
+admin_route.get('/sales-report/export-report',auth.isLogin,salesController.generateExcelReportsOfAllOrders)
+admin_route.get('/sales-report/export-PDF-report',auth.isLogin,salesController.generatePDFReportsOfProfit)
+// admin_route.get('/orders-report/export-report',auth.isLogin,salesController.generateExcelReportsOfAllOrders)
 
 
 // ================ coupon related routes ================
@@ -99,6 +100,7 @@ admin_route.post('/addOffer',auth.isLogin,offerController.addOffer)
 admin_route.get('/offer',auth.isLogin,offerController.loadOffers)
 admin_route.get('/editOffer/:id',auth.isLogin,offerController.loadEditOffer)
 admin_route.post('/editOffer',auth.isLogin,offerController.editOffer)
+admin_route.patch('/cancelOffer',auth.isLogin,offerController.cancelOffer)
 
 
 // admin_route.get('/addBaner',auth.isLogin,adminController.loadBaner)
