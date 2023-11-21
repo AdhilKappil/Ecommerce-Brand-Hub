@@ -1,74 +1,197 @@
-
 <%-include('../admin/layouts/header.ejs') %>
-<%-include('../admin/layouts/sideBar.ejs') %>
-<%-include('../admin/layouts/navBar.ejs') %>
+  <%-include('../admin/layouts/sideBar.ejs') %>
+    <%-include('../admin/layouts/navBar.ejs') %>
 
-<div class="main-panel">
-  <div class="content-wrapper">
+      <div class="main-panel">
+        <div class="content-wrapper">
 
-    <div class="col-lg-12 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h2 class="card-title" style="text-align: center;">CATEGORIES</h2>
+          <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h2 class="card-title" style="text-align: center;">CATEGORIES</h2>
 
-            <form action="" method="get" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search mb-3">
-              <input type="text" name="key" class="form-control mb-1 text-light" placeholder="Search Products" id="searchInput">
-          </form>
+                <form action="" method="get" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search mb-3">
+                  <input type="text" name="key" class="form-control mb-1 text-light" placeholder="Search Products"
+                    id="searchInput">
+                </form>
 
-            <div class="table-responsive">
-              <table class="table table-dark" id="user-table">
-                <thead>
-                  <tr>
-                    <th > # </th>
-                    <th> Category </th>
-                    <th> Category Description</th>
-                    <th> Edit </th>
-                    <th> Action </th>
-                  </tr>
-                </thead>
-                
-              <% if (category.length > 0) {
-                for (let i = 0; i < category.length; i++) { %>
-                    <tr>
-                        <td>*</td>
-                        <td><%= category[i].name %></td>
-                        <td><%= category[i].description %></td>
-                        <td> <a href="/admin/editCategory?id=<%= category[i]._id%>">
-                          
-                          <button type="button" class="btn btn-outline-secondary btn-icon-text">
-                            Edit <i class="mdi mdi-file-check btn-icon-append"></i>
-                          </button>
-                        </a>
-                        </td>
-                        <td>
-                            <% if (category[i].isListed === false) { %>
+                <div class="table-responsive">
+                  <table class="table table-dark" id="user-table">
+                    <thead>
+                      <tr>
+                        <th> # </th>
+                        <th> Category </th>
+                        <th> Category Description</th>
+                        <th>Offer</th>
+                        <th> Action </th>
+                        <th> Edit </th>
+                        <th> Action </th>
+                      </tr>
+                    </thead>
+
+                    <% if (category.length> 0) {
+                      for (let i = 0; i < category.length; i++) { %>
+                        <tr>
+                          <td>*</td>
+                          <td>
+                            <%= category[i].name %>
+                          </td>
+                          <td>
+                            <%= category[i].description %>
+                          </td>
+                          <td>
+                            <% if( category[i].offer ){%>
+                              <%= offer.name %> (<%= offer.discount %>% )<%} else { %>No
+                                    offers<% }%>
+                          </td>
+                          <td>
+                            <% if ( category[i].offer ){%>
+
+                              <button onclick="removeOffer('<%= category[i]._id %>')" class="btn btn-warning"> Remove
+                                offer </button>
+                              <% } else {%>
+                                <button class="btn btn-info" onclick="showModal('<%= category[i]._id %>')"> Apply offer
+                                </button>
+                                <% }%>
+                          </td>
+                          <td> <a href="/admin/editCategory?id=<%= category[i]._id%>">
+
+                              <button type="button" class="btn btn-outline-secondary btn-icon-text">
+                                Edit <i class="mdi mdi-file-check btn-icon-append"></i>
+                              </button>
+                            </a>
+                          </td>
+                          <td>
+                            <% if (category[i].isListed===false) { %>
                               <a href="/admin/unlistCategory?id=<%= category[i]._id %>">
                                 <button type="button" class="btn btn-inverse-success btn-fw">
                                   List
                                 </button>
                               </a>
-                            <% } else { %>
-                              <a href="/admin/unlistCategory?id=<%= category[i]._id %>">
-                                <button type="button" class="btn btn-inverse-danger btn-fw">
-                                  Unlist
-                                </button>
-                              </a> 
-                            <% } %>
-                        </td>
-                    </tr>
-                <% }
-            } %>
-            
-               </table>
+                              <% } else { %>
+                                <a href="/admin/unlistCategory?id=<%= category[i]._id %>">
+                                  <button type="button" class="btn btn-inverse-danger btn-fw">
+                                    Unlist
+                                  </button>
+                                </a>
+                                <% } %>
+                          </td>
+                        </tr>
+                        <% } } %>
+
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
+
+
+          <div class="modal fade" id="discountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+
+              <% if( availableOffers && availableOffers.length> 0) { %>
+                <% for( offer of availableOffers ) { %>
+
+                  <div class="modal-content rounded-0">
+                    <div data-offerid="<%= offer._id %>" style="cursor: pointer;" class="modal-body text-center">
+                      <div class="icon text-danger">
+                        <i style="font-size: 20px;" class="fas fa-gift"></i>
+                      </div>
+                      <div class="notice">
+                        <h2>
+                          <%= offer.name %>
+                        </h2>
+                        <h4>
+                          <%= offer.discount %> % Discount
+                        </h4>
+                        <p>Valid from <%= offer.startingDate.toLocaleDateString('en-US', { year: 'numeric' ,
+                            month: 'short' , day: '2-digit' }).replace(/\//g,'-') %> to <%=
+                              offer.expiryDate.toLocaleDateString('en-US', { year: 'numeric' , month: 'short' ,
+                              day: '2-digit' }).replace(/\//g,'-') %>
+                        </p>
+                      </div>
+                      <div class="code"></div>
+                    </div>
+                  </div>
+                  <% } %>
+                    <% } %>
+            </div>
+          </div>
+
+
         </div>
       </div>
 
 
-      
+      <script>
+        // ========= modal for applay offer ==========
+        function showModal(categoryId) {
+          $('#discountModal').modal('show');
+          const offerElements = document.querySelectorAll('.modal-body.text-center');
+          offerElements.forEach((element) => {
+            element.onclick = function () {
+              const offerId = this.getAttribute('data-offerid');
+              enterOffer(offerId, categoryId);
+            };
+          });
+        }
 
-  </div>
-</div>
+       
+        // ========== applying offer =========
+        async function enterOffer(offerId, categoryId) {
+          console.log('click');
+          console.log(offerId);
+          console.log(categoryId);
+      $('#discountModal').modal('hide');
+      console.log('auxios');
+        const response = await axios.patch( '/admin/applyOfferCategory', { offerId, categoryId })
+        if( response.data.success ) {
+          
+          Swal.fire('Offer applied')
+          updateOfferContent(categoryId, response.data.offer)
+          window.location.reload()
+        }
+    }
 
-<%-include('../admin/layouts/footer.ejs') %>
+         // ========== removing offer ===========
+        async function removeOffer(categoryId) {
+          try {
+            const confirmation = await Swal.fire({
+              title: 'Confirm Removal',
+              text: 'Are you sure you want to remove the offer?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Yes, remove it!',
+              cancelButtonText: 'Cancel'
+            });
+
+            if (confirmation.isConfirmed) {
+              const response = await axios.patch('/admin/remove_Offer-category', { categoryId });
+              if (response.data.success) {
+                updateOfferContent(categoryId, null);
+                Swal.fire('Offer Removed', '', 'success');
+              }
+            }
+          } catch (error) {
+            console.log(error.message);
+          }
+        }
+
+        function updateOfferContent(categoryId, offer) {
+          const offerCell = $(`tr[data-category-id="${categoryId}"] td:nth-child(4)`); // Update to the correct column index
+          const actionCell = $(`tr[data-category-id="${categoryId}"] td:nth-child(5)`);
+
+          if (offer) {
+            offerCell.html(`${offer.name} (${offer.percentage}%)`);
+            actionCell.html(`<button onclick="removeOffer('${categoryId}')" class="btn btn-warning">Remove offer</button>`);
+          } else {
+            offerCell.text('No offers');
+            actionCell.html(`<button class="btn btn-info" onclick="showModal('${categoryId}')">Apply offer</button>`);
+          }
+        }
+
+
+      </script>
+
+      <%-include('../admin/layouts/footer.ejs') %>

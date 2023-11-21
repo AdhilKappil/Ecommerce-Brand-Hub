@@ -46,7 +46,7 @@
                 <!-- <h6 class="text-muted font-weight-normal">11.38% Since last month</h6> -->
               </div>
               <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                <i class="icon-lg mdi mdi-codepen text-primary ml-auto"></i>
+                <i class="icon-lg mdi mdi-currency-inr text-primary ml-auto"></i>
               </div>
             </div>
           </div>
@@ -65,7 +65,7 @@
                 <h3 class="mt-3" id="totalAmount">₹ <%= report.totalSalesAmount %></h3>
               </div>
               <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                <i class="icon-lg mdi mdi-chart-areaspline text-danger ml-auto"></i>
+                <i class="icon-lg mdi mdi-cart text-warning ml-auto"></i>
               </div>
             </div>
           </div>
@@ -78,13 +78,13 @@
             <div class="row">
               <div class="col-8 col-sm-12 col-xl-8 my-auto">
                 <div class="d-flex d-sm-block d-md-flex align-items-center">
-                  <h2 class="mb-0"><%= users.length %></h2>
+                  <h2 class="mb-0"><%= users %></h2>
                   <!-- <p class="text-danger ml-2 mb-0 font-weight-medium">-2.1% </p> -->
                 </div>
                 <!-- <h6 class="text-muted font-weight-normal">2.27% Since last month</h6> -->
               </div>
               <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                <i class="icon-lg mdi mdi-cube-send text-success ml-auto"></i>
+                <i class="icon-lg mdi mdi-account text-success ml-auto"></i>
               </div>
             </div>
           </div>
@@ -184,6 +184,91 @@
         </div>
       </div>
     </div>
+
+
+<div class="row">
+  <div class="col-md-12 stretch-card p-3">
+    <div class="col-sm-3 grid-margin">
+        <div class="card">
+          <div class="card-body">
+            <h5>Total Product</h5>
+            <div class="row">
+              <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                <div class="d-flex d-sm-block d-md-flex align-items-center">
+                  <h2 class="mb-0" id="revenue" > <%= countOfProduct %></h2>
+                  <!-- <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p> -->
+                </div>
+                <!-- <h6 class="text-muted font-weight-normal">11.38% Since last month</h6> -->
+              </div>
+              <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                <i class="icon-lg mdi mdi-shoe-formal text-primary ml-auto"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 grid-margin">
+        <div class="card">
+          <div class="card-body">
+            <h5>Total Category</h5>
+            <div class="row">
+              <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                <div class="d-flex d-sm-block d-md-flex align-items-center mt-2">
+                  <h2 class="mb-0" id="totalSale"><%=  countOfCategory %></h2>
+                  
+                </div>
+              </div>
+              <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                <i class="icon-lg mdi mdi-table text-warning ml-auto"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 grid-margin">
+        <div class="card">
+          <div class="card-body">
+            <h5>Total Stocks</h5>
+            <div class="row">
+              <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                <div class="d-flex d-sm-block d-md-flex align-items-center">
+                  <h2 class="mb-0"><%= stock %></h2>
+                  <!-- <p class="text-danger ml-2 mb-0 font-weight-medium">-2.1% </p> -->
+                </div>
+                <!-- <h6 class="text-muted font-weight-normal">2.27% Since last month</h6> -->
+              </div>
+              <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                <i class="icon-lg mdi mdi-package text-info ml-auto"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-3 grid-margin">
+        <div class="card">
+          <div class="card-body">
+            <h5>Blocked Users</h5>
+            <div class="row">
+              <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                <div class="d-flex d-sm-block d-md-flex align-items-center">
+                  <h2 class="mb-0"><%= countOfBlockedUser %></h2>
+                  <!-- <p class="text-danger ml-2 mb-0 font-weight-medium">-2.1% </p> -->
+                </div>
+                <!-- <h6 class="text-muted font-weight-normal">2.27% Since last month</h6> -->
+              </div>
+              <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                <i class="icon-lg mdi mdi-account text-danger ml-auto"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+     
+
+        </div>
+      </div>
+
 
 
 

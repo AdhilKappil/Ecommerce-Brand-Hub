@@ -5,6 +5,7 @@ const category = require('../models/category');
 const product = require('../models/product');
 const productDb = require('../models/product')
 const Order = require("../models/order");
+const Offer = require("../models/offer");
 const bcrypt = require("bcrypt");
 const path = require('path')
 const fs = require("fs")
@@ -73,10 +74,10 @@ const loadadHome = async(req,res)=>{
 
   try {
 
-    let users = await User.find({});;
-    // console.log(users);
+    let users = await User.countDocuments({});
+   
     const TransactionHistory = await Order.find();
-    // console.log('history',TransactionHistory);
+    
     const countOfCod = await Order.countDocuments({
       paymentMethod: "COD",
     });
@@ -88,16 +89,23 @@ const loadadHome = async(req,res)=>{
       paymentMethod: "Wallet",
     });
 
+    const countOfProduct = await productDb.countDocuments({});
 
+    const countOfCategory = await category.countDocuments({});
+
+    const countOfBlockedUser = await User.countDocuments({ 
+       isBlock:true
+    });
+  
 
     const paymentChart = { countOfCod, countOfOnline, countOfWallet};
-    // console.log('chart',paymentChart);
+    
     const orders = await recentOrder();
-    // const stock = await getTotalStockNumber();
-    // console.log("orders",orders);
-    // console.log('stock',stock);
+
+    const stock = await getTotalStockNumber();
+    
     const result = await createSalesReport("year")
-    // console.log('result',result);
+    
     const report = {
       totalSalesAmount:result.totalSalesAmount,
       sales: result.totalProductsSold,
@@ -107,11 +115,16 @@ const loadadHome = async(req,res)=>{
     // console.log("report",report);
     
     res.render("dashboard", {
-      users: users,
+      users,
       paymentHistory: TransactionHistory,
       orders,
       paymentChart,
       report,
+      countOfProduct,
+      countOfCategory,
+      countOfBlockedUser,
+      stock
+
     });
   } catch (error) {
     console.log(error.message);
@@ -171,24 +184,24 @@ const recentOrder = async () => {
 
 
 
-//======== findimng totel Stock number
-// const getTotalStockNumber = async () => {
-//   try {
-//     const result = await product.aggregate([
-//       {
-//         $group: {
-//           _id: null,
-//           totalStock: { $sum: "$quantity" },
-//         },
-//       },
-//     ]);
-//     const totalStock = result.length > 0 ? result[0].totalStock : 0;
-//     // console.log("totelstock",totalStock);
-//     return totalStock;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+// ======== findimng totel Stock number ==========
+const getTotalStockNumber = async () => {
+  try {
+    const result = await product.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalStock: { $sum: "$quantity" },
+        },
+      },
+    ]);
+    const totalStock = result.length > 0 ? result[0].totalStock : 0;
+    // console.log("totelstock",totalStock);
+    return totalStock;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
 
@@ -391,7 +404,8 @@ const insertCategory= async (req,res)=>{
 const loadViewCategory = async (req, res) => {
   try {
     const categories = await category.find(); // Assuming you want to retrieve all categories from the database
-    res.render('viewCategories', { category: categories });
+    const availableOffers = await Offer.find({ status : true, expiryDate : { $gte : new Date() }})
+    res.render('viewCategories', { category: categories,availableOffers:availableOffers});
   } catch (error) {
     console.error(error);
     res.status(500).render('error-500');

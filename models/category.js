@@ -16,8 +16,12 @@ const adminSchema =  new mongoose.Schema({
         type:Boolean,
         required:true,
         
-    }
+    },
 
+    offer : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'offer'
+    }
   
 })
 

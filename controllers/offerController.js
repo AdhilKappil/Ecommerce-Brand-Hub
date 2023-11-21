@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const Offer = require("../models/offer")
+const Category = require('../models/category');
+const productDb = require('../models/product')
 
 
 
@@ -124,6 +126,55 @@ const cancelOffer = async ( req, res ) => {
 
 
 
+// =========== applying catogory offer ========
+const applyCategoryOffer = async (req, res) => {
+    console.log('kkkkkkkkkkkkkk');
+    try {
+      const { offerId, categoryId } = req.body;
+  
+      // Get the category discount
+      const categoryOffer = await Offer.findOne({ _id: offerId });
+  
+      if (!categoryOffer) {
+        return res.json({ success: false, message: 'Category Offer not found' });
+      }
+  
+      // Update the category with the offer
+      await Category.updateOne({ _id: categoryId }, { $set: { offer: offerId } });
+  
+      // Update discounted prices for all products in the category
+      const productsInCategory = await productDb.find({ category: categoryId });
+  
+      for (const product of productsInCategory) {
+        const productOffer = product.offer ? await Offer.findOne({ _id: product.offer }) : null;
+  
+        // Check if the product has no offer or the category offer has a greater discount
+        if (!product.offer || (productOffer && productOffer.discount< categoryOffer.discount)) {
+          const originalPrice = parseFloat(product.price);
+          const discountedPrice = originalPrice - (originalPrice * categoryOffer.discount) / 100;
+  
+          // Update the product with the category offer details
+          await productDb.updateOne(
+            { _id: product._id },
+            {
+              $set: {
+                offer: offerId,
+                discountedPrice: discountedPrice,
+              },
+            }
+          );
+        }
+      }
+  
+      res.json({ success: true });
+    } catch (error) {
+      console.log(error.message);
+      res.redirect('/error-500');
+    }
+  };
+
+
+
 
 module.exports = {
     loadAddOffer,
@@ -131,6 +182,7 @@ module.exports = {
     loadOffers,
     loadEditOffer,
     editOffer,
-    cancelOffer
+    cancelOffer,
+    applyCategoryOffer
 
   };

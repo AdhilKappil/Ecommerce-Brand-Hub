@@ -101,6 +101,7 @@ admin_route.get('/offer',auth.isLogin,offerController.loadOffers)
 admin_route.get('/editOffer/:id',auth.isLogin,offerController.loadEditOffer)
 admin_route.post('/editOffer',auth.isLogin,offerController.editOffer)
 admin_route.patch('/cancelOffer',auth.isLogin,offerController.cancelOffer)
+admin_route.patch('/applyOfferCategory',auth.isLogin,offerController.applyCategoryOffer)
 
 
 // admin_route.get('/addBaner',auth.isLogin,adminController.loadBaner)
