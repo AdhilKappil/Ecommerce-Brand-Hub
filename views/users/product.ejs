@@ -5,19 +5,20 @@
         <div class="bg0 m-t-100 p-b-140">
             <div class="container">
                 <div class="flex-w flex-sb-m p-b-52 mt-5">
-                    
+
                     <div class="flex-w flex-l-m filter-tope-group m-tb-10 mt-5 custom-margin">
                         <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 filter-button category-*">
                             All Products
                         </button>
-                    
+
                         <% catData.forEach(function(cat) { %>
-                            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 filter-button" data-filter=".category-<%= cat.name %>">
+                            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 filter-button"
+                                data-filter=".category-<%= cat.name %>">
                                 <%= cat.name %>
                             </button>
-                        <% }); %>
+                            <% }); %>
                     </div>
-                    
+
 
                     <div class="flex-w flex-c-m m-tb-10">
                         <div
@@ -244,22 +245,28 @@
 
                 <div class="row isotope-grid">
                     <% product.forEach((product)=>{ %>
-                        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item <%= product.category.name %>">
+                        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item category-<%= product.category.name %>">
                             <!-- Block2 -->
                             <div class="block2">
                                 <div class="block2-pic hov-img0">
-                                    <img style=" height: 22rem; "
-                                        src="/static/adminAssets/images/products/<%= product.images[0] %>"
-                                        alt="IMG-PRODUCT">
-
-                                    <a href="/productDetails?id=<%= product._id %>"
-                                        class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 text-center">
-                                        Product Details
-                                    </a>
+                                    <% if(product.offer && product.offer.discount> 0) { %>
+                                        <div class="discount-badge"
+                                            style="background-color: #ff5733; color: #f8f8f8; padding: 5px; position: absolute; z-index: 1; width: 74px;">
+                                            <span class="stext-103 size-102">
+                                                <%= product.offer.discount %> % OFF
+                                            </span>
+                                        </div>
+                                        <% } %>
+                                            <img style="height: 22rem;"
+                                                src="/static/adminAssets/images/products/<%= product.images[0] %>"
+                                                alt="IMG-PRODUCT">
+                                            <a href="/productDetails?id=<%= product._id %>"
+                                                class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 text-center">
+                                                Product Details
+                                            </a>
                                 </div>
-
                                 <div class="block2-txt flex-w flex-t p-t-14">
-                                    <div class="block2-txt-child1 flex-col-l ">
+                                    <div class="block2-txt-child1 flex-col-l">
                                         <span class="stext-105 cl3">
                                             <%= product.brand %>
                                         </span>
@@ -267,14 +274,24 @@
                                             class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
                                             <%= product.productName %>
                                         </a>
-
-                                        <span class="stext-105 cl3">
-                                            ₹ <%= product.price %>
-                                        </span>
+                                        <% if(product.offer && product.offer.discount> 0) { %>
+                                            <div class="d-flex">
+                                                <span class="stext-105 cl3">
+                                                    <del>₹ <%= product.price %></del>
+                                                </span>
+                                                <span class="stext-105 cl3" style="margin-left: 130px;">
+                                                    <p class="text-danger">₹ <%= product.discountedPrice %>
+                                                    </p>
+                                                </span>
+                                            </div>
+                                            <% } else { %>
+                                                <span class="stext-105 cl3">
+                                                    $<%= product.price %>
+                                                </span>
+                                                <% } %>
                                     </div>
-
                                     <div class="block2-txt-child2 flex-r p-t-3">
-                                        <a href="#" class="btn-addwish-b2 dis-block pos-relative "
+                                        <a href="#" class="btn-addwish-b2 dis-block pos-relative"
                                             data-product-id="<%= product._id %>">
                                             <img class="icon-heart1 dis-block trans-04"
                                                 src="/static/userAssets/images/icons/icon-heart-01.png" alt="ICON">
@@ -284,6 +301,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                         <% }) %>
                 </div>
@@ -342,7 +360,7 @@
             });
         </script>
 
-
+        
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const filterButtons = document.querySelectorAll(".filter-button");
@@ -369,7 +387,7 @@
             });
         });
     });
-</script>
+</script> 
 
 
 
@@ -417,9 +435,8 @@
             });
         }
     });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+</script> -->
 
 
-        <%-include('../users/layouts/footer.ejs') %>
+
+<%-include('../users/layouts/footer.ejs') %>

@@ -412,7 +412,7 @@ const  loadProducts = async(req,res)=>{
             page = totalPages;
           }
 
-    const products = await Product.find({status:true})
+    const products = await Product.find({status:true}).populate("offer").populate("category")
       .find({})
       .skip((page - 1) * perPage)
       .limit(perPage);
@@ -442,7 +442,7 @@ const loadProductDetails = async(req,res)=>{
     
       const id = req.query.id
 
-      const products = await Product.findById({_id:id})
+      const products = await Product.findById({_id:id}).populate("offer")
       res.render('productDetails',{product:products,user:req.session.user_id})
   
     }catch(error){
