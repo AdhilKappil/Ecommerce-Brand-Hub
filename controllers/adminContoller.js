@@ -403,14 +403,15 @@ const insertCategory= async (req,res)=>{
 // ======== Rendering view categories ======== 
 const loadViewCategory = async (req, res) => {
   try {
-    const categories = await category.find(); // Assuming you want to retrieve all categories from the database
-    const availableOffers = await Offer.find({ status : true, expiryDate : { $gte : new Date() }})
-    res.render('viewCategories', { category: categories,availableOffers:availableOffers});
+    const categories = await category.find().populate('offer'); // Use populate to fetch the associated offer data
+    const availableOffers = await Offer.find({ status: true, expiryDate: { $gte: new Date() } });
+    res.render('viewCategories', { category: categories, availableOffers: availableOffers });
   } catch (error) {
     console.error(error);
-    res.status(500).render('error-500');
+    res.status(500).redirect('/error-500');
   }
 };
+
 
 // ========== list and unlist ===========
 const unlistCategory = async (req, res) => {
@@ -447,7 +448,7 @@ const loadEditCatogories = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
-    res.status(500).render('error-500');
+    res.status(500).redirect('/error-500');
   }
 }
 
@@ -474,7 +475,7 @@ const userLoad =  async (req, res) => {
     res.render('users', { users: user });
   } catch (error) {
     console.error(error);
-    res.status(500).render('error-500');
+    res.status(500).redirect('/error-500');
    }
   };
 
@@ -516,7 +517,7 @@ const userLoad =  async (req, res) => {
       res.render('addProducts', { category: categories });
     } catch (error) {
       console.error(error);
-      res.status(500).render('error-500');
+      res.status(500).redirect('/error-500');
     }
   };
 
@@ -557,7 +558,7 @@ const userLoad =  async (req, res) => {
 
   }catch(error){
     console.error(error);
-    res.status(500).render('error-500');
+    res.status(500).redirect('/error-500');
   }
 }
 
@@ -565,12 +566,13 @@ const userLoad =  async (req, res) => {
 // ======= load view products =======
 const loadViewProducts = async (req, res) => {
   try {
-    const products = await product.find().populate("category"); // Populate the category field
+    const products = await product.find().populate("category").populate("offer"); // Populate the category field
     const categories = await category.find(); // Assuming you want to retrieve all categories from the database
-    res.render('viewProducts', { products: products, categories: categories }); // Pass 'products' and 'categories' to the template
+    const availableOffers = await Offer.find({ status : true, expiryDate : { $gte : new Date() }})
+    res.render('viewProducts', { products: products, categories: categories, availableOffers:availableOffers  }); // Pass 'products' and 'categories' to the template
   } catch (error) {
     console.error(error);
-    res.status(500).render('error-500');
+    res.status(500).redirect('/error-500');
   }
 }
 
@@ -593,7 +595,7 @@ const loadEditProduct = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
-    res.status(500).render('error-500');
+    res.status(500).redirect('/error-500');
   }
 }
 
@@ -671,7 +673,7 @@ const editProduct = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).render('error-500');
+    res.status(500).redirect('/error-500');
   }
 };
 

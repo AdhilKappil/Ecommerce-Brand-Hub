@@ -83,11 +83,11 @@
       errorName.style.display = 'block';
     }
 
-    const pattern = /^[a-zA-Z0-9]+$/;
+    const pattern = /^[a-zA-Z0-9 ]+$/;
     if (!pattern.test(name)) {
-      event.preventDefault();
-      errorName.innerHTML = "Name should not contain symbols or spaces";
-      errorName.style.display = 'block';
+     event.preventDefault();
+     errorName.innerHTML = "Name should not contain symbols or multiple spaces";
+       errorName.style.display = 'block';
     }
 
     if (startingDate > expiryDate || expiryDate < now) {

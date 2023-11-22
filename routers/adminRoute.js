@@ -102,6 +102,9 @@ admin_route.get('/editOffer/:id',auth.isLogin,offerController.loadEditOffer)
 admin_route.post('/editOffer',auth.isLogin,offerController.editOffer)
 admin_route.patch('/cancelOffer',auth.isLogin,offerController.cancelOffer)
 admin_route.patch('/applyOfferCategory',auth.isLogin,offerController.applyCategoryOffer)
+admin_route.patch('/removeOfferCategory',auth.isLogin,offerController.removeCategoryOffer)
+admin_route.patch('/applyProductOffer',auth.isLogin,offerController.applyProductOffer)
+admin_route.patch('/removeProductOffer',auth.isLogin,offerController.removeProductOffer)
 
 
 // admin_route.get('/addBaner',auth.isLogin,adminController.loadBaner)

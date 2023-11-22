@@ -40,9 +40,11 @@
                             <%= category[i].description %>
                           </td>
                           <td>
-                            <% if( category[i].offer ){%>
-                              <%= offer.name %> (<%= offer.discount %>% )<%} else { %>No
-                                    offers<% }%>
+                            <% if (category[i].offer) { %>
+                              <%= category[i].offer.name %> : <%= category[i].offer.discount %>%
+                                  <% } else { %>
+                                    No offers
+                                    <% } %>
                           </td>
                           <td>
                             <% if ( category[i].offer ){%>
@@ -124,6 +126,7 @@
       </div>
 
 
+
       <script>
         // ========= modal for applay offer ==========
         function showModal(categoryId) {
@@ -137,28 +140,28 @@
           });
         }
 
-       
+
         // ========== applying offer =========
         async function enterOffer(offerId, categoryId) {
           console.log('click');
           console.log(offerId);
           console.log(categoryId);
-      $('#discountModal').modal('hide');
-      console.log('auxios');
-        const response = await axios.patch( '/admin/applyOfferCategory', { offerId, categoryId })
-        if( response.data.success ) {
-          
-          Swal.fire('Offer applied')
-          updateOfferContent(categoryId, response.data.offer)
-          window.location.reload()
-        }
-    }
+          $('#discountModal').modal('hide');
+          console.log('auxios');
+          const response = await axios.patch('/admin/applyOfferCategory', { offerId, categoryId })
+          if (response.data.success) {
 
-         // ========== removing offer ===========
+            updateOfferContent(categoryId, response.data.offer);
+            window.location.reload();
+          }
+
+        }
+
+        // ========== removing offer ===========
         async function removeOffer(categoryId) {
+          console.log("clicked");
           try {
             const confirmation = await Swal.fire({
-              title: 'Confirm Removal',
               text: 'Are you sure you want to remove the offer?',
               icon: 'warning',
               showCancelButton: true,
@@ -167,11 +170,15 @@
             });
 
             if (confirmation.isConfirmed) {
-              const response = await axios.patch('/admin/remove_Offer-category', { categoryId });
+              const response = await axios.patch('/admin/removeOfferCategory', { categoryId });
               if (response.data.success) {
+
                 updateOfferContent(categoryId, null);
-                Swal.fire('Offer Removed', '', 'success');
+                // Reload the page after the success message
+                location.reload();
+
               }
+
             }
           } catch (error) {
             console.log(error.message);

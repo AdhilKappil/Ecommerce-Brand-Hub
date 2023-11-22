@@ -2,6 +2,7 @@
 <%-include('../admin/layouts/sideBar.ejs') %>
 <%-include('../admin/layouts/navBar.ejs') %>
 
+
 <div class="main-panel">
   <div class="content-wrapper">
     <div class="col-12 grid-margin stretch-card">
@@ -13,7 +14,7 @@
             <input type="text" name="key" class="form-control mb-1 text-light" placeholder="Search Products" id="searchInput">
         </form>
 
-          <div class="table-responsive">
+          <div class="table-responsive table-container">
             <table class="table " id="user-table">
               <thead class=" text-white">
                 <tr class=" text-white">
@@ -24,6 +25,8 @@
                   <th >Quantity</th>
                   <th >Description</th>
                   <th >Size</th>
+                  <th>Offer</th>
+                  <th >Action</th>
                   <th >Edit</th>
                   <th >Action</th>
                 </tr>
@@ -45,6 +48,15 @@
                     <td><%= product.quantity %></td>
                     <td class="description-column"><%= product.description %></td>
                     <td><%= product.size %></td>
+                    <td> <% if( product.offer ){%><%= product.offer.name %>:<%=  product.offer.discount %>% <%} else { %>No offers<% }%></td>
+                    <td> 
+                      <% if (  product.offer ){%>
+                        
+                        <button onclick="removeOffer('<%=  product._id %>')" class="btn btn-warning"> Remove offer </button>
+                      <% } else {%>
+                        <button class="btn btn-info" onclick="showModal('<%=  product._id %>')"> Apply offer </button>
+                      <% }%>
+                    </td>
                     <td>
                       <a href="/admin/editProduct?id=<%= product._id%>">
                         <button type="button" class="btn btn-outline-secondary btn-icon-text">
@@ -52,7 +64,7 @@
                         </button>
                       </a>
                     </td>
-                    <td>
+                    <td >
                       <% if (product.status === false) { %>
                         <a href="/admin/unlistProduct?id=<%= product._id %>">
                           <button type="button" class="btn btn-inverse-success btn-fw">
@@ -73,10 +85,40 @@
             </table>
           </div>
         </div>
+
+        <div class="modal fade" id="discountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            
+            <% if( availableOffers && availableOffers.length > 0) { %>
+              <% for( offer of availableOffers ) { %>
+      
+                  <div class="modal-content rounded-0">
+                    <div data-offerid="<%= offer._id %>" style="cursor: pointer;" class="modal-body text-center">
+                          <div class="icon text-danger">
+                              <i style="font-size: 20px;" class="fas fa-gift"></i>
+                          </div>
+                          <div class="notice">  
+                                  <h2><%= offer.name %></h2>                          
+                                  <h4><%= offer.discount %>% Discount</h4>
+                              <p>Valid from <%= offer.startingDate.toLocaleDateString('en-US', { year: 'numeric' ,
+                                month: 'short' , day: '2-digit' }).replace(/\//g,'-') %> to <%= offer.expiryDate.toLocaleDateString('en-US', { year: 'numeric' ,
+                                month: 'short' , day: '2-digit' }).replace(/\//g,'-') %> </p>
+                          </div>
+                          <div class="code"></div>
+                      </div>
+                  </div>
+              <% } %>
+              <% } %>
+          </div>
+        </div>
+
+
       </div>
     </div>
   </div>
 </div>
+
+
 
 <style>
   .description-column {
@@ -92,18 +134,108 @@
 }
 
   /* Add media query for smaller screens to adjust the description column width */
-  @media (max-width: 768px) {
+  
     .description-column {
       max-width: 150px; /* Adjust as needed for smaller screens */
     }
-  }
+  
 
   /* Increase the height of all table cells (th and td) */
   .table th,
   .table td {
     padding: 20px 15px; /* Adjust the padding to increase cell height */
   }
+  
+
+  .table-container {
+    overflow-x: auto; /* Add a horizontal scrollbar if the content overflows */
+  }
+
+  #user-table {
+    width: 100%; /* Set the table width to 100% */
+  }
+
+  #user-table th, #user-table td {
+    white-space: nowrap; /* Prevent text wrapping */
+  }
+
+  #user-table th:last-child,
+  #user-table td:last-child {
+    /* Adjust the width of the last column as needed */
+    min-width: 150px; /* Minimum width to ensure visibility of the button */
+  }
 </style>
+
+
+
+<script>
+
+  function showModal(productId) {
+        $('#discountModal').modal('show');
+        const offerElements = document.querySelectorAll('.modal-body.text-center');
+        offerElements.forEach((element) => {
+            element.onclick = function() {
+                const offerId = this.getAttribute('data-offerid');
+                enterOffer(offerId, productId); 
+            };
+        });
+    }
+
+    async function enterOffer(offerId, productId) {
+      $('#discountModal').modal('hide');
+        const response = await axios.patch( '/admin/applyProductOffer', { offerId, productId })
+        if( response.data.success ) {
+          updateOfferContent(productId, response.data.offer)
+          window.location.reload()
+        }else{
+          Swal.fire({
+           text: "Category offer has greaterthan this discount!",
+            icon: "error",
+            timer:2500
+          });
+        }
+    }
+
+    async function removeOffer(productId) {
+  try {
+    const confirmation = await Swal.fire({
+     
+      text: 'Are you sure you want to remove the offer?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, remove it!',
+      cancelButtonText: 'Cancel'
+    });
+
+    if (confirmation.isConfirmed) {
+      const response = await axios.patch('/admin/removeProductOffer', { productId });
+      if (response.data.success) {
+        updateOfferContent(productId, null);
+        window.location.reload()
+      }
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+    function updateOfferContent(productId, offer) {
+  const offerCell = $(`tr[data-product-id="${productId}"] td:nth-child(8)`); // Update to the correct column index
+  const actionCell = $(`tr[data-product-id="${productId}"] td:nth-child(9)`);
+
+  if (offer) {
+    offerCell.html(`${offer.name} (${offer.percentage}%)`);
+    actionCell.html(`<button onclick="removeOffer('${productId}')" class="btn btn-warning">Remove offer</button>`);
+  } else {
+    offerCell.text('No offers');
+    actionCell.html(`<button class="btn btn-info" onclick="showModal('${productId}')">Apply offer</button>`);
+  }
+
+  
+
+}
+</script>
+
    
 
 <%-include('../admin/layouts/footer.ejs') %>
