@@ -47,7 +47,11 @@
 													<%= cartItems.products[i].productId.productName %>
 												</td>
 												<td class="column-3 mt-7 product-price">
+													<% if (cartItems.products[i].productId.discountedPrice > 0) { %>
+														<%= cartItems.products[i].productId.discountedPrice%>
+														<% } else { %>
 													<%= cartItems.products[i].productId.price %>
+													<% } %>
 												</td>
 												<td class="column-4">
 													<div class="wrap-num-product flex-w m-l-auto m-r-0">
@@ -66,9 +70,14 @@
 														</div>
 													</div>
 												</td>
-												<td class="column-5 total-price"><%-
+												<td class="column-5 total-price">
+													<% if (cartItems.products[i].productId.discountedPrice > 0) { %>
+														 <%= cartItems.products[i].productId.discountedPrice * cartItems.products[i].quantity%> 
+														<% } else { %>
+													<%-
 														(cartItems.products[i].productId.price) *
 														(cartItems.products[i].quantity) %></td>
+													<% } %>
 												<td class="column-6">
 													<button type="button" class="btn btn btn-outline-primary-2" onclick="removeCartItem('<%= user._id %>',
 										'<%= cartItems.products[i].productId._id %>','<%= cartItems.products[i].quantity %>')">Remove</button>

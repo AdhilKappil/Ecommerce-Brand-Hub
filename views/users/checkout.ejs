@@ -102,7 +102,11 @@
                             <input id="productID" type="hidden" value="<%= value.productId %>">
                           </td>
                           <td>
+                            <% if (value.productId.discountedPrice > 0) { %>
+                              <%= value.productId.discountedPrice * value.quantity%> 
+                             <% } else { %>
                             <%= (value.productId.price) * (value.quantity) %>
+                            <% } %>
                           </td>
                         </tr>
                         <% }) %>

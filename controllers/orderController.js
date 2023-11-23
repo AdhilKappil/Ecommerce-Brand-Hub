@@ -30,8 +30,14 @@ const calculateTotalPrice = async (userId) => {
     let totalPrice = 0;
     for (const cartProduct of cart.products) {
       const { productId, quantity } = cartProduct;
-      const productSubtotal = productId.price * quantity;
-      totalPrice += productSubtotal;
+      if(productId.discountedPrice>0){
+        const productSubtotal = productId.discountedPrice * quantity;
+        totalPrice += productSubtotal;
+
+      }else{
+        const productSubtotal = productId.price * quantity;
+        totalPrice += productSubtotal;
+      }
     }
 
     return totalPrice;
@@ -47,7 +53,7 @@ const loadCheckout = async (req, res) => {
     const cartDetails = await Cart.findOne({ user: req.session.user_id })
       .populate({
         path: "products.productId",
-        select: "productName price",
+        select: "productName price discountedPrice",
       })
       .exec();
 
@@ -465,7 +471,7 @@ const loadAdminOrder = async (req, res) => {
         const productId = productInfo.productId;
 
         const product = await Product.findById(productId).select(
-          "productName images price"
+          "productName images price "
         );
         const userDetails = await User.findById(order.userId).select("email");
 
