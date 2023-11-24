@@ -8,6 +8,7 @@ const otpGenerator = require("otp-generator")
 const Product = require('../models/product');
 const Category = require('../models/category');
 const Address = require('../models/userAddress');
+const shortid = require('shortid');
 const { ObjectId}=require('mongodb')
 
 
@@ -175,6 +176,23 @@ const verifyOtp = async (req, res) => {
             req.session.Lname = req.body.Lname;
             req.session.mobile = req.body.mobile;
             req.session.email = req.body.email;
+
+            if (req.body.referralCode) {
+                // Check if the referral code provided by the user exists
+                const referringUser = await User.findOne({ referralCode: req.body.referralCode });
+          
+                if (referringUser) {
+                  req.session.referralUserId = referringUser._id; // Save referring user ID in session
+                } else {
+                  res.render('registration', { message: 'Invalid referral code. Please use a valid referral code.' });
+                  return;
+                }
+              }
+          
+              // Generate a unique referral code using shortid
+              const referralCode = shortid.generate();
+              req.session.referralCode = referralCode; //
+
             if(req.body.Fname && req.body.email && req.body.Lname&& req.body.mobile){
                 if(req.body.password === req.body.Cpassword) {
                     req.session.password = spassword;
@@ -214,11 +232,36 @@ const insertUser = async (req, res)=>{
                 email: req.session.email,
                 mobile: req.session.mobile,
                 password: req.session.password,
+                referralCode: req.session.referralCode,
                 isVerified:1,
                 isBlock:0
             });
 
             const result = await user.save()
+
+            if(req.session.referralUserId){
+                const referringUser = await User.findById(req.session.referralUserId);
+
+                const bonusAmount = 100;
+
+                referringUser.wallet += bonusAmount;
+                referringUser.walletHistory.push({
+                  transactionDate: new Date(),
+                  transactionAmount: bonusAmount,
+                  transactionDetails: `Referral bonus for user ${result.firstName}`,
+                  transactionType: 'Credit',
+                });
+                await referringUser.save();
+      
+                result.wallet += bonusAmount;
+                result.walletHistory.push({
+                   transactionDate: new Date(),
+                  transactionAmount: bonusAmount,
+                  transactionDetails: "Referral bonus",
+                  transactionType: 'Credit',
+                });
+                await result.save();
+            }
 
            res.json({success:true})
       

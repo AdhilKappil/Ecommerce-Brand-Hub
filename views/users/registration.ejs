@@ -32,6 +32,8 @@
                 <p id="email-error" class="error-message"></p>
                 <input type="text" class="form-control" name="mobile" placeholder="Mobile No" id="mobile">
                 <p id="mobile-error" class="error-message"></p>
+                <input type="text" class="form-control" name="referralCode" placeholder="Do you have referral ?" id="referral">
+                <p></p>
                 <input type="password" class="form-control" name="password" placeholder="Enter password" id="password">
                 <p id="password-error" class="error-message"></p>
                 <input type="password" class="form-control" name="Cpassword" placeholder="Confirm password" id="Cpassword">
@@ -51,6 +53,16 @@
 </div>
 
 <script src="/static/userAssets/js/validation.js"></script>
+
+<script>
+    setTimeout(function () {
+    // Your code to hide the message after a delay goes here
+    var invalidMsg = document.getElementById("invalid-msg");
+    if (invalidMsg) {
+      invalidMsg.style.display = "none";
+    }
+  }, 3000);
+</script>
 
 </body>
 </html>
