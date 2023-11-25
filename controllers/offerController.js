@@ -12,7 +12,7 @@ const loadAddOffer = async( req, res ) => {
     res.render('addOffer')
     } catch (error) {
         console.log(error.message)
-        res.redirect('/error-500')
+        res.render('error-500')
 
     }
 }
@@ -44,7 +44,7 @@ const addOffer = async ( req, res ) => {
         }
     } catch (error) {
         console.log(error.message)
-        res.redirect('/error-500')
+        res.render('error-500')
     }
 }
 
@@ -60,7 +60,7 @@ const loadOffers = async( req, res ) => {
         })
     } catch (error) {
         console.log(error.message)
-        res.redirect('/error-500')
+        res.render('error-500')
 
     }
 }
@@ -77,7 +77,7 @@ const loadEditOffer = async ( req, res ) => {
         })
     } catch (error) {
         console.log(error.message)
-        res.redirect('/error-500')
+        res.render('error-500')
 
     }
 }
@@ -100,7 +100,7 @@ const editOffer = async ( req, res ) => {
         res.redirect('/admin/offer')
     } catch (error) {
         console.log(error.message)
-        res.redirect('/error-500')
+        res.render('error-500')
 
     }
 }
@@ -119,7 +119,7 @@ const cancelOffer = async ( req, res ) => {
         res.json({ cancelled : true})
     } catch (error) {
         res.json({cancelled: false,message:'Cant cancel some errors'})
-        res.redirect('/error-500')
+        res.render('error-500')
 
     }
 }
@@ -151,7 +151,8 @@ const applyCategoryOffer = async (req, res) => {
         // Check if the product has no offer or the category offer has a greater discount
         if (!product.offer || (productOffer && productOffer.discount< categoryOffer.discount)) {
           const originalPrice = parseFloat(product.price);
-          const discountedPrice = originalPrice - (originalPrice * categoryOffer.discount) / 100;
+          // Assuming originalPrice and categoryOffer.discount are integers
+        const discountedPrice = Math.floor(originalPrice - (originalPrice * categoryOffer.discount) / 100);      
   
           // Update the product with the category offer details
           await productDb.updateOne(
@@ -169,7 +170,7 @@ const applyCategoryOffer = async (req, res) => {
       res.json({ success: true });
     } catch (error) {
       console.log(error.message);
-      res.redirect('/error-500');
+      res.render('error-500')
     }
 };
 
@@ -219,7 +220,7 @@ const removeCategoryOffer = async (req, res) => {
       res.json({ success: true });
     } catch (error) {
       console.log(error.message);
-      res.redirect('/error-500');
+      res.render('error-500')
     }
   };
 
@@ -252,7 +253,9 @@ const removeCategoryOffer = async (req, res) => {
       // Calculate real price and discounted price for the product
       const discountPercentage = offer.discount;
       const originalPrice = parseFloat(product.price);
-      const discountedPrice = originalPrice - (originalPrice * discountPercentage) / 100;
+     // Assuming originalPrice and discountPercentage are integers
+     const discountedPrice = Math.floor(originalPrice - (originalPrice * discountPercentage) / 100);
+
   
 
       // Check if category offer is available and its discount is greater than product offer
@@ -277,7 +280,7 @@ const removeCategoryOffer = async (req, res) => {
       res.json({ success: true, data: updatedProduct });
     } catch (error) {
       console.log(error.message);
-      res.redirect('/error-500');
+      res.render('error-500')
     }
   };
 
@@ -301,7 +304,7 @@ const removeCategoryOffer = async (req, res) => {
       res.json({ success: true ,data:remove });
     } catch (error) {
       console.log(error);
-      res.redirect('/error-500');
+      res.render('error-500')
     }
   };
   

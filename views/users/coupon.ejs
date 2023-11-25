@@ -1,0 +1,89 @@
+<%-include('../users/layouts/header.ejs') %>
+    <%-include('../users/layouts/navBar.ejs') %>
+
+
+        <link rel="stylesheet" href="/static/userAssets/css/profile.css">
+
+        <main class="main">
+            <div class="page-header text-center m-t-85"
+                style="background-image: url('assets/images/page-header-bg.jpg')">
+                <div class="container">
+                    <h1 class="page-title">Coupons</h1>
+                </div><!-- End .container -->
+            </div><!-- End .page-header -->
+            <nav aria-label="breadcrumb" class="breadcrumb-nav">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/userProfile">My account</a></li>
+
+                        <li class="breadcrumb-item active" aria-current="page">Coupons</li>
+                    </ol>
+                </div><!-- End .container -->
+            </nav><!-- End .breadcrumb-nav -->
+
+            <div class="page-content">
+                <div class="cart">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table class="table table-cart table-mobile">
+                                    <thead>
+                                        <tr>
+                                            <th>Coupon Code</th>
+                                            <th>Discount Percentage</th>
+                                            <th>Start Date</th>
+                                            <th>Expiry Date</th>
+                                            <th>Minimum Purchase Amount</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <% couponData.forEach(coupon=> { %>
+                                            <tr>
+                                                <td>
+                                                    <div class="coupon-code">
+                                                        <%= coupon.code %>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="coupon-title">
+                                                        <%= coupon.discountPercentage %> %
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="coupon-expiry">
+                                                        <%= coupon.startDate.toLocaleDateString('en-US',
+                                                            { year: 'numeric' , month: 'short' ,
+                                                            day: '2-digit' }).replace(/\//g,'-') %>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="coupon-expiry">
+                                                        <%= coupon.expireDate.toLocaleDateString('en-US',
+                                                            { year: 'numeric' , month: 'short' ,
+                                                            day: '2-digit' }).replace(/\//g,'-') %>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="coupon-minimum-spend">
+                                                        <%= coupon.minimumSpend %>
+                                                            <!-- Add this line -->
+                                                    </div>
+                                                </td>
+                        
+                                            </tr>
+                                            <% }) %>
+                                    </tbody>
+                                </table><!-- End .table table-wishlist -->
+
+
+                            </div><!-- End .col-lg-9 -->
+
+                        </div><!-- End .row -->
+                    </div><!-- End .container -->
+                </div><!-- End .cart -->
+            </div><!-- End .page-content -->
+        </main><!-- End .main -->
+
+        <%-include('../users/layouts/footer.ejs') %>

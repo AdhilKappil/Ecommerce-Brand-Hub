@@ -1,0 +1,178 @@
+<%- include('../admin/layouts/header.ejs') %>
+<%- include('../admin/layouts/sideBar.ejs') %>
+<%- include('../admin/layouts/navBar.ejs') %>
+
+<!-- Normalize CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+<!-- Cropper CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css">
+<!-- Cropper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js"></script>
+
+<div class="main-panel">
+  <div class="content-wrapper">
+    <div class="row">
+      
+      <div class="col-md-12">
+        <div class="col-12 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <form class="forms-sample" action="/admin/addBanner" method="post" enctype="multipart/form-data">
+                <div class="text-center">
+                  <h3 class="card-title">Add Banner</h3>
+                </div>
+                <h5 class="card-title">Image Cropping</h5>
+                <main class="page">
+                  <div class="box">
+                    <input type="file" name="image" id="file-input"> 
+                  </div>
+                  <div class="box-2 col-md-6">
+                    <div class="result"></div>
+                  </div>
+                  <div class="box-2 img-result hide col-md-6">
+                    <img class="cropped" src="" alt="">
+                  </div>
+                  <div class="box col-md-12">
+                    <div class="options hide">
+                      <label for="img-width">Width</label>
+                      <input type="number" id="img-width" class="img-w" value="300" min="100" max="1200" />
+                      <button type="button" class="btn save hide">Save</button>
+                    </div>
+                  </div>
+                </main>
+                <div class="col-12 grid-margin stretch-card">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="form-group">
+                        <label for="exampleInputName1">Banner Title</label>
+                        <input type="text" class="form-control" id="exampleInputName1" name="title" placeholder="Name">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleTextarea1">Description</label>
+                        <textarea class="form-control" id="exampleTextarea1" name="description" rows="4"></textarea>
+                      </div>
+                      <div class="text-center">
+                        <button type="submit" class="btn btn-success text-primary mr-2">Submit</button>
+                        <button class="btn btn-inverse-danger"><a href="/admin/banner">Cancel</a></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+<style>
+  .page {
+    margin: 1em auto;
+    max-width: 768px;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    height: 100%;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .col-md-6 {
+    width: 50%;
+    box-sizing: border-box;
+  }
+
+  .box {
+    padding: 0.5em;
+    width: 100%;
+    margin: 0.5em;
+  }
+
+  .box-2 {
+    padding: 0.5em;
+    width: 100%;
+  }
+
+  .options label,
+  .options input {
+    width: 5em;
+    padding: 0.5em 1em;
+  }
+
+  .btn {
+    background: white;
+    color: black;
+    border: 1px solid black;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    margin: 0.8em 0.3em;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .hide {
+    display: none;
+  }
+
+  img {
+    max-width: 100%;
+  }
+</style>
+
+<script>
+  // vars
+  let result = document.querySelector('.result'),
+    img_result = document.querySelector('.img-result'),
+    saved_result = document.querySelector('.saved-result'),
+    img_w = document.querySelector('.img-w'),
+    options = document.querySelector('.options'),
+    save = document.querySelector('.save'),
+    cropped = document.querySelector('.cropped'),
+    saved = document.querySelector('.saved'),
+    upload = document.querySelector('#file-input'),
+    cropper = '';
+
+  // on change show image with crop options
+  upload.addEventListener('change', e => {
+    if (e.target.files.length) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        if (e.target.result) {
+          let img = document.createElement('img');
+          img.id = 'image';
+          img.src = e.target.result;
+          result.innerHTML = '';
+          result.appendChild(img);
+          save.classList.remove('hide');
+          options.classList.remove('hide');
+          cropper = new Cropper(img);
+        }
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  });
+
+  // save on click
+  save.addEventListener('click', e => {
+    e.preventDefault();
+    let imgSrc = cropper.getCroppedCanvas({
+      width: img_w.value
+    }).toDataURL();
+    cropped.classList.remove('hide');
+    img_result.classList.remove('hide');
+    cropped.src = imgSrc;
+
+    // Simulate a saved image (replace this with your actual saved image logic)
+    let savedImgSrc = 'path/to/saved/image.jpg';
+    saved_result.classList.remove('hide');
+    saved.src = savedImgSrc;
+  });
+
+  
+</script>
+
+<%- include('../admin/layouts/footer.ejs') %>
+

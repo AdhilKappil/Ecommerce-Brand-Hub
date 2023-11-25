@@ -109,7 +109,7 @@ const resetPasswordMail = async(firstName,lastName,email, token)=>{
                 requireTLS: true,
                 auth: {
                     user: 'adhilaliotheruse@gmail.com',
-                    pass: 'xkmc oady uruw zkkq',
+                    pass: process.env.smtp,
                 },
             });
 

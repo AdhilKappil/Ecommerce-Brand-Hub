@@ -188,6 +188,7 @@ const createSalesReport = async (startDate, endDate) => {
   
 
 
+
 // ========== all orders =========
   const getorders = async (startDate, endDate) => {
     try {
@@ -242,9 +243,8 @@ const createSalesReport = async (startDate, endDate) => {
   };
 
 
-
-  //portfolio chart data filltering
-// --------------------------------
+ 
+  // ======== portfolio chart data filltering =========
 const portfolioFiltering = async (req, res) => {
   try {
     let datePriad = req.body.date;
@@ -269,6 +269,8 @@ const portfolioFiltering = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
 
 
 const generateWeeklySalesCount = async () => {
@@ -304,6 +306,7 @@ const generateWeeklySalesCount = async () => {
     console.error("Error generating the weekly sales counts:", error.message);
   }
 };
+
 
 
 
@@ -365,6 +368,9 @@ const generateMonthlySalesCount = async () => {
     console.error("Error generating the monthly sales counts:", error.message);
   }
 };
+
+
+
 
 const generateYearlySalesCount = async () => {
   try {

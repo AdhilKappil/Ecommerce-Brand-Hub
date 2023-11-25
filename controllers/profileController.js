@@ -1,23 +1,9 @@
 const bcrypt = require("bcrypt");
 const User = require('../models/users');
 const Address = require('../models/userAddress');
+const Coupon = require("../models/coupon");
 const { ObjectId}=require('mongodb')
 
-
-
-
-// ========== pasword security ==========
-// const securePassword = async(password)=>{
-
-//     try {
-        
-//         const passwordHash = await bcrypt.hash(password,10);
-//         return passwordHash;
-
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// }
 
 
 
@@ -230,6 +216,19 @@ const resetPassword =async (req,res)=>{
 
 
 
+// ======= loading coupon in user profile =======
+const loadCoupon = async (req, res,next) => {
+  try {
+    const user = req.session.user_id
+    const couponData = await Coupon.find()
+    res.render('coupon', { couponData ,user})
+  } catch (err) {
+  next(err)
+  }
+}
+
+
+
 
 module.exports = {
    
@@ -240,6 +239,7 @@ module.exports = {
     editAddress,
     deleteAddress,
     updateUser,
-    resetPassword
+    resetPassword,
+    loadCoupon
     
 };

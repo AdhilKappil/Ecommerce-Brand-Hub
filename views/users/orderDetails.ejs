@@ -33,9 +33,9 @@
                     <tr>
                       <td><img src="/static/adminAssets/images/products/<%= order.products[i].productId.images[0] %>" alt="Product Image"></td>
                       <td class="align-middle"><%= order.products[i].productId.productName %></td>
-                      <td class="align-middle">₹ <%= order.products[i].productId.price %></td>
+                      <td class="align-middle">₹ <%= order.products[i].price %></td>
                       <td class="align-middle"><%= order.products[i].quantity %></td>
-                      <td class="align-middle">₹ <%- (order.products[i].productId.price) * (order.products[i].quantity) %></td>
+                      <td class="align-middle">₹ <%- (order.products[i].price) * (order.products[i].quantity) %></td>
                       <td class="align-middle action-column">
                         <% if (order.products[i].OrderStatus !== 'Cancelled' && order.products[i].OrderStatus !== 'Delivered') { %>
                           <button class="btn btn-danger cancel-product mall-btn" 

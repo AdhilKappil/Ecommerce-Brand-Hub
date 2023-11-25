@@ -39,6 +39,10 @@ const orderSchema = new mongoose.Schema({
           ref: 'product', 
           required: true,
         },
+        price: {
+          type: Number,
+          required: true,
+        },
         quantity: {
           type: Number,
           required: true,
@@ -94,6 +98,9 @@ const orderSchema = new mongoose.Schema({
     paymentId: {
       type: String
     },
+    discountedPrice:{
+      type:Number
+   },
 
     coupon: {
       code: {

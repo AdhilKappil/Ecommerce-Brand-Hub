@@ -713,19 +713,8 @@ const adminLogout = async(req,res)=>{
           console.log(error.message)
      }
 }
-
-
-
-// const loadBaner = async(req,res)=>{
-
-//   try {
-//       res.render('AddBaner'); 
-
-//   } catch (error) {
-//       console.log(error.message); 
-//   }
-// }
  
+
 
 
 // ========== rendering 404 error page =========
@@ -781,5 +770,5 @@ module.exports = {
     load404,
     load500,
     genarateSalesReports
-    // loadBaner
+    
 }

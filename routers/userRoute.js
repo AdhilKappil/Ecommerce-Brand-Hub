@@ -80,6 +80,7 @@ user_route.post('/editAddress',auth.isLogin,profileController.editAddress);
 user_route.delete('/deleteAddress',profileController.deleteAddress);
 user_route.post('/updateUser',auth.isLogin,profileController.updateUser);
 user_route.post('/resetPassword',auth.isLogin,profileController.resetPassword);
+user_route.get('/coupon',auth.isLogin,profileController.loadCoupon);
 
 
 // ============== order page routes ===============

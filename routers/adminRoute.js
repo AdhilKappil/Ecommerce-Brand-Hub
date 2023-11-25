@@ -4,12 +4,12 @@ const orderController = require("../controllers/orderController");
 const salesController = require("../controllers/reportController"); 
 const couponController = require("../controllers/couponController"); 
 const offerController = require("../controllers/offerController"); 
+const bannerController = require("../controllers/bannerController"); 
 const multer = require('multer');
 const path = require('path');
 const session = require('express-session');
 const config = require('../config/confiq');
 const auth = require('../middleware/adminAuth'); 
-
 const fileUploadMiddleware = require('../middleware/fileUpload');
 
 
@@ -107,8 +107,13 @@ admin_route.patch('/applyProductOffer',auth.isLogin,offerController.applyProduct
 admin_route.patch('/removeProductOffer',auth.isLogin,offerController.removeProductOffer)
 
 
-// admin_route.get('/addBaner',auth.isLogin,adminController.loadBaner)
-
+// ========== banner routes =========
+admin_route.get('/addBanner',auth.isLogin,bannerController. loadAddBanner)
+admin_route.post('/addBanner',auth.isLogin,fileUploadMiddleware.bannerUpload.single('image'),bannerController.insertBanner)
+admin_route.get('/banner',auth.isLogin,bannerController.loadBanner)
+admin_route.get('/blockBanner',auth.isLogin,bannerController.blockBanner)
+admin_route.get('/editBanner',auth.isLogin,bannerController.editBanner)
+admin_route.post('/editBanner',auth.isLogin,fileUploadMiddleware.bannerUpload.single('image'),bannerController. updateBanner)
 
 
 // ========= error  page to handile =======

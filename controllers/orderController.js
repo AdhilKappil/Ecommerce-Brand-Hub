@@ -30,11 +30,10 @@ const calculateTotalPrice = async (userId) => {
     let totalPrice = 0;
     for (const cartProduct of cart.products) {
       const { productId, quantity } = cartProduct;
-      if(productId.discountedPrice>0){
+      if (productId.discountedPrice > 0) {
         const productSubtotal = productId.discountedPrice * quantity;
         totalPrice += productSubtotal;
-
-      }else{
+      } else {
         const productSubtotal = productId.price * quantity;
         totalPrice += productSubtotal;
       }
@@ -153,13 +152,13 @@ const generateUniqueTrackId = async () => {
 // =========== place order ===========
 const placeOrder = async (req, res) => {
   try {
-    const userId = req.session.user_id
+    const userId = req.session.user_id;
     const addressId = req.body.address;
     const paymentType = req.body.payment;
     const totalAmount = parseInt(req.body.amount);
-    const cartDetails = await Cart.findOne({ user: userId  });
+    const cartDetails = await Cart.findOne({ user: userId });
 
-    const userAddrs = await Address.findOne({ userId: userId  });
+    const userAddrs = await Address.findOne({ userId: userId });
     const shipAddress = userAddrs.address.find((address) => {
       return address._id.toString() === addressId.toString();
     });
@@ -168,51 +167,80 @@ const placeOrder = async (req, res) => {
       return res.status(400).json({ error: "Address not found" });
     }
 
-    const user = await User.findById(req.session.user_id );
+    const user = await User.findById(req.session.user_id);
 
     // cheking the product stock
-    const productQuantity = await  checkProductQuantities (userId);
-    if (productQuantity === false){
-      return res.status(202).send({})
+    const productQuantity = await checkProductQuantities(userId);
+    if (productQuantity === false) {
+      return res.status(202).send({});
     }
 
     let discountTotal = 0;
     let appliedCoupon = null;
 
     if (req.session.coupon) {
-
-      console.log('hriiiii');
-      
       discountTotal = req.session.coupon.discountTotal;
       appliedCoupon = {
         code: req.session.coupon.code,
         discountTotal: req.session.coupon.discountTotal,
         minimumSpend: req.session.coupon.minimumSpend,
-        discountPercentage:req.session.coupon.discountPercentage
+        discountPercentage: req.session.coupon.discountPercentage,
       };
       req.session.coupon = null;
     }
 
-    let total = await calculateTotalPrice(userId );
-        total = total- discountTotal;
-    
-    // chekking the wallet balance 
-    if (paymentType === 'Wallet' && user.wallet < totalAmount) {
+    let total = await calculateTotalPrice(userId);
+    total = total - discountTotal;
+
+    // chekking the wallet balance
+    if (paymentType === "Wallet" && user.wallet < totalAmount) {
       return res.status(201).json({});
     }
 
     const { fullName, mobile, state, district, city, pincode } = shipAddress;
 
-    const cartProducts = cartDetails.products.map((productItem) => ({
+    const productIDs = cartDetails.products.map(
+      (productItem) => productItem.productId
+    );
+
+    const productPrices = []; // Array to store product prices
+
+    const productData = await Cart.find({
+      "products.productId": { $in: productIDs },
+    })
+      .populate({
+        path: "products.productId",
+        select: "price discountedPrice",
+      })
+      .exec();
+
+    if (productData && productData.length > 0) {
+      productData.forEach((order) => {
+        if (order.products && order.products.length > 0) {
+          order.products.forEach((product) => {
+            const price =
+              product.productId.discountedPrice || product.productId.price;
+            productPrices.push(price); // Store the price in the array
+          });
+        } else {
+          console.log("Products array is empty in the order");
+        }
+      });
+    } else {
+      console.log("No matching orders found");
+    }
+
+    // Now update the cartProducts with prices
+    const cartProducts = cartDetails.products.map((productItem, index) => ({
       productId: productItem.productId,
       quantity: productItem.quantity,
       OrderStatus: "Pending",
       StatusLevel: 1,
+      price: productPrices[index], // Use the corresponding price from the array
       paymentStatus: "Pending",
       "returnOrderStatus.status": "none",
       "returnOrderStatus.reason": "none",
     }));
-
 
     const today = new Date();
     const deliveryDate = new Date(today);
@@ -239,44 +267,43 @@ const placeOrder = async (req, res) => {
     const placeorder = await order.save();
     const orderId = placeorder._id;
 
-    // console.log(paymentType);
-
-    if (paymentType === "COD" || paymentType === 'Wallet') {
-      // console.log('here');
+    if (paymentType === "COD" || paymentType === "Wallet") {
+  
       for (const item of cartDetails.products) {
         const productId = item.productId._id;
         const quantity = parseInt(item.quantity, 10);
 
-        if( paymentType === 'Wallet'){
-         
+        if (paymentType === "Wallet") {
           let changeOrderStatus = await Order.updateOne(
             { _id: placeorder._id },
             {
               $set: {
-                'products.$[].paymentStatus': 'Success' ,"products.$[].OrderStatus": "Placed"
+                "products.$[].paymentStatus": "Success",
+                "products.$[].OrderStatus": "Placed",
               },
             }
           );
           const walletHistory = {
             transactionDate: new Date(),
-            transactionDetails: 'Product Purchased',
-            transactionType: 'Debit',
+            transactionDetails: "Product Purchased",
+            transactionType: "Debit",
             transactionAmount: totalAmount,
-             currentBalance: !isNaN(userId.wallet) ? userId.wallet + amount : totalAmount
-           }
-            await User.findByIdAndUpdate(
-                {_id: userId },
-                {
-                    $inc:{
-                        wallet: -totalAmount
-                    },
-                    $push:{
-                        walletHistory
-                    }
-                }
-            );
-
-         }else{
+            currentBalance: !isNaN(userId.wallet)
+              ? userId.wallet + amount
+              : totalAmount,
+          };
+          await User.findByIdAndUpdate(
+            { _id: userId },
+            {
+              $inc: {
+                wallet: -totalAmount,
+              },
+              $push: {
+                walletHistory,
+              },
+            }
+          );
+        } else {
           // console.log('enterd cod');
           let changeOrderStatus = await Order.updateOne(
             { _id: placeorder._id },
@@ -296,12 +323,12 @@ const placeOrder = async (req, res) => {
         );
       }
       // res.json({ success: true });
-      res.status(200) .json({ placeorder, message: "Order placed successfully" });
+      res
+        .status(200)
+        .json({ placeorder, message: "Order placed successfully" });
 
       await Cart.findOneAndDelete({ userid: req.body.user_id });
-
     } else if (paymentType === "Online Payment") {
-
       var options = {
         amount: total * 100,
         currency: "INR",
@@ -311,7 +338,6 @@ const placeOrder = async (req, res) => {
         if (err) {
           console.error(err); // Handle any errors that occurred during the API call
         } else {
-          
           res.status(400).json({ order });
         }
       });
@@ -326,7 +352,6 @@ const placeOrder = async (req, res) => {
 
 // ========= Function to Checkout product Stock Check =========
 const checkProductQuantities = async (userId) => {
-
   const cart = await Cart.findOne({ user: userId }).populate(
     "products.productId"
   );
@@ -344,11 +369,9 @@ const checkProductQuantities = async (userId) => {
 
 
 
-
 // =========== payment varification =============
 const verifyPayment = async (req, res) => {
   try {
-    
     const cartData = await Cart.findOne({ user: req.session.user_id });
     const products = cartData.products;
     const details = req.body;
@@ -372,7 +395,12 @@ const verifyPayment = async (req, res) => {
       }
       await Order.findByIdAndUpdate(
         { _id: details.order.receipt },
-        { $set: { 'products.$[].paymentStatus': 'Success' ,"products.$[].OrderStatus": "Placed"}}
+        {
+          $set: {
+            "products.$[].paymentStatus": "Success",
+            "products.$[].OrderStatus": "Placed",
+          },
+        }
       );
 
       await Order.findByIdAndUpdate(
@@ -485,12 +513,13 @@ const loadAdminOrder = async (req, res) => {
               userId: order.userId,
               shippingAddress: order.shippingAddress,
               orderDate: order.orderDate,
-              totalAmount: productInfo.quantity * product.price,
+              totalAmount: productInfo.quantity * productInfo.price,
               OrderStatus: productInfo.OrderStatus,
               StatusLevel: productInfo.StatusLevel,
               paymentStatus: productInfo.paymentStatus,
               paymentMethod: order.paymentMethod,
               quantity: productInfo.quantity,
+             
             },
           });
         }
@@ -536,6 +565,7 @@ const orderMangeLoad = async (req, res) => {
         paymentMethod: order.paymentMethod,
         paymentStatus: productInfo.paymentStatus,
         quantity: productInfo.quantity,
+        price:productInfo.price
       },
     };
 
@@ -545,11 +575,9 @@ const orderMangeLoad = async (req, res) => {
   }
 };
 
-
-
 // ========= user cancel order ==========
 // const cancelOrder = async (req, res) => {
-  
+
 //   try {
 //     const  oderId = req.body.orderId;
 //     const  productId = req.body.productId;
@@ -570,7 +598,6 @@ const orderMangeLoad = async (req, res) => {
 
 //     const totalAmount = productInfo.quantity* productDetails.price
 
-    
 //     productInfo.OrderStatus = "Cancelled";
 //     productInfo.updatedAt = Date.now();
 //     order.totalAmount -=  totalAmount
@@ -633,8 +660,8 @@ const cancelOrder = async (req, res) => {
       (product) => product.productId.toString() === productId
     );
 
-    const productDetails = await Product.findById(productInfo.productId);
-    let totalAmount = productInfo.quantity * productDetails.price;
+    // const productDetails = await Product.findById(productInfo.productId);
+    let totalAmount = productInfo.quantity * productInfo.price;
 
     let couponRefundAmount = 0;
     let cartTotal = order.totalAmount;
@@ -643,15 +670,28 @@ const cancelOrder = async (req, res) => {
       const couponData = await Coupon.findOne({ code: order.coupon.code });
       let totalWithoutCoupon = order.coupon.discountTotal + cartTotal;
 
-      if (couponData && Math.abs(totalWithoutCoupon - totalAmount) < couponData.minimumSpend) {
-        totalWithoutCoupon = await order.products.reduce(async (totalPromise, product) => {
-          const total = await totalPromise;
-          if (product.productId._id.toString() !== productId && product.OrderStatus !== 'Cancelled') {
-            const productDetailsWithoutCancelled = await Product.findById(product.productId);
-            return total + productDetailsWithoutCancelled.price * product.quantity;
-          }
-          return total;
-        }, Promise.resolve(0));
+      if (
+        couponData &&
+        Math.abs(totalWithoutCoupon - totalAmount) < couponData.minimumSpend
+      ) {
+        totalWithoutCoupon = await order.products.reduce(
+          async (totalPromise, product) => {
+            const total = await totalPromise;
+            if (
+              product.productId._id.toString() !== productId &&
+              product.OrderStatus !== "Cancelled"
+            ) {
+              const productDetailsWithoutCancelled = await Product.findById(
+                product.productId
+              );
+              return (
+                total + productDetailsWithoutCancelled.price * product.quantity
+              );
+            }
+            return total;
+          },
+          Promise.resolve(0)
+        );
 
         totalAmount = cartTotal - totalWithoutCoupon;
       } else {
@@ -659,28 +699,32 @@ const cancelOrder = async (req, res) => {
         couponRefundAmount = (couponRefundPercentage / 100) * totalAmount;
         totalAmount -= couponRefundAmount;
         console.log("s2", totalAmount);
-        
       }
     }
 
     productInfo.OrderStatus = "Cancelled";
     productInfo.updatedAt = Date.now();
     // order.totalAmount -= totalAmount;
-    
+
     // Update product and order information
     await Promise.all([
       order.save(),
-      Product.findByIdAndUpdate({ _id: productId }, { $inc: { quantity: productInfo.quantity } }),
+      Product.findByIdAndUpdate(
+        { _id: productId },
+        { $inc: { quantity: productInfo.quantity } }
+      ),
     ]);
 
     // ========== adding money to wallet =========
-    if (productInfo.paymentStatus === 'Success') {
+    if (productInfo.paymentStatus === "Success") {
       const walletHistory = {
         transactionDate: new Date(),
-        transactionDetails: 'Refund',
-        transactionType: 'Credit',
+        transactionDetails: "Refund",
+        transactionType: "Credit",
         transactionAmount: totalAmount,
-        currentBalance: !isNaN(userId.wallet) ? userId.wallet + totalAmount : totalAmount,
+        currentBalance: !isNaN(userId.wallet)
+          ? userId.wallet + totalAmount
+          : totalAmount,
       };
 
       await User.findByIdAndUpdate(
@@ -690,7 +734,7 @@ const cancelOrder = async (req, res) => {
           $push: { walletHistory },
         }
       );
-      
+
       productInfo.paymentStatus = "Refund";
       await order.save();
     }
@@ -701,7 +745,6 @@ const cancelOrder = async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 };
-
 
 
 
@@ -733,17 +776,14 @@ const changeOrderStatus = async (req, res) => {
     productInfo.StatusLevel = statusLevel;
     productInfo.updatedAt = Date.now();
 
-    if(status==="Delivered")
-    productInfo. paymentStatus ="Success";
+    if (status === "Delivered") productInfo.paymentStatus = "Success";
 
     const result = await order.save();
 
-    if(status==="Delivered"){
-
+    if (status === "Delivered") {
       let analaticResult = await CreateOrderAnalatic();
       // console.log('RETURN RESULT',analaticResult);
     }
-
 
     res.redirect(
       `/admin/order/orderManagment?orderId=${orderId}&productId=${productId}`
@@ -754,44 +794,53 @@ const changeOrderStatus = async (req, res) => {
 };
 
 
-             
+
+
 // ======== order analatical creation =========
 const CreateOrderAnalatic = async () => {
- 
   try {
-
     const orderDataData = await Order.aggregate([
       {
-        $match: { "products.OrderStatus": "Delivered" }
+        $match: { "products.OrderStatus": "Delivered" },
       },
       {
-        $unwind: "$products"
+        $unwind: "$products",
       },
       {
-        $match: { "products.OrderStatus": "Delivered" }
+        $match: { "products.OrderStatus": "Delivered" },
       },
       {
         $lookup: {
-          from: 'products',
-          localField: 'products.productId',
-          foreignField: '_id',
-          as: 'populatedProduct'
-        }
+          from: "products",
+          localField: "products.productId",
+          foreignField: "_id",
+          as: "populatedProduct",
+        },
       },
       {
-        $unwind: '$populatedProduct'
+        $unwind: "$populatedProduct",
       },
       {
         $group: {
-          _id: '$populatedProduct._id',
-          productName: { $first: '$populatedProduct.productName' },
-          totalSalesAmount: { $sum: { $multiply: [{$toDouble: '$populatedProduct.price'}, '$products.quantity'] } }
-        }
-      }
+          _id: "$populatedProduct._id",
+          productName: { $first: "$populatedProduct.productName" },
+          totalSalesAmount: {
+            $sum: {
+              $multiply: [
+                { $toDouble: "$populatedProduct.price" },
+                "$products.quantity",
+              ],
+            },
+          },
+        },
+      },
     ]);
 
     // Calculate total sales amount from the aggregated data
-    const totalSalesAmount = orderDataData.reduce((total, result) => total + result.totalSalesAmount, 0);
+    const totalSalesAmount = orderDataData.reduce(
+      (total, result) => total + result.totalSalesAmount,
+      0
+    );
 
     // Calculate total orders from the aggregated data
     const totalOrders = orderDataData.length;
@@ -810,7 +859,7 @@ const CreateOrderAnalatic = async () => {
     }
 
     let result = await orderAnalytics.save();
-    
+
     return result;
   } catch (error) {
     console.log(error.message);
@@ -819,17 +868,15 @@ const CreateOrderAnalatic = async () => {
 
 
 
+
 // ========= admin cancel order ==========
 const adminCancelOrder = async (req, res) => {
-  
   try {
     const { orderId, productId } = req.body;
 
-    const order = await Order.findById(orderId).populate(
-      "userId"
-    );
+    const order = await Order.findById(orderId).populate("userId");
 
-    const userId =order.userId._id
+    const userId = order.userId._id;
 
     console.log(userId);
 
@@ -841,9 +888,9 @@ const adminCancelOrder = async (req, res) => {
       (product) => product.productId.toString() === productId
     );
 
-    const productDetails = await Product.findById(productInfo.productId);
+    // const productDetails = await Product.findById(productInfo.productId);
 
-    const totalAmount = productInfo.quantity* productDetails.price
+    const totalAmount = productInfo.quantity * productInfo.price;
 
     if (productInfo) {
       productInfo.OrderStatus = "Cancelled";
@@ -860,32 +907,31 @@ const adminCancelOrder = async (req, res) => {
       );
 
       // ========== adding money to wallet =========
-      if(productInfo.paymentStatus==='Success'){
-        
+      if (productInfo.paymentStatus === "Success") {
         const walletHistory = {
           transactionDate: new Date(),
-          transactionDetails: 'Refund',
-          transactionType: 'Credit',
+          transactionDetails: "Refund",
+          transactionType: "Credit",
           transactionAmount: totalAmount,
-           currentBalance: !isNaN(userId.wallet) ? userId.wallet + amount : totalAmount
-         }
-          await User.findByIdAndUpdate(
-              {_id: userId },
-              {
-                  $inc:{
-                      wallet: totalAmount
-                  },
-                  $push:{
-                      walletHistory
-                  }
-              }
-          );
-  
+          currentBalance: !isNaN(userId.wallet)
+            ? userId.wallet + amount
+            : totalAmount,
+        };
+        await User.findByIdAndUpdate(
+          { _id: userId },
+          {
+            $inc: {
+              wallet: totalAmount,
+            },
+            $push: {
+              walletHistory,
+            },
+          }
+        );
       }
 
-      if(productInfo.paymentStatus==='Success'){
-        
-        productInfo.paymentStatus= "Refund";
+      if (productInfo.paymentStatus === "Success") {
+        productInfo.paymentStatus = "Refund";
         const result = await order.save();
       }
 
