@@ -27,10 +27,10 @@ const insertBanner =async (req,res)=>{
             description: description,
             image:image,
             status: true
-          });
+          });           
       
           let result = await banner.save();
-          res.render('addBanner')
+          res.redirect('/admin/banner')
        
     } catch (error) {
         console.log(error);

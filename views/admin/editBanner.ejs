@@ -24,7 +24,7 @@
                 <h5 class="card-title">Image Cropping</h5>
                 <main class="page">
                   <div class="box">
-                    <input type="file" name="image" id="file-input"> 
+                    <input type="file" name="image" id="file-input" required> 
                   </div>
                   <div class="box-2 col-md-6">
                     <div class="result"></div>
@@ -45,11 +45,11 @@
                     <div class="card-body">
                       <div class="form-group">
                         <label for="exampleInputName1">Banner Title</label>
-                        <input type="text" class="form-control" id="exampleInputName1" value="<%= banner.title %>"  name="title">
+                        <input type="text" class="form-control" id="exampleInputName1" value="<%= banner.title %>"  name="title" required>
                       </div>
                       <div class="form-group">
                         <label for="exampleTextarea1">Description</label>
-                        <textarea class="form-control" id="exampleTextarea1"  name="description" rows="4"><%= banner.description %></textarea>
+                        <textarea class="form-control" id="exampleTextarea1"  name="description" rows="4" required><%= banner.description %></textarea>
                       </div>
                       <div class="text-center">
                         <button type="submit" class="btn btn-success text-primary mr-2">Submit</button>

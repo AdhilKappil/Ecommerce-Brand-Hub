@@ -8,6 +8,7 @@ const otpGenerator = require("otp-generator")
 const Product = require('../models/product');
 const Category = require('../models/category');
 const Address = require('../models/userAddress');
+const Banner=require('../models/banner');
 const shortid = require('shortid');
 const { ObjectId}=require('mongodb')
 
@@ -47,9 +48,10 @@ const loadHome = async(req,res)=>{
 
     try {       
         const categoryDetails = await Category.find({});
+        const banner = await Banner.find({});
         const products = await Product.find({status:true})
         res.render('home',{user:req.session.user_id,catData:categoryDetails,
-            product:products}); 
+            product:products,banner}); 
 
     } catch (error) {
         console.log(error.message); 
@@ -440,42 +442,152 @@ const loadChangePassword = async(req,res)=>{
 
 
   // =========load product page ==========
-const  loadProducts = async(req,res)=>{
+// const  loadProducts = async(req,res)=>{
 
-    try{
+//     try{
+//         const perPage = 4; // Number of products per page
+//         let page = parseInt(req.query.page) || 1; // Get the page from the request query and parse it as an integer
+//         const categoryDetails = await Category.find({});
+//         const totalProducts = await Product.countDocuments({status:true});
+//         const totalPages = Math.ceil(totalProducts / perPage);
+
+//         if (page < 1) {
+//             page = 1;
+//           } else if (page > totalPages) {
+//             page = totalPages;
+//           }
+
+//     const products = await Product.find({status:true}).populate("offer").populate("category")
+//       .find({})
+//       .skip((page - 1) * perPage)
+//       .limit(perPage);
+
+        
+        
+    
+//         res.render('product',{
+//             catData:categoryDetails,
+//             product:products,
+//             currentPage: page,
+//             pages: totalPages,
+//             user:req.session.user_id
+
+//         })
+    
+//       }catch(error){
+//         console.log(error);
+//       }
+// }
+
+const loadProducts = async (req, res) => {
+    try {
         const perPage = 4; // Number of products per page
-        let page = parseInt(req.query.page) || 1; // Get the page from the request query and parse it as an integer
+        let page = parseInt(req.query.page) || 1;
         const categoryDetails = await Category.find({});
-        const totalProducts = await Product.countDocuments({status:true});
+        const totalProducts = await Product.countDocuments({ status: true });
         const totalPages = Math.ceil(totalProducts / perPage);
+        const brands = await Product.aggregate([{ $group: { _id: "$brand" } }]);
 
-        if (page < 1) {
+        let search = '';
+
+        if (req.query.search) {
+            search = req.query.search;
+        }
+
+
+        async function getCategoryIds(search) {
+            const categories = await Category.find({ name: { $regex: '.*' + search + '.*', $options: 'i' } });
+            return categories.map(category => category._id);
+        }
+
+        let minPrice = 1;
+        let maxPrice = 20000;
+
+        if (req.query.minPrice) {
+            minPrice = req.query.minPrice;
+        }
+        if (req.query.maxPrice) {
+            maxPrice = req.query.maxPrice;
+        }
+
+        const query = {
+            status: true,
+            $or: [
+                { name: { $regex: '.*' + search + '.*', $options: 'i' } },
+                { brand: { $regex: '.*' + search + '.*', $options: 'i' } },
+                { productName: { $regex: '.*' + search + '.*', $options: 'i' } },
+            ],
+            price: { $gte: minPrice, $lte: maxPrice }
+        };
+
+        if (page < 1) { 
             page = 1;
-          } else if (page > totalPages) {
+        } else if (page > totalPages) {
             page = totalPages;
+        }
+
+        if(req.query.category){
+            query.category = req.query.category
+          }
+        
+          if(req.query.brand){
+            query.brand = req.query.brand
           }
 
-    const products = await Product.find({status:true}).populate("offer").populate("category")
-      .find({})
-      .skip((page - 1) * perPage)
-      .limit(perPage);
+        let products = await Product.find(query)
+            .populate("offer")
+            .populate("category")
+            .skip((page - 1) * perPage)
+            .limit(perPage);
 
-        
-        
+            let sortValue = -1;
+            if (req.query.sortValue) {
+                if (req.query.sortValue === '2') {
+                    sortValue = 1;
+                } else if (req.query.sortValue === '1') {
+                    sortValue = -1;
+                } else {
+                    sortValue = -1;
+                }
+            }
     
-        res.render('product',{
-            catData:categoryDetails,
-            product:products,
+            if (req.query.sortValue && req.query.sortValue != 3) {
+                products = await Product.find(query)
+                    .populate('category')
+                    .populate('offer')
+                    .sort({ price: sortValue })
+                    .limit(perPage)
+                    .skip((page - 1) * perPage);
+            } else {
+                products = await Product.find(query)
+                    .populate('category')
+                    .populate('offer')
+                    .sort({ createdAt: sortValue })
+                    .limit(perPage)
+                    .skip((page - 1) * perPage);
+            }
+
+
+
+        res.render('product', {
+            catData: categoryDetails,
+            product: products,
             currentPage: page,
             pages: totalPages,
-            user:req.session.user_id
-
-        })
-    
-      }catch(error){
+            user: req.session.user_id,
+            brand: req.query.brand,
+            sortValue: req.query.sortValue, // Corrected variable name
+            minPrice: req.query.minPrice,
+            maxPrice: req.query.maxPrice,
+            search: req.query.search,
+            category: req.query.category,
+            brands
+        });
+        
+    } catch (error) {
         console.log(error);
-      }
-}
+    }
+};
 
 
 
@@ -511,48 +623,48 @@ const userLogout = async(req,res)=>{
 
 
 // ========== serch product =========== 
-const searchProducts = async (req, res) => {
-    try {
-      const keyword = req.query.keyword; // Get the search keyword from the query string
-      const page = req.query.page || 1; // Get the current page from query parameters
-      const pageSize = 4; // Set your desired page size
+// const searchProducts = async (req, res) => {
+//     try {
+//       const keyword = req.query.keyword; // Get the search keyword from the query string
+//       const page = req.query.page || 1; // Get the current page from query parameters
+//       const pageSize = 4; // Set your desired page size
   
-      // Perform a case-insensitive search on product names and descriptions
-      const products = await Product.find({
-        $or: [
-          { productName: { $regex: keyword, $options: 'i' } },
-          { brand: { $regex: keyword, $options: 'i' } },
-        ],
-      })
-        .skip((page - 1) * pageSize)
-        .limit(pageSize)
-        .populate('category'); // Populate the category field
+//       // Perform a case-insensitive search on product names and descriptions
+//       const products = await Product.find({
+//         $or: [
+//           { productName: { $regex: keyword, $options: 'i' } },
+//           { brand: { $regex: keyword, $options: 'i' } },
+//         ],
+//       })
+//         .skip((page - 1) * pageSize)
+//         .limit(pageSize)
+//         .populate('category'); // Populate the category field
   
-      const totalProducts = await Product.countDocuments({
-        $or: [
-          { productName: { $regex: keyword, $options: 'i' } },
-          { brand: { $regex: keyword, $options: 'i' } },
-        ],
-      });
-      const totalPages = Math.ceil(totalProducts / pageSize);
+//       const totalProducts = await Product.countDocuments({
+//         $or: [
+//           { productName: { $regex: keyword, $options: 'i' } },
+//           { brand: { $regex: keyword, $options: 'i' } },
+//         ],
+//       });
+//       const totalPages = Math.ceil(totalProducts / pageSize);
   
-      // Fetch categories for the sidebar
-      const categories = await Category.find();
+//       // Fetch categories for the sidebar
+//       const categories = await Category.find();
   
-      res.render('product', {
-    product: products,
-    catData: categories,
-    currentPage: page,
-    totalPages: totalPages,
-    pages: Array.from({ length: totalPages }, (_, i) => i + 1),
-    user:req.session.user_id
-});
+//       res.render('product', {
+//     product: products,
+//     catData: categories,
+//     currentPage: page,
+//     totalPages: totalPages,
+//     pages: Array.from({ length: totalPages }, (_, i) => i + 1),
+//     user:req.session.user_id
+// });
 
-    } catch (error) {
-      console.error(error);
-      res.status(500).render('500-error');
-    }
-};
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).render('500-error');
+//     }
+// };
 
 
 
@@ -605,7 +717,6 @@ module.exports = {
     loadProducts,
     loadProductDetails,
     userLogout,
-    searchProducts,
     load500
     
 };

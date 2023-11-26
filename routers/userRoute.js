@@ -60,7 +60,6 @@ user_route.post('/changePassword', userController.updatePassword);
 // =============== product routes ==============
 user_route.get('/products', userController.loadProducts);
 user_route.get('/productDetails', userController.loadProductDetails);
-user_route.get('/searchProduct', userController.searchProducts);
 
 
 // ============= cart routes =================

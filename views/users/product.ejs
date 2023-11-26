@@ -38,210 +38,161 @@
 
                     <!-- Search product -->
                     <div class="dis-none panel-search w-full p-t-10 p-b-15">
-                        <div class="bor8 dis-flex p-l-15">
-                            <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
-                                <i class="zmdi zmdi-search"></i>
-                            </button>
-
-                            <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product"
-                                placeholder="Search">
-                        </div>
+                        <form class="d-flex" role="search">
+                            <input class="form-control me-2 w-100 " type="search" placeholder="Search" name="search" aria-label="Search">
+                          </form>
                     </div>
 
-                    <!-- Filter -->
+                   
+
+                    <!-- Filter --> 
                     <div class="dis-none panel-filter w-full p-t-10">
                         <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
                             <div class="filter-col1 p-r-15 p-b-27">
                                 <div class="mtext-102 cl2 p-b-15">
-                                    Sort By
+                                    Categories
                                 </div>
-
+                    
                                 <ul>
+                                    <%catData.forEach((cat)=>{%>
+                    
                                     <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            Default
+                                        <% if(category==cat._id) { %>
+                                        <a href="?category=<%=cat._id%>&sortValue=<%=sortValue%>&brand=<%=brand%>&minPrice=<%=minPrice%>&maxPrice=<%=maxPrice%>&search=<%=search%>"
+                                            style="color:#f44072;">
+                                            <%=cat.name %>
                                         </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            Popularity
+                                        <% } else { %>
+                                        <a href="?category=<%=cat._id%>&sortValue=<%=sortValue%>&brand=<%=brand%>&minPrice=<%=minPrice%>&maxPrice=<%=maxPrice%>&search=<%=search%>"
+                                            style="color: #636363;">
+                                            <%=cat.name %>
                                         </a>
+                                        <% } %>
                                     </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            Average rating
-                                        </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-                                            Newness
-                                        </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            Price: Low to High
-                                        </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            Price: High to Low
-                                        </a>
-                                    </li>
+                                    <% })%>
                                 </ul>
                             </div>
-
+                    
+                            <div class="filter-col1 p-r-15 p-b-27">
+                                <div class="mtext-102 cl2 p-b-15">
+                                    Brands
+                                </div>
+                            
+                                <ul>
+                                    <% brands.forEach((brand) => { %>
+                                        <li class="p-b-6">
+                                            <% if(brand == brand._id) { %>
+                                                <a href="?brand=<%= brand._id %>&sortValue=<%= sortValue %>&category=<%= category %>&minPrice=<%= minPrice %>&maxPrice=<%= maxPrice %>&search=<%= search %>" style="color: #f44072;">
+                                                    <%= brand._id %>
+                                                </a>
+                                            <% } else { %>
+                                                <a href="?brand=<%= brand._id %>&sortValue=<%= sortValue %>&category=<%= category %>&minPrice=<%= minPrice %>&maxPrice=<%= maxPrice %>&search=<%= search %>" style="color: #636363;">
+                                                    <%= brand._id %>
+                                                </a>
+                                            <% } %>
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                            </div>
+                    
                             <div class="filter-col2 p-r-15 p-b-27">
                                 <div class="mtext-102 cl2 p-b-15">
                                     Price
                                 </div>
-
+                    
                                 <ul>
+                    
                                     <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-                                            All
-                                        </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            $0.00 - $50.00
-                                        </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            $50.00 - $100.00
-                                        </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            $100.00 - $150.00
-                                        </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            $150.00 - $200.00
-                                        </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            $200.00+
-                                        </a>
+                                        <% if(maxPrice==499){ %>
+                                        <p><a href="?minPrice=0&maxPrice=499&sortValue=<%=sortValue%>&category=<%=category%>&brand=<%=brand%>&search=<%=search%>"
+                                                style="color:#f44072;">₹0 - ₹499</a></p>
+                                        <% }else{ %>
+                                        <p><a href="?minPrice=0&maxPrice=499&sortValue=<%=sortValue%>&category=<%=category%>&brand=<%=brand%>&search=<%=search%>"
+                                                style="color: #636363;">₹0 - ₹499</a></p>
+                                        <% } %>
+                                        <% if(maxPrice==999){ %>
+                                        <p><a href="?minPrice=500&maxPrice=999&sortValue=<%=sortValue%>&category=<%=category%>&brand=<%=brand%>&search=<%=search%>"
+                                                style="color:#f44072;">₹500 - ₹999</a>
+                                        </p>
+                                        <% }else{ %>
+                                        <p><a href="?minPrice=500&maxPrice=999&sortValue=<%=sortValue%>&category=<%=category%>&brand=<%=brand%>&search=<%=search%>"
+                                                style="color: #636363;">₹500 - ₹999</a>
+                                        </p>
+                                        <% } %>
+                                        <% if(maxPrice==1999){ %>
+                                        <p><a href="?minPrice=1000&maxPrice=1999&sortValue=<%=sortValue%>&category=<%=category%>&brand=<%=brand%>&search=<%=search%>"
+                                                style="color:#f44072;">₹1000 - ₹1999</a></p>
+                                        <% }else{ %>
+                                        <p><a href="?minPrice=1000&maxPrice=1999&sortValue=<%=sortValue%>&category=<%=category%>&brand=<%=brand%>&search=<%=search%>"
+                                                style="color: #636363;">₹1000 - ₹1999</a></p>
+                                        <% } %>
+                                        <% if(maxPrice==4999){ %>
+                                        <p><a href="?minPrice=2000&maxPrice=4999&sortValue=<%=sortValue%>&category=<%=category%>&brand=<%=brand%>&search=<%=search%>"
+                                                style="color:#f44072;">₹2000 - ₹4999</a></p>
+                                        <% }else{ %>
+                                        <p><a href="?minPrice=2000&maxPrice=4999&sortValue=<%=sortValue%>&category=<%=category%>&brand=<%=brand%>&search=<%=search%>"
+                                                style="color: #636363;">₹2000 - ₹4999</a></p>
+                                        <% } %>
+                                        <% if(minPrice==5000){ %>
+                                        <p><a href="?minPrice=5000&sortValue=<%=sortValue%>&category=<%=category%>&brand=<%=brand%>&search=<%=search%>"
+                                                style="color:#f44072;">₹5000+</a>
+                                        </p>
+                                        <% }else{ %>
+                                        <p><a href="?minPrice=5000&sortValue=<%=sortValue%>&category=<%=category%>&brand=<%=brand%>&search=<%=search%>"
+                                                style="color: #636363;">₹5000+</a>
+                                        </p>
+                                        <% } %>
                                     </li>
                                 </ul>
                             </div>
-
-                            <div class="filter-col3 p-r-15 p-b-27">
-                                <div class="mtext-102 cl2 p-b-15">
-                                    Color
-                                </div>
-
-                                <ul>
-                                    <li class="p-b-6">
-                                        <span class="fs-15 lh-12 m-r-6" style="color: #222;">
-                                            <i class="zmdi zmdi-circle"></i>
-                                        </span>
-
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            Black
-                                        </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <span class="fs-15 lh-12 m-r-6" style="color: #4272d7;">
-                                            <i class="zmdi zmdi-circle"></i>
-                                        </span>
-
-                                        <a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-                                            Blue
-                                        </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <span class="fs-15 lh-12 m-r-6" style="color: #b3b3b3;">
-                                            <i class="zmdi zmdi-circle"></i>
-                                        </span>
-
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            Grey
-                                        </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <span class="fs-15 lh-12 m-r-6" style="color: #00ad5f;">
-                                            <i class="zmdi zmdi-circle"></i>
-                                        </span>
-
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            Green
-                                        </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <span class="fs-15 lh-12 m-r-6" style="color: #fa4251;">
-                                            <i class="zmdi zmdi-circle"></i>
-                                        </span>
-
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            Red
-                                        </a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <span class="fs-15 lh-12 m-r-6" style="color: #aaa;">
-                                            <i class="zmdi zmdi-circle-o"></i>
-                                        </span>
-
-                                        <a href="#" class="filter-link stext-106 trans-04">
-                                            White
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-
+                    
                             <div class="filter-col4 p-b-27">
                                 <div class="mtext-102 cl2 p-b-15">
-                                    Tags
+                                    Sort:
                                 </div>
-
-                                <div class="flex-w p-t-4 m-r--5">
-                                    <a href="#"
-                                        class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                        Fashion
+                    
+                                <div class="flex-w p-t-4 ">
+                                    <% if(sortValue&&sortValue==3) {%>
+                                    <a href="?sortValue=3&category=<%=category%>&brand=<%=brand%>&minPrice=<%=minPrice%>&maxPrice=<%=maxPrice%>&search=<%=search%>" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
+                                        style="color:#f44072;">
+                                        Latest
                                     </a>
-
-                                    <a href="#"
-                                        class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                        Lifestyle
+                                    <%}else{%>
+                                        <a href="?sortValue=3&category=<%=category%>&brand=<%=brand%>&minPrice=<%=minPrice%>&maxPrice=<%=maxPrice%>&search=<%=search%>" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
+                                            style="color: #636363;">
+                                            Latest
+                                        </a>
+                    
+                                    <%}%>
+                                    <% if(sortValue&&sortValue==2) {%>
+                                    <a href="?sortValue=2&category=<%=category%>&brand=<%=brand%>&minPrice=<%=minPrice%>&maxPrice=<%=maxPrice%>&search=<%=search%>" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
+                                        Price Low to High
                                     </a>
-
-                                    <a href="#"
-                                        class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                        Denim
+                                    <%}else{%>
+                                        <a href="?sortValue=2&category=<%=category%>&brand=<%=brand%>&minPrice=<%=minPrice%>&maxPrice=<%=maxPrice%>&search=<%=search%>" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
+                                            style="color: #636363;">
+                                            Price Low to High
+                                        </a>
+                    
+                                   <% }%>
+                                   <% if(sortValue&&sortValue==1) {%>
+                                    <a href="?sortValue=1&category=<%=category%>&brand=<%=brand%>&minPrice=<%=minPrice%>&maxPrice=<%=maxPrice%>&search=<%=search%>" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
+                                        Price High to Low
                                     </a>
-
-                                    <a href="#"
-                                        class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                        Streetstyle
+                                <%}else{%>
+                                    <a href="?sortValue=1&category=<%=category%>&brand=<%=brand%>&minPrice=<%=minPrice%>&maxPrice=<%=maxPrice%>&search=<%=search%>" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
+                                        style="color: #636363;">
+                                        Price High to Low
                                     </a>
-
-                                    <a href="#"
-                                        class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                        Crafts
-                                    </a>
+                               <% }%>
+                    
+                                    
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    
+                            </div>
 
                 <div class="row isotope-grid">
                     <% product.forEach((product)=>{ %>
@@ -286,7 +237,7 @@
                                             </div>
                                             <% } else { %>
                                                 <span class="stext-105 cl3">
-                                                    $<%= product.price %>
+                                                    ₹ <%= product.price %>
                                                 </span>
                                                 <% } %>
                                     </div>
@@ -337,7 +288,7 @@
 
             </div>
         </div>
-
+<!-- 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const searchInput = document.querySelector('input[name="search-product"]');
@@ -358,7 +309,7 @@
                     }
                 }
             });
-        </script>
+        </script> -->
 
         
 <script>
