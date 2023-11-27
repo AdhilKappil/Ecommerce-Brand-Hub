@@ -10,6 +10,10 @@
           <h2 class="card-title">PRODUCTS</h2>
             <form class="forms-sample" action="" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <div class="row">
+              <%  if(typeof message !== 'undefined'){
+                %>  <h5 id="invalid-msg" class=" text-danger text-center"><%- message %></h5> <%
+             } 
+            %>
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="exampleInputName1">Product Name</label>
@@ -94,6 +98,7 @@
     </div>
   </div>
 </div>
+
 
 <script>
   // =========== image deleting ==============
@@ -200,5 +205,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 </script>
+
 
 <%- include('../admin/layouts/footer.ejs') %>

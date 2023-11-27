@@ -60,6 +60,7 @@ const salesReportPageLoad = async (req, res) => {
 
 // ========== creating sales report ==========
 const createSalesReport = async (startDate, endDate) => {
+ 
     try {
       const orders = await OrderDB.find({
         orderDate: {
@@ -74,6 +75,7 @@ const createSalesReport = async (startDate, endDate) => {
   
       const transformedTotalStockSold = {};
       const transformedProductProfits = {};
+
   
       const getProductDetails = async (productId) => {
         return await ProductDB.findById(productId);
@@ -191,6 +193,7 @@ const createSalesReport = async (startDate, endDate) => {
 
 // ========== all orders =========
   const getorders = async (startDate, endDate) => {
+  
     try {
       // const orders = await OrderDB.find();
 
@@ -234,8 +237,9 @@ const createSalesReport = async (startDate, endDate) => {
           }
         }
       }
-  
+      
      return productWiseOrdersArray;
+
 
     } catch (error) {
       console.log(error.message);

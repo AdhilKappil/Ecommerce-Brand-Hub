@@ -1,493 +1,543 @@
-
 <%-include('../admin/layouts/header.ejs') %>
-<%-include('../admin/layouts/sideBar.ejs') %>
-<%-include('../admin/layouts/navBar.ejs') %>
+    <%-include('../admin/layouts/sideBar.ejs') %>
+        <%-include('../admin/layouts/navBar.ejs') %>
 
-<div class="main-panel">
-    <div class="content-wrapper">
+            <div class="main-panel">
+                <div class="content-wrapper">
 
-        <div class="row"></div>
-        <div class="row">
-
-        </div>
-        <h2 class="text-center text-light">Sales Analysis Report</h2>
-
-        <div class="row mt-4">
-            <div class="col-lg-6 grid-margin stretch-card">
-                <div class="card">
-
-                    <div class="card-body">
-                        <h4 class="card-title">Sales Portfolio</h4>
-                        <canvas id="areaChart" style="height: 250px;"></canvas>
-                        <div class="col-10 mt-3">
-                            <button onclick="SalesPortfolio('week')" class="btn btn-sm btn-outline-info">Weekly</button>
-                            <button onclick="SalesPortfolio('month')" class="btn btn-sm btn-outline-info">Monthly</button>
-                            <button onclick="SalesPortfolio('year')" class="btn btn-sm btn-outline-info">Yearly</button>
-
-                        </div>
+                    <div class="row"></div>
+                    <div class="row">
 
                     </div>
-                </div>
-            </div>
-            <div class="col-lg-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Most sold products</h4>
-                        <canvas id="barChart" style="height:230px"></canvas>
-                        <div style="display: none;">
-                            <% if (Mproducts !== 0) { %>
-                                <% for (let i = 0; i < Mproducts.length; i++) { %>
-                                    <% const product = Mproducts[i].productData[0]; %>
-                                    <input id="product<%= i + 1 %>" value="<%= product ? product.productName : '' %>">
-                                    <input id="product<%= i + 1 %>2" value="<%= Mproducts[i].count %>">
-                                <% } %>
-                            <% } %>
-                        </div>
-                        
+                    <h2 class="text-center text-light">Sales Analysis Report</h2>
 
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div>
-            <!-- <p class="mx-auto">Filter Report :</p> -->
-            <div class="form-group row  col-12 w-100 d-flex justify-content-between">
-                <div class="col-3 ">
-                    
-                    <h3>Filter Report :</h3>
-                </div>
-                <div class=" col-3 d-flex flex-row ">
-                    <form class="d-flex flex-row" action="/admin/salesReport" method="get">
-                        <h2 class="mdi mdi-calendar-clock"></h2>
-                        <input type="text" autocomplete="off" id="start-date" class="form-control text-light m-1 " name="start" placeholder="From" required>
-                        <input type="text" autocomplete="off" id="end-date" class="form-control text-light m-1 " name="end" placeholder="To" required>
-                        <button type="submit" class="btn btn-inverse-primary m-2">Filter</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-6 grid-margin stretch-card">
+                            <div class="card">
 
-        <div class="row">
-            <div class="col-md-4 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Sold Stocks</h4>
-                        <% if (sales !== 0) { %>
-                            <% for (i = 0; i < sales.totalStockSold.length; i++) { %>
-                                <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
-                                    <div class="text-md-center text-xl-left">
-                                        <h6 class="mb-1"><%= sales.totalStockSold[i].name %> </h6>
+                                <div class="card-body">
+                                    <h4 class="card-title">Sales Portfolio</h4>
+                                    <canvas id="areaChart" style="height: 250px;"></canvas>
+                                    <div class="col-10 mt-3">
+                                        <button onclick="SalesPortfolio('week')"
+                                            class="btn btn-sm btn-outline-info">Weekly</button>
+                                        <button onclick="SalesPortfolio('month')"
+                                            class="btn btn-sm btn-outline-info">Monthly</button>
+                                        <button onclick="SalesPortfolio('year')"
+                                            class="btn btn-sm btn-outline-info">Yearly</button>
+
                                     </div>
-                                    <div class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
-                                        <h6 class="font-weight-bold mb-0"> <%= sales.totalStockSold[i].quantity %> Stock</h6>
-                                    </div>
-                                </div>
-                            <% } %>
-                        <% } else { %>
-                            <h6 class="text-center text-light mt-5">No Stock Sold</h6>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
 
-            <div class="col-md-8 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex flex-row justify-content-between">
-                            <h4 class="card-title mb-1">product wise profitability analysis</h4>
-                            <div class="dropdown mt-2 text-right">
-                                <button type="button" class="btn btn-inverse-info dropdown-toggle" id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="mdi mdi-download"></i>
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton9">
-                                    <h6 class="dropdown-header">Download Report</h6>
-                                    <!-- <a class="dropdown-item text-white" id="excelDownload">Excel file</a> -->
-                                    <a class="dropdown-item text-white" id="pdfDownload">PDF File</a>
                                 </div>
                             </div>
-                            
                         </div>
-                        <div class="row">
-                            <div class="table-responsive card">
-                                <% if (sales !== 0) { %>
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Product</th>
-                                                <th>Profit</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% for (i = 0; i < sales.productProfits.length; i++) { %>
-                                                <tr>
-                                                    <!-- list -->
-                                                    <td>
-                                                        <img style="width: 5rem; height: 5rem;" class="rounded product-img-preview" src="/static/adminAssets/images/products/<%= sales.productProfits[i].image[0] %>" alt="image" />
-                                                    </td>
-                                                    <td>
-                                                        <%= sales.productProfits[i].name %>
-                                                    </td>
-                                                    <td>
-                                                        <%= sales.productProfits[i].profit %>
-                                                    </td>
-                                                </tr>
+                        <div class="col-lg-6 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Most sold products</h4>
+                                    <canvas id="barChart" style="height:230px"></canvas>
+                                    <div style="display: none;">
+                                        <% if (Mproducts !==0) { %>
+                                            <% for (let i=0; i < Mproducts.length; i++) { %>
+                                                <% const product=Mproducts[i].productData[0]; %>
+                                                    <input id="product<%= i + 1 %>"
+                                                        value="<%= product ? product.productName : '' %>">
+                                                    <input id="product<%= i + 1 %>2" value="<%= Mproducts[i].count %>">
+                                                    <% } %>
+                                                        <% } %>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <!-- <p class="mx-auto">Filter Report :</p> -->
+                        <div class="form-group row  col-12 w-100 d-flex justify-content-between">
+                            <div class="col-3 ">
+
+                                <h3>Filter Report :</h3>
+                            </div>
+                            <div class=" col-3 d-flex flex-row ">
+                                <form class="d-flex flex-row" action="/admin/salesReport" method="get">
+                                    <h2 class="mdi mdi-calendar-clock"></h2>
+                                    <input type="text" autocomplete="off" id="start-date"
+                                        class="form-control text-light m-1 " name="start" placeholder="From" required>
+                                    <input type="text" autocomplete="off" id="end-date"
+                                        class="form-control text-light m-1 " name="end" placeholder="To" required>
+                                    <button type="submit" class="btn btn-inverse-primary m-2">Filter</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Sold Stocks</h4>
+                                    <% if (sales !==0) { %>
+                                        <% for (i=0; i < sales.totalStockSold.length; i++) { %>
+                                            <div
+                                                class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
+                                                <div class="text-md-center text-xl-left">
+                                                    <h6 class="mb-1">
+                                                        <%= sales.totalStockSold[i].name %>
+                                                    </h6>
+                                                </div>
+                                                <div
+                                                    class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
+                                                    <h6 class="font-weight-bold mb-0">
+                                                        <%= sales.totalStockSold[i].quantity %> Stock
+                                                    </h6>
+                                                </div>
+                                            </div>
                                             <% } %>
-                                        </tbody>
-                                    </table>
-                                <% } else { %>
-                                    <h6 class="text-center text-light mt-5">No Stock Profits</h6>
-                                <% } %>
+                                                <% } else { %>
+                                                    <h6 class="text-center text-light mt-5">No Stock Sold</h6>
+                                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex flex-row justify-content-between">
+                                        <h4 class="card-title mb-1">product wise profitability analysis</h4>
+                                        <div class="dropdown mt-2 text-right">
+                                            <button type="button" class="btn btn-inverse-info dropdown-toggle"
+                                                id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false">
+                                                <i class="mdi mdi-download"></i>
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton9">
+                                                <h6 class="dropdown-header">Download Report</h6>
+                                                <!-- <a class="dropdown-item text-white" id="excelDownload">Excel file</a> -->
+                                                <a class="dropdown-item text-white" id="pdfDownload">PDF File</a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="table-responsive card">
+                                            <% if (sales !==0) { %>
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>Product</th>
+                                                            <th>Profit</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <% for (i=0; i < sales.productProfits.length; i++) { %>
+                                                            <tr>
+                                                                <!-- list -->
+                                                                <td>
+                                                                    <img style="width: 5rem; height: 5rem;"
+                                                                        class="rounded product-img-preview"
+                                                                        src="/static/adminAssets/images/products/<%= sales.productProfits[i].image[0] %>"
+                                                                        alt="image" />
+                                                                </td>
+                                                                <td>
+                                                                    <%= sales.productProfits[i].name %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= sales.productProfits[i].profit %>
+                                                                </td>
+                                                            </tr>
+                                                            <% } %>
+                                                    </tbody>
+                                                </table>
+                                                <% } else { %>
+                                                    <h6 class="text-center text-light mt-5">No Stock Profits</h6>
+                                                    <% } %>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        
-        
 
-        <!-- // ======== all product sales Report ========= -->
-        <div class="row ">
-            
-            <div class="col-12 grid-margin">
-                <div class=" col-3 d-flex flex-row ">
-                    <form class="d-flex flex-row" action="/admin/salesReport" method="get">
-                        <h2 class="mdi mdi-calendar-clock"></h2>
-                        <input type="text" autocomplete="off" id="start-date" class="form-control text-light m-1 " name="start" placeholder="From" required>
-                        <input type="text" autocomplete="off" id="end-date" class="form-control text-light m-1 " name="end" placeholder="To" required>
-                        <button type="submit" class="btn btn-inverse-primary m-2">Filter</button>
-                    </form>
-                </div>
-                <div class="card">
-                    <div class="dropdown mt-2 text-right">
-                        <button type="button" class="btn btn-inverse-info dropdown-toggle" id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="mdi mdi-download"></i>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton9">
-                            <h6 class="dropdown-header">Download Report</h6>
-                            <a class="dropdown-item text-white" id="excelDownload">Excel file</a>
-                            <!-- <a class="dropdown-item text-white" id="pdfDownload">PDF File</a> -->
+
+
+                    <!-- // ======== all product sales Report ========= -->
+                    <div class="row ">
+
+                        <div class="col-12 grid-margin">
+                            <div class=" col-3 d-flex flex-row ">
+                                <form class="d-flex flex-row" action="/admin/salesReport" method="get">
+                                    <h2 class="mdi mdi-calendar-clock"></h2>
+                                    <input type="text" autocomplete="off" id="start-date"
+                                        class="form-control text-light m-1 " name="start" placeholder="From" required>
+                                    <input type="text" autocomplete="off" id="end-date"
+                                        class="form-control text-light m-1 " name="end" placeholder="To" required>
+                                    <button type="submit" class="btn btn-inverse-primary m-2">Filter</button>
+                                </form>
+                            </div>
+                            <div class="card">
+                                <div class="dropdown mt-2 text-right">
+                                    <button type="button" class="btn btn-inverse-info dropdown-toggle"
+                                        id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="mdi mdi-download"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton9">
+                                        <h6 class="dropdown-header">Download Report</h6>
+                                        <a class="dropdown-item text-white" id="excelDownload">Excel file</a>
+                                        <!-- <a class="dropdown-item text-white" id="pdfDownload">PDF File</a> -->
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div>
+                                        <ul class="navbar-nav w-100">
+                                            <li class="nav-item w-100">
+
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <h4 class="card-title">All Orders</h4>
+
+                                    <form action="" method="get" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
+                                        <input type="text" name="key" class="form-control mb-1 text-light"
+                                            placeholder="Search Users" id="searchInput">
+                                        <!-- <button type="submit" class="btn-inverse-info mb-1">search</button> -->
+                                    </form>
+
+                                    <div class="table-responsive">
+                                        <table class="table" id="user-table">
+                                            <thead>
+                                                <tr>
+
+                                                    <th> No </th>
+                                                    <th> Product </th>
+                                                    <th> Order Id </th>
+                                                    <th> User </th>
+                                                    <th> Order Date</th>
+                                                    <th> Quantity</th>
+                                                    <th> Price</th>
+                                                    <th> Pyament Status</th>
+                                                    <th> Order Status</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                <% let k=1 %>
+                                                    <%for(i=orders.length-1;i>=0;i--){%>
+                                                        <tr>
+                                                            <td>
+                                                                <%= k %>
+                                                            </td>
+                                                            <td>
+
+                                                                <span>
+                                                                    <%= orders[i].product.productName %>
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <%= orders[i].orderDetails.trackId %>
+                                                            </td>
+                                                            <td>
+                                                                <%= orders[i].user.email %>
+                                                            </td>
+                                                            <td>
+                                                                <span style="font-weight: 100;" class="pl-2 ">
+                                                                    <%= orders[i].orderDetails.orderDate.toLocaleDateString('en-US',
+                                                                        { year: 'numeric' , month: 'short' ,
+                                                                        day: '2-digit' }).replace(/\//g, '-' ) %>
+                                                                </span>
+
+                                                            </td>
+
+                                                            <td>
+                                                                <%= orders[i].orderDetails.quantity %>
+                                                            </td>
+                                                            <td>
+                                                                ₹<%= orders[i].orderDetails.totalAmount %>
+                                                            </td>
+
+                                                            <td>
+                                                                <%if( orders[i].orderDetails.paymentStatus=="Pending"
+                                                                    ){%>
+                                                                    <%}else
+                                                                        if(orders[i].orderDetails.paymentStatus=="Success"
+                                                                        ){%>
+                                                                        <%}else
+                                                                            if(orders[i].orderDetails.paymentStatus=="Failed"
+                                                                            ){%>
+                                                                            <%}%>
+                                                                                <%= orders[i].orderDetails.paymentStatus
+                                                                                    %>
+                                                            </td>
+
+                                                            <td>
+
+                                                                <%if( orders[i].orderDetails.paymentStatus=="Delivered"
+                                                                    ){%>
+                                                                    <%}else
+                                                                        if(orders[i].orderDetails.OrderStatus=="Pending"
+                                                                        ){%>
+                                                                        <%}else
+                                                                            if(orders[i].orderDetails.OrderStatus=="Placed"
+                                                                            ){%>
+                                                                            <%}else
+                                                                                if(orders[i].orderDetails.OrderStatus=="Shipped"
+                                                                                ){%>
+                                                                                <%}else
+                                                                                    if(orders[i].orderDetails.OrderStatus=="Delivered"
+                                                                                    ){%>
+                                                                                    <%}else
+                                                                                        if(orders[i].orderDetails.OrderStatus=="Cancelled"
+                                                                                        ){%>
+                                                                                        <%}else
+                                                                                            if(orders[i].orderDetails.OrderStatus=="OutforDelivery"
+                                                                                            ){%>
+                                                                                            <%}%>
+                                                                                                <%= orders[i].orderDetails.OrderStatus
+                                                                                                    %>
+
+                                                                                                    <% k++ %>
+                                                            </td>
+
+                                                            <%}%>
+
+                                                                <!-- list -->
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div >
-                            <ul class="navbar-nav w-100">
-                                <li class="nav-item w-100">
-                                    
-                                </li>
-                            </ul>
-                        </div>
-                        <h4 class="card-title">All Orders</h4>
-    
-                        <form action="" method="get" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
-                            <input type="text" name="key" class="form-control mb-1 text-light" placeholder="Search Users" id="searchInput">
-                            <!-- <button type="submit" class="btn-inverse-info mb-1">search</button> -->
-                        </form>
-    
-                        <div class="table-responsive">
-                            <table class="table" id="user-table">
-                                <thead>
-                                    <tr>
 
-                                        <th> No </th>
-                                        <th> Product </th>
-                                        <th> Order Id </th>
-                                        <th> User </th>
-                                        <th> Order Date</th>
-                                        <th> Quantity</th>
-                                        <th> Price</th>
-                                        <th> Pyament Status</th>
-                                        <th> Order Status</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    <% let k = 1 %>
-                                    <%for(i=orders.length-1;i>=0;i--){%>          
-                                        <tr>
-                                            <td><%= k %></td>
-                                            <td>
-                        
-                                                <span>
-                                                    <%= orders[i].product.productName %>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <%= orders[i].orderDetails.trackId %>
-                                            </td>
-                                            <td>
-                                                <%= orders[i].user.email %>
-                                            </td>
-                                            <td>
-                                                <span style="font-weight: 100;" class="pl-2 ">
-                                                    <%= orders[i].orderDetails.orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %>
-                                                </span>
-    
-                                            </td>
-    
-                                            <td>
-                                                <%= orders[i].orderDetails.quantity %>
-                                            </td>
-                                            <td>
-                                                ₹<%= orders[i].orderDetails.totalAmount %>
-                                            </td>
-    
-                                            <td>
-                                                <%if( orders[i].orderDetails.paymentStatus == "Pending"){%>
-                                                <%}else if(orders[i].orderDetails.paymentStatus == "Success"){%>
-                                               <%}else if(orders[i].orderDetails.paymentStatus == "Failed"){%>
-                                                <%}%>        
-                                                <%= orders[i].orderDetails.paymentStatus %>
-                                            </td>
-
-                                            <td>
-    
-                                                <%if( orders[i].orderDetails.paymentStatus == "Delivered"){%>
-                                                <%}else if(orders[i].orderDetails.OrderStatus == "Pending"){%>
-                                                <%}else if(orders[i].orderDetails.OrderStatus == "Placed"){%>
-                                                <%}else if(orders[i].orderDetails.OrderStatus == "Shipped"){%>
-                                                <%}else if(orders[i].orderDetails.OrderStatus == "Delivered"){%>
-                                                <%}else if(orders[i].orderDetails.OrderStatus == "Cancelled"){%> 
-                                                <%}else if(orders[i].orderDetails.OrderStatus == "OutforDelivery"){%>
-                                                <%}%>
-                                                <%= orders[i].orderDetails.OrderStatus %>
-
-                                                <% k++ %>
-                                            </td>
-                                          
-                                        <%}%>
-                                        
-                                        <!-- list -->
-    
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
             </div>
-        </div>
-
-    </div>
-</div>
 
 
-<script src="/static/adminAssets/vendors/chart.js/Chart.min.js"></script>
+            <script src="/static/adminAssets/vendors/chart.js/Chart.min.js"></script>
 
 
-<script>
-    function SoledProduct(){
-    //    alert("called 2nd")
-    }
-
-
-    function runLoad(){
-        SalesPortfolio("week")
-        SoledProduct()
-    }
-        
-
-    window.onload = runLoad
-     function SalesPortfolio(data){
-        $.ajax({
-                url:"/admin/sales-report/portfolio",
-                method:"POST",
-                data:{date:data},
-                success:(response)=>{
-                    portfolioDataInsert(response,data)
-                    
+            <script>
+                function SoledProduct() {
+                    //    alert("called 2nd")
                 }
-            })
-        }
-
-        function portfolioDataInsert(data,chartType){
-        //  console.log(data.data[0].date);
-         let week7=data.data[6].date, week6=data.data[5].date, week5=data.data[4].date, week4=data.data[3].date, 
-             week3=data.data[2].date, week2=data.data[1].date, week1=data.data[0].date
-         let data7=data.data[6].sales, data6=data.data[5].sales, data5=data.data[4].sales,
-                 data4=data.data[3].sales, data3=data.data[2].sales, data2=data.data[1].sales, data1=data.data[0].sales
 
 
-         var areaData = {
-            labels: [week7, week6, week5, week4, week3, week2, week1,],
-            datasets: [{
-                label: `${chartType} Chart`,
-                data: [data7, data6, data5, data4, data3, data2, data1],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)'
-                ],
-                borderWidth: 1,
-                fill: true,
-            }]
-        };
-
-        var areaOptions = {
-            plugins: {
-                filler: {
-                    propagate: true
+                function runLoad() {
+                    SalesPortfolio("week")
+                    SoledProduct()
                 }
-            },
-            scales: {
-                yAxes: [{
-                    gridLines: {
-                        color: "rgba(204, 204, 204, 0.1)"
+
+
+                window.onload = runLoad
+                function SalesPortfolio(data) {
+                    $.ajax({
+                        url: "/admin/sales-report/portfolio",
+                        method: "POST",
+                        data: { date: data },
+                        success: (response) => {
+                            portfolioDataInsert(response, data)
+
+                        }
+                    })
+                }
+
+                function portfolioDataInsert(data, chartType) {
+                    //  console.log(data.data[0].date);
+                    let week7 = data.data[6].date, week6 = data.data[5].date, week5 = data.data[4].date, week4 = data.data[3].date,
+                        week3 = data.data[2].date, week2 = data.data[1].date, week1 = data.data[0].date
+                    let data7 = data.data[6].sales, data6 = data.data[5].sales, data5 = data.data[4].sales,
+                        data4 = data.data[3].sales, data3 = data.data[2].sales, data2 = data.data[1].sales, data1 = data.data[0].sales
+
+
+                    var areaData = {
+                        labels: [week7, week6, week5, week4, week3, week2, week1,],
+                        datasets: [{
+                            label: `${chartType} Chart`,
+                            data: [data7, data6, data5, data4, data3, data2, data1],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1,
+                            fill: true,
+                        }]
+                    };
+
+                    var areaOptions = {
+                        plugins: {
+                            filler: {
+                                propagate: true
+                            }
+                        },
+                        scales: {
+                            yAxes: [{
+                                gridLines: {
+                                    color: "rgba(204, 204, 204, 0.1)"
+                                }
+                            }],
+                            xAxes: [{
+                                gridLines: {
+                                    color: "rgba(204, 204, 204, 0.1)"
+                                }
+                            }]
+                        }
+                    };
+                    var areaChartCanvas = document.getElementById("areaChart").getContext("2d");
+                    var areaChart = new Chart(areaChartCanvas, {
+                        type: 'line',
+                        data: areaData,
+                        options: areaOptions
+                    });
+                }
+
+
+
+            </script>
+
+            <script>
+
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    const getSoldProductData = () => {
+                        const productData = [];
+                        for (let i = 1; i <= 5; i++) {
+                            const productName = document.getElementById(`product${i}`).value;
+                            const productCount = document.getElementById(`product${i}2`).value;
+                            productData.push({ name: productName, count: productCount });
+                        }
+                        return productData;
+                    };
+
+                    const soldProducts = getSoldProductData();
+
+                    // Log the data to check if it's correct
+                    console.log("Sold Products:", soldProducts);
+
+                    // Use the soldProducts data to update your chart
+                    var data = {
+                        labels: soldProducts.map(product => product.name),
+                        datasets: [{
+                            label: 'Sold',
+                            data: soldProducts.map(product => product.count),
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1,
+                            fill: false
+                        }]
+                    };
+
+                    var options = {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                },
+                                gridLines: {
+                                    color: "rgba(204, 204, 204,0.1)"
+                                }
+                            }],
+                            xAxes: [{
+                                gridLines: {
+                                    color: "rgba(204, 204, 204,0.1)"
+                                }
+                            }]
+                        },
+                        legend: {
+                            display: false
+                        },
+                        elements: {
+                            point: {
+                                radius: 0
+                            }
+                        }
+                    };
+
+                    var barChartCanvas = $("#barChart").get(0).getContext("2d");
+                    var barChart = new Chart(barChartCanvas, {
+                        type: 'bar',
+                        data: data,
+                        options: options
+                    });
+                });
+
+
+                // fileDownloadPathsettings();
+                const excelDownload = document.getElementById("excelDownload");
+                const pdfDownload = document.getElementById("pdfDownload");
+                const queryString = window.location.search;
+                const urlSearchParams = new URLSearchParams(queryString);
+
+                // Access specific query parameters by name
+                const startDate = urlSearchParams.get('start');
+                const endDate = urlSearchParams.get('end');
+
+                let today, start, end; // Declare these variables using let
+
+                if (startDate == null || endDate == null) {
+                    today = new Date();
+                    start = new Date(today);
+                    start.setDate(today.getDate() - 30);
+                    end = new Date(today);
+                    end.setDate(today.getDate() + 1); // Set end to one day after today
+                    end = end.toISOString().split('T')[0];
+                    excelDownload.href = `/admin/sales-report/export-report?start=${start.toISOString().split('T')[0]}&end=${end}`;
+                    pdfDownload.href = `/admin/sales-report/export-PDF-report?start=${start.toISOString().split('T')[0]}&end=${end}`;
+                } else {
+                    end = new Date(endDate);
+                    end.setDate(end.getDate() + 1); // Set end to one day after the specified end date
+                    end = end.toISOString().split('T')[0];
+                    excelDownload.href = `/admin/sales-report/export-report?start=${startDate}&end=${end}`;
+                    pdfDownload.href = `/admin/sales-report/export-PDF-report?start=${startDate}&end=${end}`;
+                }
+
+
+                // }
+
+                // Don't use parentheses when assigning the function to onload
+
+                $("#start-date").datepicker({
+                    dateFormat: 'yy-mm-dd',
+                    onSelect: function (selectedDate) {
+                        var minDate = new Date(selectedDate);
+                        minDate.setDate(minDate.getDate() + 1); // Set the minimum date for the end date picker to the next day
+                        $("#end-date").datepicker("option", "minDate", minDate);
                     }
-                }],
-                xAxes: [{
-                    gridLines: {
-                        color: "rgba(204, 204, 204, 0.1)"
-                    }
-                }]
-            }
-        };
-        var areaChartCanvas = document.getElementById("areaChart").getContext("2d");
-        var areaChart = new Chart(areaChartCanvas, {
-            type: 'line',
-            data: areaData,
-            options: areaOptions
-        });
-        }
+                });
 
-        
-
-</script>
-
-<script>
+                $("#end-date").datepicker({
+                    dateFormat: 'yy-mm-dd'
+                });
 
 
- document.addEventListener("DOMContentLoaded", function () {
-    const getSoldProductData = () => {
-        const productData = [];
-        for (let i = 1; i <= 5; i++) {
-            const productName = document.getElementById(`product${i}`).value;
-            const productCount = document.getElementById(`product${i}2`).value;
-            productData.push({ name: productName, count: productCount });
-        }
-        return productData;
-    };
-
-    const soldProducts = getSoldProductData();
-
-    // Log the data to check if it's correct
-    console.log("Sold Products:", soldProducts);
-
-    // Use the soldProducts data to update your chart
-    var data = {
-        labels: soldProducts.map(product => product.name),
-        datasets: [{
-            label: 'Sold',
-            data: soldProducts.map(product => product.count),
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)'
-            ],
-            borderWidth: 1,
-            fill: false
-        }]
-    };
-
-    var options = {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                },
-                gridLines: {
-                    color: "rgba(204, 204, 204,0.1)"
-                }
-            }],
-            xAxes: [{
-                gridLines: {
-                    color: "rgba(204, 204, 204,0.1)"
-                }
-            }]
-        },
-        legend: {
-            display: false
-        },
-        elements: {
-            point: {
-                radius: 0
-            }
-        }
-    };
-
-    var barChartCanvas = $("#barChart").get(0).getContext("2d");
-    var barChart = new Chart(barChartCanvas, {
-        type: 'bar',
-        data: data,
-        options: options
-    });
-});
-
-
-        // fileDownloadPathsettings();
-        const excelDownload = document.getElementById("excelDownload");
-        const pdfDownload = document.getElementById("pdfDownload");
-        const queryString = window.location.search;
-        const urlSearchParams = new URLSearchParams(queryString);
-
-        // Access specific query parameters by name
-        const startDate = urlSearchParams.get('start');
-        const endDate = urlSearchParams.get('end');
-
-        let today, start, end; // Declare these variables using let
-
-        if (startDate == null || endDate == null) {
-          today = new Date();
-          start = new Date(today);
-          start.setDate(today.getDate() - 30);
-          end = today.toISOString().split('T')[0];
-          excelDownload.href = `/admin/sales-report/export-report?start=${start}&end=${end}`;
-          pdfDownload.href = `/admin/sales-report/export-PDF-report?start=${start}&end=${end}`;
-        } else {
-          excelDownload.href = `/admin/sales-report/export-report?start=${startDate}&end=${endDate}`;
-          pdfDownload.href = `/admin/sales-report/export-PDF-report?start=${startDate}&end=${endDate}`;
-        }
-
-
-    // }
-
-    // Don't use parentheses when assigning the function to onload
-
-    $("#start-date").datepicker({
-        dateFormat: 'yy-mm-dd',
-        onSelect: function (selectedDate) {
-            var minDate = new Date(selectedDate);
-            minDate.setDate(minDate.getDate() + 1); // Set the minimum date for the end date picker to the next day
-            $("#end-date").datepicker("option", "minDate", minDate);
-        }
-    });
-
-    $("#end-date").datepicker({
-        dateFormat: 'yy-mm-dd'
-    });
-    
-
-</script>
+            </script>
 
 
 
-<%-include('../admin/layouts/footer.ejs') %>    
+            <%-include('../admin/layouts/footer.ejs') %>

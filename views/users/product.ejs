@@ -93,6 +93,11 @@
                                         </li>
                                     <% }) %>
                                 </ul>
+                                <div class="text-right mt-3">
+                                    <a href="/products">
+                                        <button class="btn btn-outline-primary-2">Cancel</button>
+                                    </a>
+                                   </div>
                             </div>
                     
                             <div class="filter-col2 p-r-15 p-b-27">
@@ -187,12 +192,13 @@
                                <% }%>
                     
                                     
-                                </div>
+                            </div>
+                            
                             </div>
                         </div>
                     </div>
                     
-                            </div>
+                 </div>
 
                 <div class="row isotope-grid">
                     <% product.forEach((product)=>{ %>
@@ -288,28 +294,6 @@
 
             </div>
         </div>
-<!-- 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const searchInput = document.querySelector('input[name="search-product"]');
-
-                // Add an event listener for when the user presses Enter in the input field
-                searchInput.addEventListener('keypress', function (event) {
-                    if (event.key === 'Enter') {
-                        search();
-                    }
-                });
-
-                // Function to perform the search
-                function search() {
-                    const keyword = searchInput.value;
-                    if (keyword) {
-                        // Redirect to the search_product route with the keyword
-                        window.location.href = `/searchProduct?keyword=${keyword}`;
-                    }
-                }
-            });
-        </script> -->
 
         
 <script>
@@ -340,53 +324,6 @@
     });
 </script> 
 
-
-
-
-
-        <!-- <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Select all wishlist icons
-        const wishlistIcons = document.querySelectorAll('.btn-addwish-b2');
-
-        // Add a click event listener to each wishlist icon
-        wishlistIcons.forEach(function(icon) {
-            icon.addEventListener('click', function(event) {
-                event.preventDefault();
-                const productId = this.getAttribute('data-product-id');
-                addToWishlist(productId);
-                console.log(productId);
-            });
-        });
-
-        function addToWishlist(productId) {
-            console.log('click');
-            // Send an AJAX request to add the product to the wishlist
-            fetch('/addWishlist?id=' + productId, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ productId: productId }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Product added to the wishlist successfully
-                    Swal.fire('Product added to your wishlist!');
-                } else {
-                    // Handle errors or show an error message
-                    Swal.fire('Failed to add the product to your wishlist.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Show an error message to the user
-                Swal.fire('An error occurred while adding the product to your wishlist.');
-            });
-        }
-    });
-</script> -->
 
 
 

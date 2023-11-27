@@ -294,6 +294,16 @@ const createSalesReport = async (interval) => {
         },
       },
     ]);
+
+     // Check if there are no sales data
+     if (!orderDataData || orderDataData.length === 0) {
+      console.log("No sales data found for the specified interval.");
+      return {
+        profit: 0,
+        totalSalesAmount: 0,
+        totalProductsSold: 0,
+      };
+    }
     
     // Extracting totals directly from the first result, as it's now a single document
     const { totalSalesAmount, totalProductsSold } = orderDataData[0];
@@ -332,9 +342,7 @@ function formatDate(date) {
 const getStartDate = (interval) => {
   const start = new Date();
   if (interval === "week") {
-    const currentDay = start.getDay();
-    const diff = start.getDate() - currentDay + (currentDay === 0 ? -6 : 1); // Adjust for Sunday
-    start.setUTCDate(diff);
+    start.setDate(start.getDate() - start.getDay()); // Start of the week
   } else if (interval === "year") {
     start.setMonth(0, 1); // Start of the year
   }
@@ -344,14 +352,13 @@ const getStartDate = (interval) => {
 const getEndDate = (interval) => {
   const end = new Date();
   if (interval === "week") {
-    const currentDay = end.getDay();
-    const diff = end.getDate() - currentDay + 6; // Adjust for Sunday
-    end.setUTCDate(diff);
+    end.setDate(end.getDate() - end.getDay() + 6); // End of the week
   } else if (interval === "year") {
     end.setMonth(11, 31); // End of the year
   }
   return end;
 };
+
 
 
 
@@ -557,9 +564,9 @@ const userLoad =  async (req, res) => {
       })
       const productData = await newProduct.save();
       if(productData){
-      res.redirect('/admin/addProduct');
+      res.redirect('/admin/viewProduct');
       }else{
-      res.render('addProduct',{message:"Something went wrong"});
+      res.render('addProducts',{message:"Something went wrong"});
       }
 
   }catch(error){

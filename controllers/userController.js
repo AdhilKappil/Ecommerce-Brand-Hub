@@ -48,8 +48,8 @@ const loadHome = async(req,res)=>{
 
     try {       
         const categoryDetails = await Category.find({});
-        const banner = await Banner.find({});
-        const products = await Product.find({status:true})
+        const  banner  = await Banner.find({ status: true });
+        const products = await Product.find({status:true}).sort({createdAt:-1}).limit(8).populate('category')
         res.render('home',{user:req.session.user_id,catData:categoryDetails,
             product:products,banner}); 
 
@@ -481,7 +481,7 @@ const loadChangePassword = async(req,res)=>{
 
 const loadProducts = async (req, res) => {
     try {
-        const perPage = 4; // Number of products per page
+        const perPage = 12; // Number of products per page
         let page = parseInt(req.query.page) || 1;
         const categoryDetails = await Category.find({});
         const totalProducts = await Product.countDocuments({ status: true });

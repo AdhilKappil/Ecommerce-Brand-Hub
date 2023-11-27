@@ -38,7 +38,7 @@ const productSchema = mongoose.Schema({
       status: {
         type: Boolean,
         required: true,
-        default: false,
+        default: true,
       },
 
       offer : {
@@ -48,7 +48,11 @@ const productSchema = mongoose.Schema({
        discountedPrice:{
          type:Number
       },
+      
+    },
 
-    })
+  {
+  timestamps:true
+  })
 
 module.exports = mongoose.model('product',productSchema)
