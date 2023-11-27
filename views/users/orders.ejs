@@ -36,6 +36,7 @@
                                     <th>Expected Delivery</th>
                                     <th>Tracking Number</th>
                                     <th>Details</th>
+                                    <th>Invoice</th>
                                 </tr>
                             </thead>
 
@@ -52,6 +53,7 @@
                                     <td>
                                         <a href="/orderDetails?id=<%= orders[i]._id %>" class=" btn-outline-dark btn-round">View Details</a>
                                     </td>
+                                    <td><a href="/downloadInvoic?id=<%= orders[i]._id %>"><button class="btn btn-outline-primary-2" style="min-width: 100px;">Download</button></a></td>
                                 </td>
                                 
                                 <!-- <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td> -->

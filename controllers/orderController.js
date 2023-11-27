@@ -5,16 +5,26 @@ const User = require("../models/users");
 const Address = require("../models/userAddress");
 const Order = require("../models/order");
 const Coupon = require("../models/coupon");
+const puppeteer = require("puppeteer");
 const Analytics = require("../models/analytic");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const { findById } = require("../models/admin");
+const fs = require("fs");
+const path = require("path");
+const ejs = require('ejs');
+
+
+
 
 // =========== razorpay instance ===========
 var instance = new Razorpay({
   key_id: process.env.razorpaykey_id,
   key_secret: process.env.razorpaykey_secret,
 });
+
+
+
 
 // ==== cart items price calculate function here ====
 const calculateTotalPrice = async (userId) => {
@@ -949,6 +959,57 @@ const adminCancelOrder = async (req, res) => {
 
 
 
+// ========== user invoice downloade ==========
+const invoiceDownload = async (req, res, next) => {
+  try {
+    const orderId = req.query.id;
+
+    // const orderData = await Order.findById(orderId).populate('cart.products.productId');
+    const orderData = await Order.findById(orderId).populate('products.productId').populate('userId');
+
+    if (!orderData) {
+      // Handle the case where the order with the specified orderId doesn't exist
+      return res.status(404).send('Order not found');
+    }
+
+    const userId = req.session.user_id;
+
+    const userData = await User.findById(userId);
+
+    const date = new Date();
+  
+    const data = {
+      orderData: orderData,
+      userData: userData,
+      date,
+
+    };
+
+    const filepathName = path.resolve(__dirname, "../views/users/invoice.ejs");
+    const html = fs.readFileSync(filepathName).toString();
+    const ejsData = ejs.render(html, data);
+
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.setContent(ejsData, { waitUntil: "networkidle0" });
+    const pdfBytes = await page.pdf({ format: "Letter" });
+    await browser.close();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=order_invoice.pdf"
+    );
+    res.send(pdfBytes);
+  } catch (error) {
+    console.error('Error in invoiceDownload:', error);
+    next(error);
+  }
+};
+
+
+
+
 
 module.exports = {
   loadCheckout,
@@ -962,4 +1023,6 @@ module.exports = {
   changeOrderStatus,
   cancelOrder,
   adminCancelOrder,
+  invoiceDownload
+  
 };
