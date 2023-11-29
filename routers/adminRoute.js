@@ -11,6 +11,7 @@ const session = require('express-session');
 const config = require('../config/confiq');
 const auth = require('../middleware/adminAuth'); 
 const fileUploadMiddleware = require('../middleware/fileUpload');
+const errorHandler =require('../middleware/errorHandler')
 
 
 const admin_route = express();
@@ -117,9 +118,11 @@ admin_route.post('/editBanner',auth.isLogin,fileUploadMiddleware.bannerUpload.si
 
 
 // ========= error  page to handile =======
-admin_route.get('/error-500',adminController.load500)
-admin_route.get('/*',adminController.load404)
+admin_route.use(errorHandler); 
 
+admin_route.get('/*', (req, res) => {
+  res.render('404-error');
+});
 
 
 

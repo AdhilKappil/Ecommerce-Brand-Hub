@@ -9,7 +9,7 @@ const loadaddCoupon = async (req, res,next) => {
     try {
       res.render('addCoupon')
     } catch (err) {
-    next(err)
+      next(err)
     }
 }
 

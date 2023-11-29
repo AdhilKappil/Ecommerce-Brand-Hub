@@ -14,7 +14,7 @@ var instance = new Razorpay({
 
 
 // ========= loading wallet ========= 
-const loadWallet = async(req,res)=>{
+const loadWallet = async(req,res,next)=>{
     try{
     const user = req.session.user_id
     const userData = await User.findOne({_id:user})
@@ -22,14 +22,14 @@ const loadWallet = async(req,res)=>{
     res.render('wallet',{user,userData})
 
   }catch(error){
-    console.log(error);
+    next(error)
   }
 }
 
 
 
 // ============ adding money to wallet =========
-const addMoneyToWallet = async(req,res)=>{
+const addMoneyToWallet = async(req,res,next)=>{
   try{
      
     const {amount} = req.body
@@ -53,7 +53,7 @@ const addMoneyToWallet = async(req,res)=>{
 })
 
   }catch(error){
-    console.log(error);
+    next(error)
   }
 
 }
@@ -61,7 +61,7 @@ const addMoneyToWallet = async(req,res)=>{
 
 
 // verifying and adding wallet deatailes to DB
-const verifyWalletPayment = async(req,res)=>{
+const verifyWalletPayment = async(req,res,next)=>{
   try{
 
     const userId = req.session.user_id 
@@ -103,7 +103,7 @@ const verifyWalletPayment = async(req,res)=>{
 
 
   }catch(error){
-    console.log(error);
+    next(error)
   }
 }
 

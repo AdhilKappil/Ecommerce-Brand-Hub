@@ -26,19 +26,22 @@ const securePassword = async(password)=>{
 }
 
 
+
 //======= admin login page =======   
-const loadLogin = async(req,res)=>{
+const loadLogin = async(req,res, next)=>{
 
     try {
         res.render('adminLogin'); 
 
     } catch (error) {
-        console.log(error.message); 
+       next(error)
     }
 }
 
+
+
 //========= loading  Dashboard ========
-const verifyLogin = async(req,res) => {
+const verifyLogin = async(req,res, next) => {
 
     try {
   
@@ -64,13 +67,14 @@ const verifyLogin = async(req,res) => {
         }
   
     }catch(error){
-      console.log(error);
+      next(error)
     }
   }
 
 
+
 //======= admin dashboard rendering =======   
-const loadadHome = async(req,res)=>{
+const loadadHome = async(req,res,next)=>{
 
   try {
 
@@ -111,8 +115,6 @@ const loadadHome = async(req,res)=>{
       sales: result.totalProductsSold,
       amount: result.profit,
     };
-
-    // console.log("report",report);
     
     res.render("dashboard", {
       users,
@@ -127,7 +129,7 @@ const loadadHome = async(req,res)=>{
 
     });
   } catch (error) {
-    console.log(error.message);
+      next(error)
   }
 };
 
@@ -137,25 +139,23 @@ const loadadHome = async(req,res)=>{
 const recentOrder = async () => {
   try {
     const orders = await Order.find();
-    // console.log('my orders',orders);
 
     const productWiseOrdersArray = [];
 
     for (const order of orders) {
       for (const productInfo of order.products) {
         const productId = productInfo.productId;
-        // console.log("id",productId );
 
        const product = await productDb.findById(productId).select(
           "productName images price"
         );
-        // console.log("produc",product);
+        
         const userDetails = await User.findById(order.userId).select(
           "email"
         );
-        // console.log("user",userDetails);
+        
         if (product) {
-          // Push the order details with product details into the array
+          
           orderDate = await formatDate(order.orderDate);
           productWiseOrdersArray.push({
             user: userDetails,
@@ -196,7 +196,7 @@ const getTotalStockNumber = async () => {
       },
     ]);
     const totalStock = result.length > 0 ? result[0].totalStock : 0;
-    // console.log("totelstock",totalStock);
+  
     return totalStock;
   } catch (error) {
     console.log(error);
@@ -209,7 +209,7 @@ const getTotalStockNumber = async () => {
 const genarateSalesReports = async (req, res) => {
   try {
     const date = Date.now();    
-    // const report = await generateReport(req.body.data);
+  
     const result = await createSalesReport(req.body.data)
     const report = {
         reportDate: date,
@@ -217,13 +217,9 @@ const genarateSalesReports = async (req, res) => {
         totalOrders: result.totalProductsSold,
         totalProfit:result.profit
       };
-      // console.log(report);
-
-    // const fileName = `salesReport-${date}.xlsx`; // Provide the desired file name
-
-    // const exel = await generateExcelReport(reportData,fileName);
+     
     res.status(200).json({report});
-    // res.json(report,exel);
+   
   } catch (error) {
     console.log(error.message);
   }
@@ -315,8 +311,6 @@ const salesReport = {
   totalSalesAmount,
   totalProductsSold
 };
-console.log(totalSalesAmount);
-
 
     return salesReport;
   } catch (error) {
@@ -364,33 +358,19 @@ const getEndDate = (interval) => {
 
   
 //====== loading add catogory page =======
-const loadAddCategories = async(req,res)=>{
+const loadAddCategories = async(req,res,next)=>{
 
   try {
       res.render('addCategories'); 
 
   } catch (error) {
-      console.log(error.message); 
+    next(error)
   }
 }
 
-//======== insert category ===========
-// const insertCategory = async (req,res)=>{
-//   try {
 
-//     const data = await new category({
-//       name:req.body.category_name,
-//       description:req.body.category_description,
-//       isListed:true
-//     })
-    
-//     const result = await data.save()
-//     res.redirect('/admin/addCategories')
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
 
+// ========= inserting category to database ===========
 const insertCategory= async (req,res)=>{
   try {
     const categoryname=req.body.category_name
@@ -413,21 +393,23 @@ const insertCategory= async (req,res)=>{
   }
 }
 
+
+
 // ======== Rendering view categories ======== 
-const loadViewCategory = async (req, res) => {
+const loadViewCategory = async (req, res,next) => {
   try {
     const categories = await category.find().populate('offer'); // Use populate to fetch the associated offer data
     const availableOffers = await Offer.find({ status: true, expiryDate: { $gte: new Date() } });
     res.render('viewCategories', { category: categories, availableOffers: availableOffers });
   } catch (error) {
-    console.error(error);
-    res.status(500).redirect('/error-500');
+    next(error)
   }
 };
 
 
+
 // ========== list and unlist ===========
-const unlistCategory = async (req, res) => {
+const unlistCategory = async (req, res, next) => {
   try {
     
     const id = req.query.id;
@@ -443,12 +425,12 @@ const unlistCategory = async (req, res) => {
     
     res.redirect('/admin/viewCategories');
   } catch (error) {
-    console.log(error);
+      next(error)
   }
 };
 
 // ======== loading edit cotegory =========
-const loadEditCatogories = async (req, res) => {
+const loadEditCatogories = async (req, res, next) => {
   try {
     const id = req.query.id;
 
@@ -460,41 +442,57 @@ const loadEditCatogories = async (req, res) => {
       res.redirect('/admin/viewCategories');
     }
   } catch (error) {
-    console.log(error.message);
-    res.status(500).redirect('/error-500');
+      next(error)
   }
 }
 
 
 /// ==========Editing Category==========
-const editCategory = async(req,res) => {
+const editCategory = async(req,res, next) => {
 
   try{
 
-    const editData = await category.findByIdAndUpdate({ _id:req.body.id },{$set:{ name:req.body.categoryname, description:req.body.categorydes}});
+    const categoryName = req.body.categoryname
+    const oldCategoryName = req.body.oldCategoryName
+
+    const dataCategory = await category.findById(req.body.id );
+    
+    if(categoryName != oldCategoryName){
+      const already = await category.findOne({ name: { $regex: new RegExp(`^${categoryName}$`, 'i') } });
+      if(already){
+          res.render('editCategory',{data: dataCategory ,message : "Category Already Created"})
+      }else{
+        const editData = await category.findByIdAndUpdate({ _id:req.body.id },{$set:{ name:req.body.categoryname, description:req.body.categorydes}});
+
+        res.redirect('/admin/viewCategories');
+
+      }
+    }
+
 
     res.redirect('/admin/viewCategories');
 
   }catch(error){
-    console.log(error.message);
+    next(error)
   }
 }
 
 
+
 // ======= loading user deatailes =======
-const userLoad =  async (req, res) => {
+const userLoad =  async (req, res, next) => {
   try {
     const user = await User.find(); 
     res.render('users', { users: user });
   } catch (error) {
-    console.error(error);
-    res.status(500).redirect('/error-500');
+    next(error)
    }
   };
 
 
+
   // ====== block or un block user ======
-  const blockUser = async (req, res) => {
+  const blockUser = async (req, res, next) => {
     try {
       
       const id = req.query.id;
@@ -515,28 +513,27 @@ const userLoad =  async (req, res) => {
       res.redirect('/admin/users');
 
     } catch (error) {   
-      console.log(error);
+       next(error)
    }
   };
 
 
+
   // ======== loading add product page ==========
-  const loadaddProducts = async (req, res) => {
+  const loadaddProducts = async (req, res, next) => {
     try {
-      // Fetch categories from the database
       const categories = await category.find();
   
-      // Render the addProducts.ejs template with the Category variable
       res.render('addProducts', { category: categories });
     } catch (error) {
-      console.error(error);
-      res.status(500).redirect('/error-500');
+       next(error)
     }
   };
 
 
+
   // ========= add product ===========
-  const addProduct = async(req,res)=>{
+  const addProduct = async(req,res ,next)=>{
     try{
 
       const productname = req.body.productname;
@@ -570,35 +567,32 @@ const userLoad =  async (req, res) => {
       }
 
   }catch(error){
-    console.error(error);
-    res.status(500).redirect('/error-500');
+    next(error)
   }
 }
 
 
 // ======= load view products =======
-const loadViewProducts = async (req, res) => {
+const loadViewProducts = async (req, res, next) => {
   try {
-    const products = await product.find().populate("category").populate("offer"); // Populate the category field
-    const categories = await category.find(); // Assuming you want to retrieve all categories from the database
+    const products = await product.find().populate("category").populate("offer"); 
+    const categories = await category.find(); 
     const availableOffers = await Offer.find({ status : true, expiryDate : { $gte : new Date() }})
-    res.render('viewProducts', { products: products, categories: categories, availableOffers:availableOffers  }); // Pass 'products' and 'categories' to the template
+    res.render('viewProducts', { products: products, categories: categories, availableOffers:availableOffers  }); 
   } catch (error) {
-    console.error(error);
-    res.status(500).redirect('/error-500');
+    next(error)
   }
 }
 
 
 
 // ======= load edit product ========
-const loadEditProduct = async (req, res) => {
+const loadEditProduct = async (req, res, next) => {
   try {
     const id = req.query.id;
 
     const dataproduct = await product.findById(id);
     
-    // Fetch categories from the database
     const categories = await category.find();
 
     if (dataproduct) {
@@ -607,15 +601,14 @@ const loadEditProduct = async (req, res) => {
       res.redirect('/admin/viewProduct');
     }
   } catch (error) {
-    console.log(error.message);
-    res.status(500).redirect('/error-500');
+    next(error)
   }
 }
 
 
 
 // ======= updating edit product =======
-const editProduct = async (req, res) => {
+const editProduct = async (req, res, next) => {
   try {
     const id = req.body.id;
     const productname = req.body.productname;
@@ -634,14 +627,12 @@ const editProduct = async (req, res) => {
       }
     }
 
-    // Find the existing product
     const existingProduct = await product.findById(id);
 
     if (existingProduct) {
-      // Update the product details
-      existingProduct.productName = productname; // Corrected variable name
+      existingProduct.productName = productname; 
       existingProduct.brand = brand;
-      existingProduct.category = category; // Corrected variable name
+      existingProduct.category = category; 
       existingProduct.price = price;
       existingProduct.quantity = quantity;
       existingProduct.description = description;
@@ -654,18 +645,15 @@ const editProduct = async (req, res) => {
 
       // Handle image deletion
       if (req.body.deleteImages) {
-        console.log('Images to delete:', req.body.deleteImages); // Debugging
-        // req.body.deleteImages should be an array of image filenames to delete
+        
         for (const imageToDelete of req.body.deleteImages) {
-          console.log('Deleting image:', imageToDelete); // Debugging
-          // Remove the deleted image from the existing images
+        
           existingProduct.images = existingProduct.images.filter(
             (image) => image !== imageToDelete
           );
 
           // Optionally, you can delete the image file from your storage here
           const imagePath = path.join(__dirname, '../static/adminAssets/images/products', imageToDelete);
-          console.log('Deleting image file:', imagePath); // Debugging
           fs.unlink(imagePath, (err) => {
             if (err) {
               console.error('Error deleting file:', err);
@@ -685,15 +673,14 @@ const editProduct = async (req, res) => {
       res.redirect('/admin/viewProduct');
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).redirect('/error-500');
+    next(error)
   }
 };
 
 
 
 // ======= list and unlist product =======
-const unlistProduct = async (req, res) => {
+const unlistProduct = async (req, res, next) => {
   try {
     const id = req.query.id;
     const product1 = await product.findById(id);
@@ -703,19 +690,19 @@ const unlistProduct = async (req, res) => {
       await product1.save();
     }
 
-    const products = await product.find().populate("category"); // Populate the category field
-    const categories = await category.find(); // Assuming you want to retrieve all categories from the database
+    const products = await product.find().populate("category"); 
+    const categories = await category.find(); 
 
     res.redirect('/admin/viewProduct');
   } catch (error) {
-    console.log(error);
+    next(error)
   }
 };
 
 
 
 // ======== admin logout ==========
-const adminLogout = async(req,res)=>{
+const adminLogout = async(req,res, next)=>{
 
   try{
       req.session.destroy()
@@ -723,41 +710,10 @@ const adminLogout = async(req,res)=>{
   }
   catch (error)
       {
-          console.log(error.message)
+        next(error)
      }
 }
  
-
-
-
-// ========== rendering 404 error page =========
-const  load404 = async(req,res)=>{
-
-  try{
-      
-      res.render('error-404')
-  }
-  catch (error)
-      {
-          console.log(error.message)
-     }
-}
-
-
-
-
-// ========== rendering 500 error page =========
-const  load500 = async(req,res)=>{
-
-  try{
-      
-      res.render('error-500')
-  }
-  catch (error)
-      {
-          console.log(error.message)
-     }
-}
 
 
 
@@ -780,8 +736,6 @@ module.exports = {
     editProduct,
     unlistProduct,
     adminLogout,
-    load404,
-    load500,
     genarateSalesReports
     
 }

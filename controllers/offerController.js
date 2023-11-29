@@ -6,13 +6,12 @@ const productDb = require('../models/product')
 
 
 // ======= loading the add product page =========
-const loadAddOffer = async( req, res ) => {
+const loadAddOffer = async( req, res, next) => {
     
     try {  
     res.render('addOffer')
     } catch (error) {
-        console.log(error.message)
-        res.render('error-500')
+       next(error)
 
     }
 }
@@ -21,10 +20,10 @@ const loadAddOffer = async( req, res ) => {
 
 
 // ========== adding new offers =========
-const addOffer = async ( req, res ) => {
+const addOffer = async ( req, res, next) => {
     
     try {
-        // const { search, page } = req.query
+        
         const { startingDate, expiryDate, percentage } = req.body
         const name = req.body.name
         const offerExist = await Offer.findOne({ name : name })
@@ -36,22 +35,20 @@ const addOffer = async ( req, res ) => {
             startingDate : startingDate, 
             expiryDate : expiryDate,
             discount : percentage,
-            // search : search,
-            // page : page
+           
          }) 
          await offer.save()
          res.redirect('/admin/offer')
         }
     } catch (error) {
-        console.log(error.message)
-        res.render('error-500')
+       next(error)
     }
 }
 
 
 
 // ======= rendering the home page =======
-const loadOffers = async( req, res ) => {
+const loadOffers = async( req, res, next ) => {
     try {
         const offers = await Offer.find()
         res.render('offer',{
@@ -59,8 +56,7 @@ const loadOffers = async( req, res ) => {
             now : new Date()
         })
     } catch (error) {
-        console.log(error.message)
-        res.render('error-500')
+       next(error)
 
     }
 }
@@ -68,7 +64,7 @@ const loadOffers = async( req, res ) => {
 
 
 // ======== rendering edit offer =========
-const loadEditOffer = async ( req, res ) => {
+const loadEditOffer = async ( req, res, next) => {
     try {
         const id = req.params.id
         const offer = await Offer.findOne({ _id:id})
@@ -76,8 +72,7 @@ const loadEditOffer = async ( req, res ) => {
             offer : offer
         })
     } catch (error) {
-        console.log(error.message)
-        res.render('error-500')
+       next(error)
 
     }
 }
@@ -85,7 +80,7 @@ const loadEditOffer = async ( req, res ) => {
 
 
 // ======== updating edited data =======
-const editOffer = async ( req, res ) => {
+const editOffer = async ( req, res, next ) => {
     
     try {
         const { id, name, startingDate, expiryDate, percentage } = req.body
@@ -99,8 +94,7 @@ const editOffer = async ( req, res ) => {
         })
         res.redirect('/admin/offer')
     } catch (error) {
-        console.log(error.message)
-        res.render('error-500')
+       next(error)
 
     }
 }
@@ -108,7 +102,7 @@ const editOffer = async ( req, res ) => {
 
 
 // ========= offer calceling ==========
-const cancelOffer = async ( req, res ) => {
+const cancelOffer = async ( req, res,next ) => {
     try {
         const  { offerId } = req.body
         await Offer.updateOne({ _id : offerId }, {
@@ -119,7 +113,7 @@ const cancelOffer = async ( req, res ) => {
         res.json({ cancelled : true})
     } catch (error) {
         res.json({cancelled: false,message:'Cant cancel some errors'})
-        res.render('error-500')
+        next(error)
 
     }
 }
@@ -127,22 +121,19 @@ const cancelOffer = async ( req, res ) => {
 
 
 // =========== applying catogory offer ========
-const applyCategoryOffer = async (req, res) => {
+const applyCategoryOffer = async (req, res, next) => {
   
     try {
       const { offerId, categoryId } = req.body;
   
-      // Get the category discount
       const categoryOffer = await Offer.findOne({ _id: offerId });
   
       if (!categoryOffer) {
         return res.json({ success: false, message: 'Category Offer not found' });
       }
   
-      // Update the category with the offer
       await Category.updateOne({ _id: categoryId }, { $set: { offer: offerId } });
   
-      // Update discounted prices for all products in the category
       const productsInCategory = await productDb.find({ category: categoryId });
   
       for (const product of productsInCategory) {
@@ -169,30 +160,26 @@ const applyCategoryOffer = async (req, res) => {
   
       res.json({ success: true });
     } catch (error) {
-      console.log(error.message);
-      res.render('error-500')
+       next(error)
     }
 };
 
 
 
 // ======= removing offer from catogory ==========
-const removeCategoryOffer = async (req, res) => {
+const removeCategoryOffer = async (req, res, next) => {
    
     try {
       const { categoryId } = req.body;
   
-      // Get the category offer
       const category = await Category.findById(categoryId).populate('offer');
   
       if (!category) {
         return res.json({ success: false, message: 'Category not found' });
       }
   
-      // Update category to remove the offer
       await Category.updateOne({ _id: categoryId }, { $unset: { offer: '' } });
   
-      // Update all products in the category to remove offer details and reset discounted prices
       const productsInCategory = await productDb.find({ category: categoryId });
   
       for (const product of productsInCategory) {
@@ -219,20 +206,18 @@ const removeCategoryOffer = async (req, res) => {
   
       res.json({ success: true });
     } catch (error) {
-      console.log(error.message);
-      res.render('error-500')
+       next(error)
     }
   };
 
 
 
   // ========== applying offer to the product ======
-  const applyProductOffer = async (req, res) => {
+  const applyProductOffer = async (req, res, next) => {
     try {
       const productId = req.body.productId;
       const offerId = req.body.offerId;
   
-      // Assuming you have an Offer model with fields: discountPercentage
       const offer = await Offer.findOne({ _id: offerId });
   
       if (!offer) {
@@ -280,14 +265,14 @@ const removeCategoryOffer = async (req, res) => {
       res.json({ success: true, data: updatedProduct });
     } catch (error) {
       console.log(error.message);
-      res.render('error-500')
+      next(error)
     }
   };
 
 
 
   // ========= removing product offer =======
-  const removeProductOffer = async (req, res) => {
+  const removeProductOffer = async (req, res, next) => {
     try {
       const { productId } = req.body;
   
@@ -303,8 +288,7 @@ const removeCategoryOffer = async (req, res) => {
   
       res.json({ success: true ,data:remove });
     } catch (error) {
-      console.log(error);
-      res.render('error-500')
+      next(error)
     }
   };
   

@@ -55,7 +55,7 @@ const calculateTotalPrice = async (userId) => {
 
 
 // ========== rendering cart page ==========
-const  loadCart  = async (req, res) => {
+const  loadCart  = async (req, res, next) => {
   try {
     const userData = await takeUserData(req.session.user_id);
     const cartDetails = await Cart.findOne({ user: req.session.user_id })
@@ -78,14 +78,14 @@ const  loadCart  = async (req, res) => {
       return res.render("cart", { user: userData, cartItems: 0, total: 0 });
     }
   } catch (error) {
-    console.log(error.message);
+    next(error)
   }
 };
 
 
 
 // ========= adding items to cart =========
-const addToCart = async (req, res) => {
+const addToCart = async (req, res, next) => {
         try {
           const existingCart = await Cart.findOne({user:req.body.user});
           if (!existingCart){
@@ -119,7 +119,7 @@ const addToCart = async (req, res) => {
             const result = await existingCart.save()
           }
         } catch (error) {
-          console.log(error);
+          next(error)
         }
       }
 
@@ -143,7 +143,7 @@ const increaseStock = async(productId, quantity)=>{
 
 
 // =========== removing cart items ==========
-const removeCart= async (req, res) => {
+const removeCart= async (req, res, next) => {
   try {
     
     const { user, product, qty } = req.body;
@@ -158,14 +158,14 @@ const removeCart= async (req, res) => {
     
     res.json({ remove: 1 });
   } catch (error) {
-    console.log(error.message);
+    next(error)
   }
 };
 
 
 
 // ========== quantity management ============= 
-const updateCart = async (req, res) => {
+const updateCart = async (req, res, next) => {
   try {
       const user = req.session.user_id;
       const productID = req.body.productID;
@@ -181,15 +181,14 @@ const updateCart = async (req, res) => {
       // Send the updated cart item back to the client
       res.json(updatedCartItem);
   } catch (error) {
-      console.error(error.message);
-      res.status(500).render('500-error');
+     next(error)
   }
 };
 
 
 
 // ===== getting the product quantity ======
-const getMaxStock = async (req, res) => {
+const getMaxStock = async (req, res, next) => {
   try {
     const productID = req.params.id;
 
@@ -197,8 +196,7 @@ const getMaxStock = async (req, res) => {
       const maxStock = product.quantity;
       res.json({ maxStock });
   } catch (error) {
-      console.error(error.message);
-      res.status(500).send("Internal Server Error");
+     next(error)
   }
 };
 

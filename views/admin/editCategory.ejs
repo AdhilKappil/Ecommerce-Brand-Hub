@@ -13,19 +13,18 @@
             <form class="forms-sample" action="updateCategory" method="post">
     
               <% if (typeof message !== 'undefined') { %>
-                <div id="invalid-msg" class="alert alert-danger text-center mt-3">
-                  <h4><%- message %></h4>
-                </div>
+                <h5 id="invalid-msg" class="alert alert-danger text-center mt-3"><%- message %></h5>
               <% } %>
     
               <div class="form-group">
                 <label for="exampleInputName1">Category Name</label>
-                <input type="text" class="form-control  text-white" id="exampleInputName1" name="categoryname" placeholder=" Category Name" value="<%= data.name %>">
+                <input type="text" class="form-control  text-white" id="exampleInputName1" name="categoryname" placeholder=" Category Name" value="<%= data.name %>" required>
+                <input type="hidden" name="oldCategoryName" value="<%= data.name %>">
               </div> 
               <br>     
               <div class="form-group">
                 <label for="exampleTextarea1">Category Description</label>
-                <textarea class="form-control  text-white" id="exampleTextarea1" rows="4" name="categorydes" placeholder="Category Description"><%= data.description %></textarea>
+                <textarea class="form-control  text-white" id="exampleTextarea1" rows="4" name="categorydes" placeholder="Category Description" required><%= data.description %></textarea>
               </div>
               <br>
               <div class="input-container">
@@ -57,6 +56,16 @@
   });
 });
 
+</script>
+
+<script>
+  setTimeout(function () {
+    // Your code to hide the message after a delay goes here
+    var invalidMsg = document.getElementById("invalid-msg");
+    if (invalidMsg) {
+      invalidMsg.style.display = "none";
+    }
+  }, 3000);
 </script>
 
 <%-include('../admin/layouts/footer.ejs') %>

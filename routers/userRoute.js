@@ -4,13 +4,13 @@ const userController = require("../controllers/userController");
 const cartController = require("../controllers/cartController"); 
 const profileController = require("../controllers/profileController"); 
 const orderController = require("../controllers/orderController"); 
-const whishlistController = require("../controllers/wishlistController");
 const walletController = require("../controllers/walletController");
 const couponController = require("../controllers/couponController"); 
 const cartLength = require("../middleware/cartMiddleware");
 const session = require('express-session'); 
 const config = require('../config/confiq');
 const auth = require('../middleware/userAuth'); 
+const errorHandler =require('../middleware/errorHandler')
 
 
 const user_route = express();
@@ -104,12 +104,9 @@ user_route.post('/applyCoupon',auth.isLogin,couponController.couponCheck);
 user_route.post('/removeCoupon',auth.isLogin,couponController.removeCoupon);
 
 
-// ========= whishlist routes ==========
-// user_route.post('/addWishlist',auth.isLogin,whishlistController.addWishlist);
-
-
 // ========= error  page to handile=======
-user_route.get('/error-500',userController.load500)
+user_route.use(errorHandler); 
+// user_route.get('/error-500',userController.load500)
 
 
 

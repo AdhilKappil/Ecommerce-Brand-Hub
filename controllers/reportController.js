@@ -3,28 +3,27 @@ const mongoose = require("mongoose");
 const ProductDB = require("../models/product");
 const User = require("../models/users");
 const OrderDB = require("../models/order");
-
 const ExcelJS = require("exceljs");
 const puppeteer = require("puppeteer");
 
 
 
 // ========== loading sales report page ==========
-const salesReportPageLoad = async (req, res) => {
+const salesReportPageLoad = async (req, res, next) => {
     try {
       let start, end;
   
       if (req.query.start && req.query.end) {
         start = req.query.start;
-        end = new Date(req.query.end); // Convert to Date
-        end.setDate(end.getDate() + 1); // Add one day to the end date
-        // console.log(end);
+        end = new Date(req.query.end); 
+        end.setDate(end.getDate() + 1); 
+       
       } else {
         today = new Date();
         start = new Date(today);
         start.setDate(today.getDate() - 30);
-        end = new Date(today); // Set end to one day after today
-        end.setDate(today.getDate() + 1); // Add one day
+        end = new Date(today); 
+        end.setDate(today.getDate() + 1); 
         end = end.toISOString().split("T")[0];
       }
   
@@ -34,8 +33,6 @@ const salesReportPageLoad = async (req, res) => {
       ]);
 
       const allOrders = await getorders (start, end)
-
-      // console.log("Debugger",allOrders);
 
       if(sales === 0 ||SoldProducts==0 ){
         res.render("salesReport", {
@@ -52,7 +49,7 @@ const salesReportPageLoad = async (req, res) => {
         orders:allOrders
       });
     } catch (error) {
-      console.error(error.message);
+      next(error)
     }
 };
 
@@ -151,7 +148,7 @@ const createSalesReport = async (startDate, endDate) => {
       },
       {
         $match: {
-          "products.OrderStatus": { $ne: "Cancelled" } // Use "OrderStatus" instead of "orderStatus"
+          "products.OrderStatus": { $ne: "Cancelled" } 
         }
       },
       {
@@ -172,7 +169,7 @@ const createSalesReport = async (startDate, endDate) => {
         $sort: { count: -1 },
       },
       {
-        $limit: 5, // Limit to the top 6 products
+        $limit: 5, // Limit to the top 5 products
       },
     ];
   
@@ -249,34 +246,30 @@ const createSalesReport = async (startDate, endDate) => {
 
  
   // ======== portfolio chart data filltering =========
-const portfolioFiltering = async (req, res) => {
+const portfolioFiltering = async (req, res, next) => {
   try {
     let datePriad = req.body.date;
-    // console.log(datePriad);
 
     if (datePriad == "week") {
       let data = await generateWeeklySalesCount();
-      // console.log(data);
       res.json({ data });
     } else if (datePriad == "month") {
       let data = await generateMonthlySalesCount();
       data = data.reverse();
-      // console.log(data);
 
       res.json({ data });
     } else if (datePriad == "year") {
       let data = await generateYearlySalesCount();
-      // console.log(data);
       res.json({ data });
     }
   } catch (error) {
-    console.log(error.message);
+    next(error)
   }
 };
 
 
 
-
+// ======== genarating weekly sales report ========
 const generateWeeklySalesCount = async () => {
   try {
     const weeklySalesCounts = [];
@@ -300,7 +293,7 @@ const generateWeeklySalesCount = async () => {
       const salesCount = orders.length;
 
       weeklySalesCounts.push({
-        date: startDate.toISOString().split("T")[0], // Format the date
+        date: startDate.toISOString().split("T")[0], 
         sales: salesCount,
       });
     }
@@ -313,7 +306,7 @@ const generateWeeklySalesCount = async () => {
 
 
 
-
+// ========== genarating monthly sales report ==========
 const generateMonthlySalesCount = async () => {
   try {
     const monthlySalesCounts = [];
@@ -375,7 +368,7 @@ const generateMonthlySalesCount = async () => {
 
 
 
-
+// ========== genarating yearly sales report =========
 const generateYearlySalesCount = async () => {
   try {
     const yearlySalesCounts = [];
@@ -474,10 +467,8 @@ const generateYearlySalesCount = async () => {
 
 
 
-
 // ======== genarating sales excel report of all orders ========
-const generateExcelReportsOfAllOrders = async (req, res) => {
-  console.log();
+const generateExcelReportsOfAllOrders = async (req, res, next) => {
   try {
     const { end, start } = req.query;
 
@@ -505,7 +496,7 @@ const generateExcelReportsOfAllOrders = async (req, res) => {
     sales.forEach((orders) => {
       worksheet.addRow({
         productName: orders.product.productName,
-        OrderId:orders.orderDetails.trackId, // You should replace this with the actual shape data
+        OrderId:orders.orderDetails.trackId, 
         User: orders.user.email,
         OrderDate: orders.orderDetails.orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') ,
         Quantity:orders.orderDetails.quantity,
@@ -530,20 +521,18 @@ const generateExcelReportsOfAllOrders = async (req, res) => {
       res.end();
     });
   } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Error generating the Excel report");
+    next(error)
   }
 };
 
 
 
 // ======== genarating pdf report ========
-const generatePDFReportsOfProfit = async (req, res) => {
+const generatePDFReportsOfProfit = async (req, res, next) => {
   try {
     const { start, end } = req.query;
-    console.log(start, end);
     const sales = await createSalesReport(start, end);
-    // console.log(sales);
+  
     // Call the generatePDFReport function to generate the PDF
     await generatePDFReport(sales);
 
@@ -557,15 +546,14 @@ const generatePDFReportsOfProfit = async (req, res) => {
     // Send the PDF file
     res.sendFile("sales_report.pdf", { root: "./" }); // Adjust the root directory as needed
   } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Error generating the PDF report");
+    next(error)
   }
 };
 
 
 
 
-// pdf creating
+// ======== pdf creating ===========
 const generatePDFReport = async (sales) => {
   try {
     const browser = await puppeteer.launch();
@@ -631,113 +619,6 @@ const generatePDFReport = async (sales) => {
     console.error(error.message);
   }
 };
-
-
-
-
-
-
-
-
-// // ======== genarating pdf report ========
-// const generatePDFReports = async (req, res) => {
-//   try {
-//     const { start, end } = req.query;
-//     console.log(start, end);
-//     const sales = await getorders(start, end);
-//     // console.log(sales);
-//     // Call the generatePDFReport function to generate the PDF
-//     await generatePDFReport(sales);
-
-//     // Send the generated PDF as a response
-//     res.setHeader("Content-Type", "application/pdf");
-//     res.setHeader(
-//       "Content-Disposition",
-//       "attachment; filename=sales_report.pdf"
-//     );
-
-//     // Send the PDF file
-//     res.sendFile("sales_report.pdf", { root: "./" }); // Adjust the root directory as needed
-//   } catch (error) {
-//     console.error(error.message);
-//     res.status(500).send("Error generating the PDF report");
-//   }
-// };
-
-
-
-
-// // ======  pdf creating ==========
-// const generatePDFReport = async (sales) => {
-//   try {
-//     const browser = await puppeteer.launch();
-//     const page = await browser.newPage();
-
-//     const salesRows = sales
-//       .map(
-//         (orders) => `
-//       <tr>
-//         <td>${ orders.product.productName}</td>
-//         <td>${orders.orderDetails.trackId}</td>
-//         <td>${orders.user.email}</td>
-//         <td>${ orders.orderDetails.orderDate}</td>
-//         <td>${orders.orderDetails.quantity}</td>
-//         <td>${orderDetails.totalAmount}</td>
-//         <td>${orders.orderDetails.paymentStatus}</td>
-//         <td>${orders.orderDetails.OrderStatus}</td>
-//       </tr>`
-//       )
-//       .join("");
-
-   
-
-//     const htmlContent = `
-//       <style>
-//         h1 {
-//           text-align: center;
-//         }
-//         table {
-//           width: 100%;
-//           border-collapse: collapse;
-//         }
-//         th, td {
-//           border: 1px solid #ddd;
-//           padding: 8px;
-//           text-align: left;
-//         }
-//         th {
-//           background-color: #f2f2f2;
-//         }
-//       </style>
-//       <h1>Sales Report</h1>
-//       <table>
-//         <tr>
-//           <th>Product Name</th>
-//           <th>Order Id</th>
-//           <th>User</th>
-//           <th>Order Date</th>
-//           <th>Quantity</th>
-//           <th>Price</th>
-//           <th>Pyament Status</th>
-//           <th>Order Status</th>
-//         </tr>
-//         ${salesRows}
-        
-//       </table>
-//     `;
-
-//     await page.setContent(htmlContent);
-//     await page.pdf({
-//       path: "sales_report.pdf",
-//       format: "A4",
-//       printBackground: true,
-//     });
-
-//     await browser.close();
-//   } catch (error) {
-//     console.error(error.message);
-//   }
-// };
 
 
 

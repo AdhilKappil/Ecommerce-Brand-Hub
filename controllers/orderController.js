@@ -6,7 +6,6 @@ const Address = require("../models/userAddress");
 const Order = require("../models/order");
 const Coupon = require("../models/coupon");
 const puppeteer = require("puppeteer");
-const Analytics = require("../models/analytic");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const { findById } = require("../models/admin");
@@ -55,9 +54,11 @@ const calculateTotalPrice = async (userId) => {
     return 0;
   }
 };
+  
+
 
 // ======== loading chekout page =========
-const loadCheckout = async (req, res) => {
+const loadCheckout = async (req, res, next) => {
   try {
     const cartDetails = await Cart.findOne({ user: req.session.user_id })
       .populate({
@@ -91,12 +92,14 @@ const loadCheckout = async (req, res) => {
       return res.redirect("/cart");
     }
   } catch (error) {
-    console.log(error.message);
+    next(error)
   }
 };
 
+
+
 // =========== adding user address =========
-const addShippingAddress = async (req, res) => {
+const addShippingAddress = async (req, res, next) => {
   try {
     let userAddress = await Address.findOne({ userId: req.session.user_id });
     if (!userAddress) {
@@ -128,12 +131,13 @@ const addShippingAddress = async (req, res) => {
 
     res.redirect("/checkout");
   } catch (error) {
-    console.log(error.message);
+    next(error)
   }
 };
 
-//genarate Order uniq Id
-// --------------------------
+
+
+// ======== genarate Order uniq Id ===========
 const generateUniqueTrackId = async () => {
   try {
     let orderID;
@@ -159,8 +163,10 @@ const generateUniqueTrackId = async () => {
   }
 };
 
+
+
 // =========== place order ===========
-const placeOrder = async (req, res) => {
+const placeOrder = async (req, res, next) => {
   try {
     const userId = req.session.user_id;
     const addressId = req.body.address;
@@ -314,7 +320,6 @@ const placeOrder = async (req, res) => {
             }
           );
         } else {
-          // console.log('enterd cod');
           let changeOrderStatus = await Order.updateOne(
             { _id: placeorder._id },
             {
@@ -332,7 +337,7 @@ const placeOrder = async (req, res) => {
           }
         );
       }
-      // res.json({ success: true });
+
       res
         .status(200)
         .json({ placeorder, message: "Order placed successfully" });
@@ -353,8 +358,7 @@ const placeOrder = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ error: "An error occurred" });
+     next(error)
   }
 };
 
@@ -380,7 +384,7 @@ const checkProductQuantities = async (userId) => {
 
 
 // =========== payment varification =============
-const verifyPayment = async (req, res) => {
+const verifyPayment = async (req, res, next) => {
   try {
     const cartData = await Cart.findOne({ user: req.session.user_id });
     const products = cartData.products;
@@ -426,23 +430,18 @@ const verifyPayment = async (req, res) => {
       res.json({ success: false });
     }
   } catch (error) {
-    console.log(error);
+    next(error)
   }
 };
 
 
 
 // =========== rendering order history page user side ============
-const loadOrderPage = async (req, res) => {
+const loadOrderPage = async (req, res, next) => {
   try {
     const userId = req.session.user_id;
     const cart = await Cart.findOne({ user: userId });
     const userData = await User.findById({ _id: userId });
-    // let cartCount=0;
-
-    // if(cart){
-    //   cartCount = cart.products.length
-    // }
 
     const orderData = await Order.find({ userId: userId }).sort({
       orderDate: -1,
@@ -450,7 +449,7 @@ const loadOrderPage = async (req, res) => {
 
     res.render("orders", { user: userData, orders: orderData });
   } catch (error) {
-    console.log(error);
+    next(error)
   }
 };
 
@@ -498,7 +497,7 @@ const loadOrderDetailes = async (req, res, next) => {
 
 
 // ============ loading admin side order page ==========
-const loadAdminOrder = async (req, res) => {
+const loadAdminOrder = async (req, res, next) => {
   try {
     const orders = await Order.find();
 
@@ -538,14 +537,14 @@ const loadAdminOrder = async (req, res) => {
 
     res.render("order", { orders: productWiseOrdersArray });
   } catch (error) {
-    console.log(error.message);
+    next(error)
   }
 };
 
 
 
 // ========= admin side managinge the order ==========
-const orderMangeLoad = async (req, res) => {
+const orderMangeLoad = async (req, res, next) => {
   try {
     const { orderId, productId } = req.query;
 
@@ -581,80 +580,14 @@ const orderMangeLoad = async (req, res) => {
 
     res.render("orderManagment", { product: productOrder, orderId, productId });
   } catch (error) {
-    console.log(error.message);
+    next(error)
   }
 };
 
-// ========= user cancel order ==========
-// const cancelOrder = async (req, res) => {
 
-//   try {
-//     const  oderId = req.body.orderId;
-//     const  productId = req.body.productId;
-//     const userId = req.session.user_id
 
-//     const order = await Order.findById(oderId);
-
-//     if (!order) {
-//       return res.status(404).json({ message: "Order not found." });
-//     }
-
-//     // Find the product within the order by its ID (using .toString() for comparison)
-//     const productInfo = order.products.find(
-//       (product) => product.productId.toString() === productId
-//     );
-
-//     const productDetails = await Product.findById(productInfo.productId);
-
-//     const totalAmount = productInfo.quantity* productDetails.price
-
-//     productInfo.OrderStatus = "Cancelled";
-//     productInfo.updatedAt = Date.now();
-//     order.totalAmount -=  totalAmount
-//     const result = await order.save();
-
-//     await Product.findByIdAndUpdate(
-//       { _id: productId },
-//       {
-//         $inc: { quantity: productInfo.quantity },
-//       }
-//     );
-
-//     // ========== adding money to wallet =========
-//     if(productInfo.paymentStatus==='Success'){
-//       const walletHistory = {
-//         transactionDate: new Date(),
-//         transactionDetails: 'Refund',
-//         transactionType: 'Credit',
-//         transactionAmount: totalAmount,
-//          currentBalance: !isNaN(userId.wallet) ? userId.wallet + amount : totalAmount
-//        }
-//         await User.findByIdAndUpdate(
-//             {_id: userId },
-//             {
-//                 $inc:{
-//                     wallet: totalAmount
-//                 },
-//                 $push:{
-//                     walletHistory
-//                 }
-//             }
-//         );
-
-//     }
-
-//     if(productInfo.paymentStatus==='Success'){
-//       productInfo.paymentStatus= "Refund";
-//       const result = await order.save();
-//     }
-
-//     res.json({ cancel: 1 });
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
-
-const cancelOrder = async (req, res) => {
+// =========== user side cancel order ==========
+const cancelOrder = async (req, res, next) => {
   try {
     const orderId = req.body.orderId;
     const productId = req.body.productId;
@@ -708,15 +641,12 @@ const cancelOrder = async (req, res) => {
         const couponRefundPercentage = couponData.discountPercentage || 0;
         couponRefundAmount = (couponRefundPercentage / 100) * totalAmount;
         totalAmount -= couponRefundAmount;
-        console.log("s2", totalAmount);
       }
     }
 
     productInfo.OrderStatus = "Cancelled";
     productInfo.updatedAt = Date.now();
-    // order.totalAmount -= totalAmount;
-
-    // Update product and order information
+    
     await Promise.all([
       order.save(),
       Product.findByIdAndUpdate(
@@ -751,20 +681,18 @@ const cancelOrder = async (req, res) => {
 
     res.json({ cancel: 1 });
   } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ message: "Internal server error." });
+     next(error)
   }
 };
 
 
 
 // =========== admin side order status managment ============
-const changeOrderStatus = async (req, res) => {
+const changeOrderStatus = async (req, res, next) => {
   try {
     const { status, orderId, productId } = req.body;
     const order = await Order.findById(orderId);
     // find status level
-
     const statusMap = {
       Shipped: 2,
       OutforDelivery: 3,
@@ -781,7 +709,7 @@ const changeOrderStatus = async (req, res) => {
     const productInfo = order.products.find(
       (product) => product.productId.toString() === productId
     );
-    // console.log(productInfo);
+  
     productInfo.OrderStatus = status;
     productInfo.StatusLevel = statusLevel;
     productInfo.updatedAt = Date.now();
@@ -790,89 +718,11 @@ const changeOrderStatus = async (req, res) => {
 
     const result = await order.save();
 
-    if (status === "Delivered") {
-      let analaticResult = await CreateOrderAnalatic();
-      // console.log('RETURN RESULT',analaticResult);
-    }
-
     res.redirect(
       `/admin/order/orderManagment?orderId=${orderId}&productId=${productId}`
     );
   } catch (error) {
-    console.log(error.message);
-  }
-};
-
-
-
-
-// ======== order analatical creation =========
-const CreateOrderAnalatic = async () => {
-  try {
-    const orderDataData = await Order.aggregate([
-      {
-        $match: { "products.OrderStatus": "Delivered" },
-      },
-      {
-        $unwind: "$products",
-      },
-      {
-        $match: { "products.OrderStatus": "Delivered" },
-      },
-      {
-        $lookup: {
-          from: "products",
-          localField: "products.productId",
-          foreignField: "_id",
-          as: "populatedProduct",
-        },
-      },
-      {
-        $unwind: "$populatedProduct",
-      },
-      {
-        $group: {
-          _id: "$populatedProduct._id",
-          productName: { $first: "$populatedProduct.productName" },
-          totalSalesAmount: {
-            $sum: {
-              $multiply: [
-                { $toDouble: "$populatedProduct.price" },
-                "$products.quantity",
-              ],
-            },
-          },
-        },
-      },
-    ]);
-
-    // Calculate total sales amount from the aggregated data
-    const totalSalesAmount = orderDataData.reduce(
-      (total, result) => total + result.totalSalesAmount,
-      0
-    );
-
-    // Calculate total orders from the aggregated data
-    const totalOrders = orderDataData.length;
-
-    // Save the calculated values to the OrderAnalytics model
-    let orderAnalytics = await Analytics.findOne();
-
-    if (!orderAnalytics) {
-      orderAnalytics = new Analytics({
-        totalSalesAmount,
-        totalOrders,
-      });
-    } else {
-      orderAnalytics.totalSalesAmount = totalSalesAmount * 0.2;
-      orderAnalytics.totalOrders = totalOrders;
-    }
-
-    let result = await orderAnalytics.save();
-
-    return result;
-  } catch (error) {
-    console.log(error.message);
+     next(error)
   }
 };
 
@@ -880,15 +730,13 @@ const CreateOrderAnalatic = async () => {
 
 
 // ========= admin cancel order ==========
-const adminCancelOrder = async (req, res) => {
+const adminCancelOrder = async (req, res, next) => {
   try {
     const { orderId, productId } = req.body;
 
     const order = await Order.findById(orderId).populate("userId");
 
     const userId = order.userId._id;
-
-    console.log(userId);
 
     if (!order) {
       return res.status(404).json({ message: "Order not found." });
@@ -898,14 +746,11 @@ const adminCancelOrder = async (req, res) => {
       (product) => product.productId.toString() === productId
     );
 
-    // const productDetails = await Product.findById(productInfo.productId);
-
     const totalAmount = productInfo.quantity * productInfo.price;
 
     if (productInfo) {
       productInfo.OrderStatus = "Cancelled";
       productInfo.updatedAt = Date.now();
-      // order.totalAmount -= totalAmount
 
       await order.save();
 
@@ -952,8 +797,7 @@ const adminCancelOrder = async (req, res) => {
         .json({ message: "Product not found in the order." });
     }
   } catch (error) {
-    console.log(error.message);
-    return res.status(500).json({ error: "An error occurred" });
+    next(error)
   }
 };
 

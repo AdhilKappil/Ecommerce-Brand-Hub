@@ -8,7 +8,7 @@ const { ObjectId}=require('mongodb')
 
 
 // ========== rendering user profile ===========
-const loadProfile = async (req,res)=>{
+const loadProfile = async (req,res,next)=>{
     try{
   
       const id = req.session.user_id
@@ -18,14 +18,14 @@ const loadProfile = async (req,res)=>{
       res.render('profile',{user:userData,address: userAddress})
   
     }catch(error){
-      console.log(error);
+      next(error)
     }
   }
 
 
  
 // ========= rendering user address page ==========  
-const loadAddress = async(req,res)=>{
+const loadAddress = async(req,res,next)=>{
     try{
   
       const userId = req.session.user_id
@@ -33,16 +33,15 @@ const loadAddress = async(req,res)=>{
       res.render('address',{user:userId})
   
     }catch(error){
-      console.log(error);
+      next(error)
     }
   
 }  
- 
 
   
 
 // =========== adding user address =========
-const addAddress = async(req,res)=>{
+const addAddress = async(req,res,next)=>{
   try {
     
     let userAddress = await Address.findOne({ userId: req.session.user_id });
@@ -78,14 +77,14 @@ const addAddress = async(req,res)=>{
     
     res.redirect('/userProfile');
   } catch (error) {
-    console.log(error.message);
+    next(error)
   }
 };
 
 
 
 // ========== here user cand edit address =======
-const loadEditAddress = async(req,res)=>{
+const loadEditAddress = async(req,res,next)=>{
     try{
 
       const id = req.query.id
@@ -99,14 +98,14 @@ const loadEditAddress = async(req,res)=>{
   
       
     }catch(error){
-      console.log(error);
+      next(error)
     }
 }
 
 
  
 // ========== edit user address ==========
-const editAddress =async (req,res)=>{
+const editAddress =async (req,res,next)=>{
     try {
          const user_id=req.session.user_id
          const addressId=req.body.id
@@ -127,17 +126,16 @@ const editAddress =async (req,res)=>{
          res.redirect('/userProfile')
 
     } catch (error) {
-      console.log(error);
+      next(error)
     }
 }
 
 
 
 // ============ deleting user address =========
-const deleteAddress = async (req, res) => {
+const deleteAddress = async (req, res,next) => {
     try {
       
-    
       let userAddress = await Address.findOne({ userId: req.session.user_id });
       const addressToDeleteIndex = userAddress.address.findIndex(
         (address) => address.id === req.body.id
@@ -149,14 +147,14 @@ const deleteAddress = async (req, res) => {
       await userAddress.save();
       return res.json({ remove: 1 });
     } catch (error) {
-      console.log(error.message);
+      next(error)
     }
 };
 
 
 
 // ======== updating user detailesl =========
-const updateUser =async (req,res)=>{
+const updateUser =async (req,res,next)=>{
     try {
 
          const user_id=req.session.user_id
@@ -179,14 +177,14 @@ const updateUser =async (req,res)=>{
          res.redirect('/userProfile')
 
     } catch (error) {
-      console.log(error);
+      next(error)
     }
 }
 
 
 
 // ======== updating user detailesl =========
-const resetPassword =async (req,res)=>{
+const resetPassword =async (req,res, next)=>{
 
   try {
     const userDetails = await User.findOne({_id:req.session.user_id})
@@ -210,7 +208,7 @@ const resetPassword =async (req,res)=>{
       
     })
   } catch (error) {
-    console.log(error);
+    next(error)
 }
 }
 

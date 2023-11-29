@@ -31,42 +31,42 @@ const securePassword = async(password)=>{
 
 
 // ========= user login ===========  
-const loginLoad = async(req,res)=>{
+const loginLoad = async(req,res, next)=>{
 
     try {
         res.render('login'); 
 
     } catch (error) {
-        console.log(error.message); 
+        next(error)
     }
 }
 
 
 
 // ======== rendering home page ========
-const loadHome = async(req,res)=>{
+const loadHome = async(req,res,next)=>{
 
     try {       
         const categoryDetails = await Category.find({});
-        const  banner  = await Banner.find({ status: true });
+        const  banner  = await Banner.find({ status: true }).sort({position:1});
         const products = await Product.find({status:true}).sort({createdAt:-1}).limit(8).populate('category')
         res.render('home',{user:req.session.user_id,catData:categoryDetails,
             product:products,banner}); 
 
     } catch (error) {
-        console.log(error.message); 
+        next(error)
     }
 }
 
 
 
 // =======user registraion =======
-const loadRegister = async(req,res)=>{
+const loadRegister = async(req,res,next)=>{
     try {
         res.render('registration');
 
     } catch (error) {
-       console.log(error.message); 
+        next(error)
     }
 }
 
@@ -140,20 +140,20 @@ const resetPasswordMail = async(firstName,lastName,email, token)=>{
 
 
 
-//user otp
-const loadOtpPage = async(req,res)=>{
+// ========== user otp ============
+const loadOtpPage = async(req,res,next)=>{
     try {
         res.redirect('/userOtp');
 
     } catch (error) {
-       console.log(error.message); 
+        next(error)
     }
 }
 
 
 
-//ottp verification and otp storing in session
-const verifyOtp = async (req, res) => {
+// ========== ottp verification and otp storing in session ===========
+const verifyOtp = async (req, res,next) => {
     try {
         
         // Generate OTP
@@ -193,7 +193,7 @@ const verifyOtp = async (req, res) => {
           
               // Generate a unique referral code using shortid
               const referralCode = shortid.generate();
-              req.session.referralCode = referralCode; //
+              req.session.referralCode = referralCode; 
 
             if(req.body.Fname && req.body.email && req.body.Lname&& req.body.mobile){
                 if(req.body.password === req.body.Cpassword) {
@@ -217,14 +217,14 @@ const verifyOtp = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
 
 
-//======= user data inserting to database =======
-const insertUser = async (req, res)=>{
+// ======= user data inserting to database =======
+const insertUser = async (req, res, next)=>{
     try {
         const currentTime = Math.floor(Date.now() / 1000)
         if(req.body.otp === req.session.otp.code&&currentTime<=req.session.otp.expiry){
@@ -271,20 +271,19 @@ const insertUser = async (req, res)=>{
       res.json({success:false, message:"Invalid OTP"})
     }
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
 
 
 // ========== resend otp ==========
-const resendOtp = async (req,res)=>{
+const resendOtp = async (req,res,next)=>{
     try{
         const currentTime = Date.now()/1000;
-        // console.log("current",currentTime)
         if (req.session.otp.expiry != null) {
         if(currentTime > req.session.otp.expiry){
-            // console.log("expire",req.session.otp.expiry);
+        
             const newDigit = otpGenerator.generate(6, { 
                 digits: true,
                 alphabets: false, 
@@ -307,13 +306,13 @@ const resendOtp = async (req,res)=>{
     }
     catch (error)
     {
-        console.log(error.message)
+        next(error)
     }
 }
 
 
 //====== loding home page ======
-const verifLoadHome = async (req, res) => {
+const verifLoadHome = async (req, res, next) => {
 
         try {
             const Email = req.body.email
@@ -354,28 +353,27 @@ const verifLoadHome = async (req, res) => {
     
             }
         }
-        catch (err) {
-    
-            console.log(err);
+        catch (error) {
+            next(error)
     }
     
 }
 
 
 // =========load forgot password ==========
-const loadForgotPassword = async(req,res)=>{
+const loadForgotPassword = async(req,res, next)=>{
 
     try {
         res.render('forgotPassword'); 
 
     } catch (error) {
-        console.log(error.message); 
+        next(error)
     }
 }
 
 
 // ======== veryfiying and creating token ========
-const forgotVerify = async(req,res)=>{
+const forgotVerify = async(req,res,next)=>{
     try{
         const email = req.body.email
         const userData = await User.findOne({email:email})
@@ -397,13 +395,13 @@ const forgotVerify = async(req,res)=>{
     }
     catch(error)
     {
-        console.log(error.message);
+        next(error)
     }
   }
 
 
 // ========== changing password ===========
-const loadChangePassword = async(req,res)=>{
+const loadChangePassword = async(req,res,next)=>{
 
     try{
         const token = req.query.token
@@ -434,52 +432,15 @@ const loadChangePassword = async(req,res)=>{
 
     }
     catch(error){
-        console.log(error.message);
+        next(error)
     }
     
   }
 
 
 
-  // =========load product page ==========
-// const  loadProducts = async(req,res)=>{
-
-//     try{
-//         const perPage = 4; // Number of products per page
-//         let page = parseInt(req.query.page) || 1; // Get the page from the request query and parse it as an integer
-//         const categoryDetails = await Category.find({});
-//         const totalProducts = await Product.countDocuments({status:true});
-//         const totalPages = Math.ceil(totalProducts / perPage);
-
-//         if (page < 1) {
-//             page = 1;
-//           } else if (page > totalPages) {
-//             page = totalPages;
-//           }
-
-//     const products = await Product.find({status:true}).populate("offer").populate("category")
-//       .find({})
-//       .skip((page - 1) * perPage)
-//       .limit(perPage);
-
-        
-        
-    
-//         res.render('product',{
-//             catData:categoryDetails,
-//             product:products,
-//             currentPage: page,
-//             pages: totalPages,
-//             user:req.session.user_id
-
-//         })
-    
-//       }catch(error){
-//         console.log(error);
-//       }
-// }
-
-const loadProducts = async (req, res) => {
+  // ========== rendering the shop page ==========
+const loadProducts = async (req, res, next) => {
     try {
         const perPage = 12; // Number of products per page
         let page = parseInt(req.query.page) || 1;
@@ -576,7 +537,7 @@ const loadProducts = async (req, res) => {
             pages: totalPages,
             user: req.session.user_id,
             brand: req.query.brand,
-            sortValue: req.query.sortValue, // Corrected variable name
+            sortValue: req.query.sortValue, 
             minPrice: req.query.minPrice,
             maxPrice: req.query.maxPrice,
             search: req.query.search,
@@ -585,14 +546,14 @@ const loadProducts = async (req, res) => {
         });
         
     } catch (error) {
-        console.log(error);
+        next(error)
     }
 };
 
 
 
 // ========== loading produt details page =============
-const loadProductDetails = async(req,res)=>{
+const loadProductDetails = async(req,res,next)=>{
     try{
     
       const id = req.query.id
@@ -601,14 +562,14 @@ const loadProductDetails = async(req,res)=>{
       res.render('productDetails',{product:products,user:req.session.user_id})
   
     }catch(error){
-      res.status(404).render('404-error')
+        next(error)
     }
   }
 
 
 
   // ======== user logout ==========
-const userLogout = async(req,res)=>{
+const userLogout = async(req,res,next)=>{
 
     try{
         req.session.user_id = null
@@ -616,84 +577,7 @@ const userLogout = async(req,res)=>{
     }
     catch (error)
         {
-            console.log(error.message)
-       }
-  }
-
-
-
-// ========== serch product =========== 
-// const searchProducts = async (req, res) => {
-//     try {
-//       const keyword = req.query.keyword; // Get the search keyword from the query string
-//       const page = req.query.page || 1; // Get the current page from query parameters
-//       const pageSize = 4; // Set your desired page size
-  
-//       // Perform a case-insensitive search on product names and descriptions
-//       const products = await Product.find({
-//         $or: [
-//           { productName: { $regex: keyword, $options: 'i' } },
-//           { brand: { $regex: keyword, $options: 'i' } },
-//         ],
-//       })
-//         .skip((page - 1) * pageSize)
-//         .limit(pageSize)
-//         .populate('category'); // Populate the category field
-  
-//       const totalProducts = await Product.countDocuments({
-//         $or: [
-//           { productName: { $regex: keyword, $options: 'i' } },
-//           { brand: { $regex: keyword, $options: 'i' } },
-//         ],
-//       });
-//       const totalPages = Math.ceil(totalProducts / pageSize);
-  
-//       // Fetch categories for the sidebar
-//       const categories = await Category.find();
-  
-//       res.render('product', {
-//     product: products,
-//     catData: categories,
-//     currentPage: page,
-//     totalPages: totalPages,
-//     pages: Array.from({ length: totalPages }, (_, i) => i + 1),
-//     user:req.session.user_id
-// });
-
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).render('500-error');
-//     }
-// };
-
-
-
-// ========== rendering 404 error page =========
-// const  load404 = async(req,res)=>{
-
-//     try{
-        
-//         res.render('404-error')
-//     }
-//     catch (error)
-//         {
-//             console.log(error.message)
-//        }
-//   }
-  
-  
-  
-  
-  // ========== rendering 500 error page =========
-  const  load500 = async(req,res)=>{
-  
-    try{
-        
-        res.render('500-error')
-    }
-    catch (error)
-        {
-            console.log(error.message)
+            next(error)
        }
   }
   
@@ -717,6 +601,5 @@ module.exports = {
     loadProducts,
     loadProductDetails,
     userLogout,
-    load500
     
 };
