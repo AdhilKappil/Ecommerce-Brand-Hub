@@ -1,11 +1,13 @@
 require('dotenv').config();
 const mongoose = require("mongoose");
 const path = require("path")
-mongoose.connect(process.env.mongoose)
 const express = require("express");
 const userRoute = require('./routers/userRoute');
 const adminRoute = require('./routers/adminRoute');
 
+mongoose.connect(process.env.mongoose).then(()=>{
+  console.log('database connected');
+}) 
 
 const app = express();
 

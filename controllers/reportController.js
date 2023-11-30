@@ -32,10 +32,11 @@ const salesReportPageLoad = async (req, res, next) => {
 
     const allOrders = await getorders(start, end);
 
-    if (sales === 0 || SoldProducts == 0) {
+    if (sales === 0 || SoldProducts == 0 ||allOrders.length === 0) {
       res.render("salesReport", {
         Mproducts: 0,
         sales: 0,
+        orders:0
       });
     }
 

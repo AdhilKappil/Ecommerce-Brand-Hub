@@ -429,10 +429,15 @@ const updatePassword = async (req, res) => {
 // ========== rendering the shop page ==========
 const loadProducts = async (req, res, next) => {
   try {
-    const perPage = 12; // Number of products per page
+    let perPage = 12; // Number of products per page
     let page = parseInt(req.query.page) || 1;
     const categoryDetails = await Category.find({});
     const totalProducts = await Product.countDocuments({ status: true });
+
+    if(totalProducts === 0){
+      perPage = -12
+    }
+
     const totalPages = Math.ceil(totalProducts / perPage);
     const brands = await Product.aggregate([{ $group: { _id: "$brand" } }]);
 

@@ -199,8 +199,9 @@
                     </div>
                     
                  </div>
-
+                
                 <div class="row isotope-grid">
+                 <% if(product && product.length> 0) { %>
                     <% product.forEach((product)=>{ %>
                         <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item category-<%= product.category.name %>">
                             <!-- Block2 -->
@@ -252,6 +253,12 @@
 
                         </div>
                         <% }) %>
+                      
+                    <% } else { %>
+                        <div>
+                            <h3>No products availabe</h3>
+                        </div>
+                        <% } %>
                 </div>
 
                 <!-- Pagination -->

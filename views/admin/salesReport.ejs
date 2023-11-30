@@ -224,6 +224,7 @@
                                             <tbody>
 
                                                 <% let k=1 %>
+                                                <% if (orders && orders.length > 0) { %>
                                                     <%for(i=orders.length-1;i>=0;i--){%>
                                                         <tr>
                                                             <td>
@@ -302,7 +303,11 @@
 
                                                             <%}%>
 
-                                                                <!-- list -->
+                                                            <% } else { %>
+                                                                <tr>
+                                                                    <td colspan="9"><h4>No orders available</h4></td>
+                                                                </tr>
+                                                            <% } %>
 
                                             </tbody>
                                         </table>
