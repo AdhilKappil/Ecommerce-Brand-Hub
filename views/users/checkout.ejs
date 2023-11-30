@@ -289,17 +289,12 @@
             const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
             // ======= for wallet balnce and amount comparing =======
             const totelAmount = document.getElementById("total1").innerHTML
-            // const totelQuantity = document.getElementById("quantity").value
-            // const orderProductId = document.getElementById("productID").value
-
-            // console.log(orderProductId);
 
             const data = {
               address: addressId,
               payment: paymentMethod,
               amount: totelAmount,
-              // orderQuantity:totelQuantity,
-              // productID:orderProductId
+            
             };
 
             const response = await fetch('/placeOrder', {

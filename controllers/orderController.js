@@ -11,7 +11,7 @@ const crypto = require("crypto");
 const { findById } = require("../models/admin");
 const fs = require("fs");
 const path = require("path");
-const ejs = require('ejs');
+const ejs = require("ejs");
 
 
 
@@ -21,7 +21,6 @@ var instance = new Razorpay({
   key_id: process.env.razorpaykey_id,
   key_secret: process.env.razorpaykey_secret,
 });
-
 
 
 
@@ -54,7 +53,7 @@ const calculateTotalPrice = async (userId) => {
     return 0;
   }
 };
-  
+
 
 
 // ======== loading chekout page =========
@@ -92,7 +91,7 @@ const loadCheckout = async (req, res, next) => {
       return res.redirect("/cart");
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -131,7 +130,7 @@ const addShippingAddress = async (req, res, next) => {
 
     res.redirect("/checkout");
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -284,7 +283,6 @@ const placeOrder = async (req, res, next) => {
     const orderId = placeorder._id;
 
     if (paymentType === "COD" || paymentType === "Wallet") {
-  
       for (const item of cartDetails.products) {
         const productId = item.productId._id;
         const quantity = parseInt(item.quantity, 10);
@@ -304,6 +302,7 @@ const placeOrder = async (req, res, next) => {
             transactionDetails: "Product Purchased",
             transactionType: "Debit",
             transactionAmount: totalAmount,
+            orderId: trackId,
             currentBalance: !isNaN(userId.wallet)
               ? userId.wallet + amount
               : totalAmount,
@@ -358,7 +357,7 @@ const placeOrder = async (req, res, next) => {
       });
     }
   } catch (error) {
-     next(error)
+    next(error);
   }
 };
 
@@ -430,7 +429,7 @@ const verifyPayment = async (req, res, next) => {
       res.json({ success: false });
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -449,7 +448,7 @@ const loadOrderPage = async (req, res, next) => {
 
     res.render("orders", { user: userData, orders: orderData });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -528,7 +527,6 @@ const loadAdminOrder = async (req, res, next) => {
               paymentStatus: productInfo.paymentStatus,
               paymentMethod: order.paymentMethod,
               quantity: productInfo.quantity,
-             
             },
           });
         }
@@ -537,7 +535,7 @@ const loadAdminOrder = async (req, res, next) => {
 
     res.render("order", { orders: productWiseOrdersArray });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -574,13 +572,13 @@ const orderMangeLoad = async (req, res, next) => {
         paymentMethod: order.paymentMethod,
         paymentStatus: productInfo.paymentStatus,
         quantity: productInfo.quantity,
-        price:productInfo.price
+        price: productInfo.price,
       },
     };
 
     res.render("orderManagment", { product: productOrder, orderId, productId });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -646,7 +644,7 @@ const cancelOrder = async (req, res, next) => {
 
     productInfo.OrderStatus = "Cancelled";
     productInfo.updatedAt = Date.now();
-    
+
     await Promise.all([
       order.save(),
       Product.findByIdAndUpdate(
@@ -662,6 +660,7 @@ const cancelOrder = async (req, res, next) => {
         transactionDetails: "Refund",
         transactionType: "Credit",
         transactionAmount: totalAmount,
+        orderId: order.trackId,
         currentBalance: !isNaN(userId.wallet)
           ? userId.wallet + totalAmount
           : totalAmount,
@@ -681,7 +680,7 @@ const cancelOrder = async (req, res, next) => {
 
     res.json({ cancel: 1 });
   } catch (error) {
-     next(error)
+    next(error);
   }
 };
 
@@ -709,7 +708,7 @@ const changeOrderStatus = async (req, res, next) => {
     const productInfo = order.products.find(
       (product) => product.productId.toString() === productId
     );
-  
+
     productInfo.OrderStatus = status;
     productInfo.StatusLevel = statusLevel;
     productInfo.updatedAt = Date.now();
@@ -722,10 +721,9 @@ const changeOrderStatus = async (req, res, next) => {
       `/admin/order/orderManagment?orderId=${orderId}&productId=${productId}`
     );
   } catch (error) {
-     next(error)
+    next(error);
   }
 };
-
 
 
 
@@ -768,6 +766,7 @@ const adminCancelOrder = async (req, res, next) => {
           transactionDetails: "Refund",
           transactionType: "Credit",
           transactionAmount: totalAmount,
+          orderId: order.trackId,
           currentBalance: !isNaN(userId.wallet)
             ? userId.wallet + amount
             : totalAmount,
@@ -797,7 +796,7 @@ const adminCancelOrder = async (req, res, next) => {
         .json({ message: "Product not found in the order." });
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -809,11 +808,13 @@ const invoiceDownload = async (req, res, next) => {
     const orderId = req.query.id;
 
     // const orderData = await Order.findById(orderId).populate('cart.products.productId');
-    const orderData = await Order.findById(orderId).populate('products.productId').populate('userId');
+    const orderData = await Order.findById(orderId)
+      .populate("products.productId")
+      .populate("userId");
 
     if (!orderData) {
       // Handle the case where the order with the specified orderId doesn't exist
-      return res.status(404).send('Order not found');
+      return res.status(404).send("Order not found");
     }
 
     const userId = req.session.user_id;
@@ -821,12 +822,11 @@ const invoiceDownload = async (req, res, next) => {
     const userData = await User.findById(userId);
 
     const date = new Date();
-  
+
     const data = {
       orderData: orderData,
       userData: userData,
       date,
-
     };
 
     const filepathName = path.resolve(__dirname, "../views/users/invoice.ejs");
@@ -846,11 +846,10 @@ const invoiceDownload = async (req, res, next) => {
     );
     res.send(pdfBytes);
   } catch (error) {
-    console.error('Error in invoiceDownload:', error);
+    console.error("Error in invoiceDownload:", error);
     next(error);
   }
 };
-
 
 
 
@@ -867,6 +866,5 @@ module.exports = {
   changeOrderStatus,
   cancelOrder,
   adminCancelOrder,
-  invoiceDownload
-  
+  invoiceDownload,
 };

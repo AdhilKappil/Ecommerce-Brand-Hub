@@ -13,7 +13,6 @@ const cartMiddleware=async (req,res,next)=>{
            
             return res.redirect('/login');
           }
-        // const userId=userData._id
 
         const cart=await Cart.findOne({user:user})
         const count = cart ? cart.products.length : 0;

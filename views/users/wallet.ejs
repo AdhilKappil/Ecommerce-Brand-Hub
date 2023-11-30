@@ -62,18 +62,22 @@
                     <table class="table " >
                         <thead class="table-light">
                             <tr >
-                                <!-- <th>No</th> -->
+                                <th>Order Id</th>
                                 <th>Date</th>
                                 <th>Details</th>
                                 <th>Amount</th>
                                 <th>Type</th>
-                                <!-- <th>Status</th> -->
                             </tr>
                         </thead>
                         <tbody>
                           
                             <% for (let i = userData.walletHistory.length - 1; i >= 0; i--) { %>
                                 <tr>
+                                    <% if(userData.walletHistory[i].orderId) {%>
+                                    <td><%= userData.walletHistory[i].orderId %></td>
+                                    <%}else{%>
+                                        <td>---</td>
+                                        <%}%> 
                                     <td><%= userData.walletHistory[i].transactionDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-')%></td>
                                     <td><%= userData.walletHistory[i].transactionDetails %></td>
                                     <td>₹ <%= userData.walletHistory[i].transactionAmount %></td>

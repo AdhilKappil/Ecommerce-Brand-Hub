@@ -65,6 +65,9 @@ const userSchema =  new mongoose.Schema({
         currentBalance: {
             type: Number
         },
+        orderId: {
+            type: Number
+        },
     }],
       
 },

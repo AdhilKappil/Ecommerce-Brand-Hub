@@ -106,8 +106,6 @@ user_route.post('/removeCoupon',auth.isLogin,couponController.removeCoupon);
 
 // ========= error  page to handile=======
 user_route.use(errorHandler); 
-// user_route.get('/error-500',userController.load500)
-
 
 
 

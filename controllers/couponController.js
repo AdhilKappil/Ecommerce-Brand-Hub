@@ -4,14 +4,15 @@ const Cart = require("../models/cart");
 
 
 
+
 // ======== rendering the coupon page ========
-const loadaddCoupon = async (req, res,next) => {
-    try {
-      res.render('addCoupon')
-    } catch (err) {
-      next(err)
-    }
-}
+const loadaddCoupon = async (req, res, next) => {
+  try {
+    res.render("addCoupon");
+  } catch (err) {
+    next(err);
+  }
+};
 
 
 
@@ -32,18 +33,18 @@ const addCoupon = async (req, res, next) => {
     ]);
 
     if (already.length > 0) {
-      res.render('addCoupon', { message: 'Code already exists' });
+      res.render("addCoupon", { message: "Code already exists" });
     } else {
       const newCoupon = new Coupon({
         code: req.body.code,
         discountPercentage: req.body.discountPercentage,
         startDate: req.body.startDate,
         expireDate: req.body.expiryDate,
-        minimumSpend: req.body.minimumSpend
+        minimumSpend: req.body.minimumSpend,
       });
 
       await newCoupon.save();
-      res.render('addCoupon',{message:"Coupon added successfully!."});
+      res.render("addCoupon", { message: "Coupon added successfully!." });
     }
   } catch (err) {
     next(err);
@@ -52,16 +53,15 @@ const addCoupon = async (req, res, next) => {
 
 
 
-// =========== rendering the coupon page =========== 
-const loadCoupon = async (req, res,next) => {
+// =========== rendering the coupon page ===========
+const loadCoupon = async (req, res, next) => {
   try {
-    const couponData = await Coupon.find()
-    res.render('coupon', { couponData })
+    const couponData = await Coupon.find();
+    res.render("coupon", { couponData });
   } catch (err) {
-  next(err)
+    next(err);
   }
-}
-
+};
 
 
 
@@ -78,7 +78,7 @@ const loadEditCoupon = async (req, res, next) => {
       },
     ]);
 
-    res.render('editCoupon', { data: couponData[0] }); 
+    res.render("editCoupon", { data: couponData[0] });
   } catch (err) {
     next(err);
   }
@@ -110,7 +110,7 @@ const editCoupon = async (req, res, next) => {
       }
     );
 
-    res.redirect('/admin/coupon');
+    res.redirect("/admin/coupon");
   } catch (err) {
     next(err);
   }
@@ -127,17 +127,17 @@ const deleteCoupon = async (req, res, next) => {
     const deletedCoupon = await Coupon.aggregate([
       {
         $match: {
-          _id: new mongoose.Types.ObjectId(id)
-        }
+          _id: new mongoose.Types.ObjectId(id),
+        },
       },
       {
-        $limit: 1
-      }
+        $limit: 1,
+      },
     ]);
 
     // Check if the coupon exists
     if (deletedCoupon.length === 0) {
-      return res.json({ success: false, message: 'Coupon not found' });
+      return res.json({ success: false, message: "Coupon not found" });
     }
 
     // Delete the coupon
@@ -163,15 +163,20 @@ const couponCheck = async (req, res, next) => {
     const totalAmount = await calculateTotalPrice(userId);
 
     if (couponData) {
-      const userExist = couponData.user.find((u) => u.toString() === req.session.user_id);
+      const userExist = couponData.user.find(
+        (u) => u.toString() === req.session.user_id
+      );
 
       if (userExist) {
-        res.json({ failed: true, message: 'Coupon already used by the user.' });
+        res.json({ failed: true, message: "Coupon already used by the user." });
       } else {
         // Check if the coupon is valid based on dates
         const currentDate = new Date();
-        if (currentDate < couponData.startDate || currentDate > couponData.expireDate) {
-          res.json({ failed: true, message: 'Coupon is not currently valid.' });
+        if (
+          currentDate < couponData.startDate ||
+          currentDate > couponData.expireDate
+        ) {
+          res.json({ failed: true, message: "Coupon is not currently valid." });
           return;
         }
 
@@ -181,29 +186,40 @@ const couponCheck = async (req, res, next) => {
             req.session.code = couponCode;
 
             // Calculate discount and new total
-            const discountTotal = Math.floor((couponData.discountPercentage / 100) * total);
+            const discountTotal = Math.floor(
+              (couponData.discountPercentage / 100) * total
+            );
             const newTotal = total - discountTotal;
 
-            await Coupon.findOneAndUpdate({ code: couponCode }, { $push: { user: userId } });
+            await Coupon.findOneAndUpdate(
+              { code: couponCode },
+              { $push: { user: userId } }
+            );
 
             // Store coupon information in session
             req.session.coupon = {
               code: couponCode,
               discountTotal: discountTotal,
-              minimumSpend:couponData.minimumSpend,
-              discountPercentage:couponData.discountPercentage
+              minimumSpend: couponData.minimumSpend,
+              discountPercentage: couponData.discountPercentage,
             };
 
             res.json({ success: true, newTotal: newTotal });
           } else {
-            res.json({ failed: true, message: `Coupon is applicable for the purchase of ₹${max} or above` });
+            res.json({
+              failed: true,
+              message: `Coupon is applicable for the purchase of ₹${max} or above`,
+            });
           }
         } else {
-          res.json({ failed: true, message: 'Cannot apply coupon to this amount.' });
+          res.json({
+            failed: true,
+            message: "Cannot apply coupon to this amount.",
+          });
         }
       }
     } else {
-      res.json({ failed: true, message: 'Invalid coupon code.' });
+      res.json({ failed: true, message: "Invalid coupon code." });
     }
   } catch (err) {
     next(err);
@@ -245,14 +261,19 @@ const removeCoupon = async (req, res, next) => {
     const userId = req.session.user_id;
 
     // Assuming you have stored the applied coupon code in req.session.coupon.code
-    const appliedCouponCode = req.session.coupon ? req.session.coupon.code : null;
+    const appliedCouponCode = req.session.coupon
+      ? req.session.coupon.code
+      : null;
 
     if (!appliedCouponCode) {
-      return res.json({ failed: true, message: 'No coupon applied.' });
+      return res.json({ failed: true, message: "No coupon applied." });
     }
 
     // Remove the applied coupon from the user's list
-    await Coupon.findOneAndUpdate({ code: appliedCouponCode }, { $pull: { user: userId } });
+    await Coupon.findOneAndUpdate(
+      { code: appliedCouponCode },
+      { $pull: { user: userId } }
+    );
 
     // Clear coupon-related data from the session
     req.session.coupon = null;
@@ -277,13 +298,5 @@ module.exports = {
   loadEditCoupon,
   deleteCoupon,
   couponCheck,
-  removeCoupon
-  
+  removeCoupon,
 };
-
-
- 
-
-
-
-
