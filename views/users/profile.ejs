@@ -84,8 +84,13 @@
                                                     name="mobile" disabled>
                                             </div>
                                             <div class="col-sm-6">
-                                                <label> Referral Code</label>
-                                                <input type="text" class="form-control" value="<%= user.referralCode%>" disabled>
+                                                <label>Referral Code</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" value="<%= user.referralCode %>" id="referralCodeInput" disabled>
+                                                    <div class="input-group-append">
+                                                        <button class="btn  btn-outline-primary-2" type="button" onclick="copyReferralCode()">Copy</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </form>
@@ -302,6 +307,35 @@
             };
         };
     </script>
+
+<script>
+    function copyReferralCode() {
+        var referralCodeInput = document.getElementById("referralCodeInput");
+
+        // Create a range object to select text
+        var range = document.createRange();
+        range.selectNode(referralCodeInput);
+
+        // Select text inside the range
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        // Copy the selected text
+        document.execCommand("copy");
+
+        // Clear the selection
+        window.getSelection().removeAllRanges();
+
+        // Show success message using SweetAlert
+        Swal.fire({
+            icon: 'success',
+            title: 'Referral code copied!',
+            showConfirmButton: false,
+            timer: 2000  // Auto-close after 1.5 seconds
+        });
+    }
+</script>
+    
     
 
 

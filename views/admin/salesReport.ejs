@@ -107,16 +107,6 @@
                                     <div class="d-flex flex-row justify-content-between">
                                         <h4 class="card-title mb-1">product wise profitability analysis</h4>
                                         <div class="dropdown mt-2 text-right">
-                                            <button type="button" class="btn btn-inverse-info dropdown-toggle"
-                                                id="dropdownMenuIconButton7" data-toggle="dropdown" aria-haspopup="true"
-                                                aria-expanded="false">
-                                                <i class="mdi mdi-download"></i>
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton9">
-                                                <h6 class="dropdown-header">Download Report</h6>
-                                                <!-- <a class="dropdown-item text-white" id="excelDownload">Excel file</a> -->
-                                                <a class="dropdown-item text-white" id="pdfDownload">PDF File</a>
-                                            </div>
                                         </div>
 
                                     </div>
@@ -204,7 +194,7 @@
                                             placeholder="Search Users" id="searchInput">
                                     </form>
 
-                                    <div class="table-responsive">
+                                    <div class="table-responsive" style="overflow-x: auto;">
                                         <table class="table" id="user-table">
                                             <thead>
                                                 <tr>
@@ -511,13 +501,11 @@
                     end.setDate(today.getDate() + 1); // Set end to one day after today
                     end = end.toISOString().split('T')[0];
                     excelDownload.href = `/admin/sales-report/export-report?start=${start.toISOString().split('T')[0]}&end=${end}`;
-                    pdfDownload.href = `/admin/sales-report/export-PDF-report?start=${start.toISOString().split('T')[0]}&end=${end}`;
                 } else {
                     end = new Date(endDate);
                     end.setDate(end.getDate() + 1); // Set end to one day after the specified end date
                     end = end.toISOString().split('T')[0];
                     excelDownload.href = `/admin/sales-report/export-report?start=${startDate}&end=${end}`;
-                    pdfDownload.href = `/admin/sales-report/export-PDF-report?start=${startDate}&end=${end}`;
                 }
 
 

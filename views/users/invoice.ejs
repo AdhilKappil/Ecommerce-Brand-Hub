@@ -165,7 +165,7 @@
                         </div>
 
                         <!-- Product details -->
-                        <div class="product-details">
+                        <div class="product-details table-responsive" style="">
                             <h3>Product Details</h3>
                             <table>
                                 <thead>
@@ -309,6 +309,21 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+
+
+        <!-- // ======== pdf download ======== -->
+        <script>
+            window.onload = function () {
+                print();
+            };
+    
+            document.getElementById('downloadButton').addEventListener('click', function () {
+               
+                const pdf = new jsPDF();
+                
+                pdf.save('order_invoice.pdf');
+            });
+        </script>   
 
 </body>
 

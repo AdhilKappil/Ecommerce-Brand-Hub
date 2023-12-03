@@ -3,8 +3,6 @@ const ProductDB = require("../models/product");
 const User = require("../models/users");
 const OrderDB = require("../models/order");
 const ExcelJS = require("exceljs");
-const puppeteer = require("puppeteer");
-
 
 
 // ========== loading sales report page ==========
@@ -392,62 +390,7 @@ const generateYearlySalesCount = async () => {
   }
 };
 
-// // ======== genarating sales excel report ========
-// const generateExcelReports = async (req, res) => {
-//   try {
-//     const { end, start } = req.query;
 
-//     // Create a sales report or fetch it from your data source
-//     const sales = await createSalesReport(start, end);
-
-//     // Create a new Excel workbook and worksheet
-//     const workbook = new ExcelJS.Workbook();
-//     const worksheet = workbook.addWorksheet("Sales Report");
-
-//     // Define the columns for the worksheet
-//     worksheet.columns = [
-//       { header: "Product Name", key: "productName", width: 25 },
-//       { header: "Frame Shape", key: "shape", width: 25 },
-//       { header: "Price", key: "price", width: 15 },
-//       { header: "Profit", key: "profit", width: 15 },
-//     ];
-
-//     // Add data to the worksheet
-//     sales.productProfits.forEach((product) => {
-//       worksheet.addRow({
-//         productName: product.name,
-//         shape: product.shape, // You should replace this with the actual shape data
-//         price: product.price,
-//         profit: product.profit,
-//       });
-//     });
-
-//     // Add the 'Total Sales' value in the footer
-//     worksheet.addRow({
-//       productName: "Total Sales:",
-//       shape: "",
-//       price: "",
-//       profit: sales.totalSales, // Add the totalSales value here
-//     });
-
-//     // Stream the Excel file to the client as a response
-//     res.setHeader(
-//       "Content-Type",
-//       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-//     );
-//     res.setHeader(
-//       "Content-Disposition",
-//       "attachment; filename=sales_report.xlsx"
-//     );
-
-//     workbook.xlsx.write(res).then(() => {
-//       res.end();
-//     });
-//   } catch (error) {
-//     console.error(error.message);
-//     res.status(500).send("Error generating the Excel report");
-//   }
-// };
 
 // ======== genarating sales excel report of all orders ========
 const generateExcelReportsOfAllOrders = async (req, res, next) => {
@@ -512,104 +455,10 @@ const generateExcelReportsOfAllOrders = async (req, res, next) => {
 
 
 
-// ======== genarating pdf report ========
-const generatePDFReportsOfProfit = async (req, res, next) => {
-  try {
-    const { start, end } = req.query;
-    const sales = await createSalesReport(start, end);
-
-    // Call the generatePDFReport function to generate the PDF
-    await generatePDFReport(sales);
-
-    // Send the generated PDF as a response
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=sales_report.pdf"
-    );
-
-    // Send the PDF file
-    res.sendFile("sales_report.pdf", { root: "./" }); // Adjust the root directory as needed
-  } catch (error) {
-    next(error);
-  }
-};
-
-
-
-// ======== pdf creating ===========
-const generatePDFReport = async (sales) => {
-  try {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    const salesRows = sales.productProfits
-      .map(
-        (product) => `
-      <tr>
-        <td>${product.name}</td>
-        <td>${product.price}</td>
-        <td>${product.profit}</td>
-      </tr>`
-      )
-      .join("");
-
-    const totalSalesRow = `
-      <tr>
-        <td>Total Sales:</td>
-        <td></td>
-        <td>${sales.totalSales}</td>
-      </tr>`;
-
-    const htmlContent = `
-      <style>
-        h1 {
-          text-align: center;
-        }
-        table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-        th, td {
-          border: 1px solid #ddd;
-          padding: 8px;
-          text-align: left;
-        }
-        th {
-          background-color: #f2f2f2;
-        }
-      </style>
-      <h1>Sales Report</h1>
-      <table>
-        <tr>
-          <th>Product Name</th>
-          <th>Price</th>
-          <th>Profit</th>
-        </tr>
-        ${salesRows}
-        ${totalSalesRow}
-      </table>
-    `;
-
-    await page.setContent(htmlContent);
-    await page.pdf({
-      path: "sales_report.pdf",
-      format: "A4",
-      printBackground: true,
-    });
-
-    await browser.close();
-  } catch (error) {
-    console.error(error.message);
-  }
-};
-
-
 
 
 module.exports = {
   salesReportPageLoad,
   portfolioFiltering,
-  generatePDFReportsOfProfit,
   generateExcelReportsOfAllOrders,
 };

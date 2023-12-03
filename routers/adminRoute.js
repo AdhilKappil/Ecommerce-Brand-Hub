@@ -82,7 +82,6 @@ admin_route.post('/report/genarate',auth.isLogin,adminController.genarateSalesRe
 admin_route.get('/salesReport',auth.isLogin,salesController.salesReportPageLoad )
 admin_route.post('/sales-report/portfolio',auth.isLogin,salesController.portfolioFiltering )
 admin_route.get('/sales-report/export-report',auth.isLogin,salesController.generateExcelReportsOfAllOrders)
-admin_route.get('/sales-report/export-PDF-report',auth.isLogin,salesController.generatePDFReportsOfProfit)
 
 
 // ================ coupon related routes ================

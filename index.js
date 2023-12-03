@@ -9,11 +9,11 @@ mongoose.connect(process.env.mongoose).then(()=>{
   console.log('database connected');
 }) 
 
-const app = express();
+const app = express(); 
 
 
 // ========== setting public folder =======
-app.use("/static", express.static(path.join(__dirname, "public")));
+app.use("/static", express.static(path.join(__dirname, "public"))); 
 
 
 // ======= setting view engine ======= 
