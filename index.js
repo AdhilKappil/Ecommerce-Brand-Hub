@@ -44,7 +44,7 @@ app.use('/admin',adminRoute);
 })
 
 
-// ========= port setup ========
+// ======== port setup ========
 app.listen(process.env.port,()=>{
     console.log("Server is running...");
 })
