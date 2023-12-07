@@ -96,7 +96,7 @@ const updateBanner = async (req, res, next) => {
     };
 
     if (req.file && req.file.filename) {
-      // If a new image is uploaded, update the image field
+     // If a new image is uploaded, update the image field
       updateFields.image = req.file.filename;
     }
 
