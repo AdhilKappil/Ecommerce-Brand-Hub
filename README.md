@@ -9,7 +9,7 @@ This is a Node.js Express project for an e-commerce website specializing in the 
 ## Credentials
 ### User
 - Email: user@gmail.com
-- Password: 12345@
+- Password: 123456@
 
 ## LiveLink Admin: https://ecommerce-brand-hub-master-adhil.onrender.com/admin
 ## Credentials
