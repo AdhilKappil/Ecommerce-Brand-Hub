@@ -23,58 +23,50 @@ This is a Node.js Express project for an e-commerce website specializing in the 
 
 
 
-🛍️ User Experience:
+## User Experience:
+- Secure OTP login
+- Shop with Search and Filters
+- Personalized Profiles
+- Seamless Cart & Checkout
+- Various Payment Methods (Razorpay, Wallet, Cash on Delivery)
+- PDF Invoice Download
+- Coupons
+- Forgot and Change Password
+- Referral Bonus
+- Image Cropping
+- Product Offer and Category Offer
+- Image Zoom
+- Wallet
+- Order History & Order Monitoring
 
-•🛡️ Secure OTP login
-•🔍 Shop with Search and Filters
-•👤 Personalized Profiles
-•🛒 Seamless Cart & Checkout
-•💳 Various Payment Methods (Razorpay, Wallet, Cash on Delivery)
-•🧾 PDF Invoice Download
-•🎫 Coupons
-•🔐 Forgot and Change Password
-•🔄 Referral Bonus
-•🖼️ Image Cropping
-•🎁 Product Offer and Category Offer
-•🔍 Image Zoom
-•💼 Wallet 
-•📦Order History & Order Monitoring
+## Admin Panel:
+-  Intuitive Dashboard
+-  Sales Analytics with Date Filters
+-  Excel Sales Report Download
+-  Efficient Order Management
+-  Effortless Product and User Control
+-  Offer Management
+-  Coupon Control
+-  Banner Change
 
+## FrontEnd:
+- HTML & CSS
+- JavaScript
+- Ajax/Fetch/Axios for Better User Experience
+- EJS for rendering dynamic content
+- Bootstrap for responsive design
 
+## BackEnd:
+- Node.js for robust backend
+- Express.js for server-side logic
+- MongoDB for the database
 
-🖥️ Admin Panel:
-
-•📊 Intuitive Dashboard
-•📈 Sales Analytics with Date Filters
-•📥 Excel Sales Report Download
-•📦 Efficient Order Management
-•🔄 Effortless Product and User Control
-•🎟️ Offer Management 
-•🎫 Coupon Control
-•🚀 Banner Change
-  
-
-🎨 FrontEnd:
-
-•🌐 HTML & CSS
-•🚀 JavaScript
-•🔄 Ajax/Fetch/Axios for Better User Experience
-•🌐 EJS for rendering dynamic content
-•🌈 Bootstrap for responsive design
-
-🛠️ BackEnd:
-
-•☁️ Node.js for robust backend
-•🚀 Express.js for server-side logic
-•📊 MongoDB for the database
-
-🏠 Hosting:
-
-•🐳 Docker for scalable deployment
-•☁️ AWS EC2 for secure and reliable hosting
-•🔄 Nginx for load balancing
-•🔥 Firewall for enhanced security
-•🔒 HTTPS (SSL/TLS certificates) for secure data transmission
+## BackEnd:
+- Docker for scalable deployment
+- AWS EC2 for secure and reliable hosting
+- Nginx for load balancing
+- Firewall for enhanced security
+- HTTPS (SSL/TLS certificates) for secure data transmission
 
 ## Installation
 1. Clone the repository: `git clone <repository-url>`
